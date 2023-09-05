@@ -5,20 +5,16 @@ import { Block, Text, Input, theme, Button } from "galio-framework";
 
 import { AntDesign } from '@expo/vector-icons';
 import { Header } from '../../Components/Header/Header';
-import { OrdersCard } from '../../Components/Cards/OrdersCard';
 const {width, height} = Dimensions.get('window');
 
-export const Orders = () => {
+export const Market = () => {
   return (
     <View style={styles.container}>
     <Header/>
     <ScrollView style={{flex:1,backgroundColor:"#F1F1F1"}}>
 
     <Block style={{padding:10}}>
-         
-         <OrdersCard />
-           
-        
+        <Text>Market Screen</Text>
         </Block>
         </ScrollView>
     </View>

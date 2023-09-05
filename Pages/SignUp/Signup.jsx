@@ -13,9 +13,10 @@ export const SignUp = ({navigation}) => {
   const [showOTP,setOTPShow]=useState(false)
   const [otp, setOtp] = useState("");
   const handleOtpComplete = (otp) => {
-    console.log("OTP entered:", otp);
+    // console.log("OTP entered:", otp);
     setOtp(otp);
-    navigation.navigate('Tabs')
+
+    navigation.navigate('OTPVerify')
     // You can perform any actions with the completed OTP here
   };
 

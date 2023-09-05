@@ -10,7 +10,7 @@ import { Entypo } from '@expo/vector-icons';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Home } from "./Pages/Home/Home";
 import { Invoice } from "./Pages/Invoices/Invoice";
-import { Sell } from "./Pages/Sell/Sell";
+import { Market } from "./Pages/Market/Market";
 import { Profile } from "./Pages/Profile/Profile";
 import {AppSlides} from "./Pages/OnBoarding/AppSlides/AppSlides";
 import { Orders } from "./Pages/Orders/Orders";
@@ -18,6 +18,14 @@ import { Login } from "./Pages/Login/Login";
 import { SignUp } from "./Pages/SignUp/Signup";
 import { Feather } from '@expo/vector-icons'; 
 import { StartScreen } from './Pages/OnBoarding/StartScreen/StartScreen';
+import { OTPVerify } from './Pages/OnBoarding/OTP_Verification/OTPVerify';
+import { RegisterAs } from './Pages/SignUp/Registration/Registeras';
+import { PersonalDetails } from './Pages/SignUp/Registration/PersonalDetails';
+import { UplodeShopImage } from './Pages/SignUp/Registration/UplodeShopImage';
+import { RegisterSuccessfull } from './Pages/SignUp/Registration/RegisterSuccessfull';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Inventory } from './Pages/Inventory/Inventory';
+import { Octicons } from '@expo/vector-icons'; 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -55,7 +63,7 @@ const Tabs = ({navigation}) => {
           
             <Ionicons name="home" color={color} size={size}  />
           ),
-          headerShown: true,
+          headerShown: false,
         }}
         // listeners={{
         //   tabPress: (e) => {
@@ -66,15 +74,15 @@ const Tabs = ({navigation}) => {
      
       />
 
-      <Tab.Screen
-        name="Invoice"
-        component={Invoice }
+<Tab.Screen
+        name="Market"
+        component={Market}
         options={{
           tabBarIcon: ({ color, size }) => (
-            // <FontAwesome name="bookmark" size={size} color={color} />
-            <Feather name="file-text" size={size} color={color} />
+           
+            <MaterialCommunityIcons name="tag-outline" size={size} color={color} />
           ),
-         
+          headerShown: false,
         }}
         // listeners={{
         //   tabPress: (e) => {
@@ -83,6 +91,7 @@ const Tabs = ({navigation}) => {
         // }}
        
       />
+      
 
 <Tab.Screen
         name="Orders"
@@ -92,7 +101,7 @@ const Tabs = ({navigation}) => {
             // <FontAwesome name="bookmark" size={size} color={color} />
             <FontAwesome name="shopping-bag" size={size} color={color} />
           ),
-         
+          headerShown: false,
         }}
         // listeners={{
         //   tabPress: (e) => {
@@ -103,14 +112,15 @@ const Tabs = ({navigation}) => {
       />
 
 <Tab.Screen
-        name="Sell"
-        component={Sell}
+        name="Invoices"
+        component={Invoice }
         options={{
           tabBarIcon: ({ color, size }) => (
             // <FontAwesome name="bookmark" size={size} color={color} />
-            <Ionicons name="pricetag-outline" size={size} color={color} />
+            <Feather name="file-text" size={size} color={color} />
           ),
-         
+          
+          headerShown: false,
         }}
         // listeners={{
         //   tabPress: (e) => {
@@ -121,6 +131,25 @@ const Tabs = ({navigation}) => {
       />
 
 <Tab.Screen
+        name="Inventory"
+        component={Inventory}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            // <FontAwesome name="bookmark" size={size} color={color} />
+            
+            <Octicons name="checklist" size={size} color={color} />
+          ),
+          headerShown: false,
+        }}
+        // listeners={{
+        //   tabPress: (e) => {
+        //     handleTabPress(e,'Saved');
+        //   },
+        // }}
+       
+      />
+
+{/* <Tab.Screen
         name="Profile"
         component={Profile}
         options={{
@@ -130,13 +159,13 @@ const Tabs = ({navigation}) => {
           ),
          
         }}
-        // listeners={{
-        //   tabPress: (e) => {
-        //     handleTabPress(e,'Saved');
-        //   },
-        // }}
+        listeners={{
+          tabPress: (e) => {
+            handleTabPress(e,'Saved');
+          },
+        }}
        
-      />
+      /> */}
       {/* <Tab.Screen
         name="Trips"
         component={Profile }
@@ -197,6 +226,34 @@ export default function App() {
         }}
         /> */}
          <Stack.Screen name="StartScreen" component={StartScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+     <Stack.Screen name="OTPVerify" component={OTPVerify}
+          options={{
+            headerShown: false,
+          }}
+        />
+         <Stack.Screen name="RegisterAs" component={RegisterAs}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen name="FillPersonalDetails" component={PersonalDetails}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+<Stack.Screen name="UplodeShopImage" component={UplodeShopImage}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+<Stack.Screen name="RegisterSuccessfull" component={RegisterSuccessfull}
           options={{
             headerShown: false,
           }}
