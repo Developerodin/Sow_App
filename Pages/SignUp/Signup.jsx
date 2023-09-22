@@ -47,7 +47,7 @@ export const SignUp = ({navigation}) => {
       {
   showOTP ?
   <View style={{alignItems:"left",padding:10,justifyContent:"center"}}>
-      <Text style={{fontSize:48,fontWeight:400}}>Enter OTP</Text>
+      <Text style={{fontSize:32,fontWeight:400}}>Enter OTP</Text>
       <Text style={{fontSize:14,fontWeight:400,marginTop:10}}>OTP Sent to +91 902 496 7391</Text>
       <Block style={{flexDirection:"row",alignItems:"center"}}>
       <Text style={{fontSize:16,fontWeight:400,marginTop:10,color:"#00A56A"}}>Change Number</Text>
@@ -71,7 +71,7 @@ export const SignUp = ({navigation}) => {
 
     :
       <View style={{alignItems:"left",padding:10,justifyContent:"center"}}>
-      <Text style={{fontSize:48,fontWeight:400}}>Sign Up</Text>
+      <Text style={{fontSize:32,fontWeight:400}}>Sign Up</Text>
       <Text style={{fontSize:16,fontWeight:400,marginTop:5}}>We need to register your phone no. before getting started</Text>
       <Block style={{flexDirection:"row",alignItems:"center"}}>
       <Text style={{fontSize:24,fontWeight:400,marginTop:20}}>Enter Mobile No.</Text>

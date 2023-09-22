@@ -2,95 +2,67 @@ import React, { useRef, useState } from 'react'
 import { FlatList, SafeAreaView, StyleSheet,ScrollView,  View,Dimensions,TouchableOpacity, Image,Animated, TextInput } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import { Block, Text, Input, theme, Button } from "galio-framework";
-
-import { AntDesign } from '@expo/vector-icons';
-import { Header } from '../../Components/Header/Header';
 const {width, height} = Dimensions.get('window');
-export const Inventory = () => {
+import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; 
+import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+
+export const MarketCard = (props) => {
+    const navigation = useNavigation();
+   const {Title,Value,Img} = props
+  const handeViewDetail=()=>{
+    navigation.navigate("Order Details")
+  }
   return (
-    <View style={styles.container}>
-    <Header/>
-    <ScrollView>
+    <View style={{borderWidth:1,borderColor:"#C8C8C8",padding:10,backgroundColor:"#fff", marginTop:10,borderRadius:5}}>
+    <Block  style={{flexDirection:"row"}}>
 
-    <Block style={{backgroundColor:"#fffff",padding:10}}>
+      <Block style={{flexDirection:"row",alignItems:"center"}}>
+        <Block>
+        <Image
+    
+        source={{uri:Img}}
+        style={{resizeMode: 'contain',width:50,height:50}}
+      />
+        </Block>
+      </Block>
+      
 
-     
-      <Block style={{marginTop:20}}>
-        <Text style={{fontSize:32,fontWeight:500}}>Inventory</Text>
-        <Text style={{fontSize:20,fontWeight:400,color:"#797979"}}>Time To Stock Up!</Text>
+      <Block style={[styles.Space_Between,{width:"80%",marginLeft:10}]}>
+        <Block>
+        <Block>
+        <Text style={{fontSize:16,color:"#424242",fontWeight:"bold"}}>{Title}</Text>
       </Block>
 
-      <Block style={{marginTop:50,borderWidth:1,borderColor:"#DCDCDC",padding:15,backgroundColor:"#FFFFFF"}}>
-
-        <Block>
-        <Block >
-          <Text style={{fontSize:28,fontWeight:400}}>Total Stock Value</Text>
-        
+      <Block style={{marginRight:30}}>
+          <Text style={{color:"#29BD7F",fontSize:16,fontWeight:600}}>₹ {Value} / KG</Text>
         </Block>
-
-        <Block style={[styles.Space_Between,{marginTop:30}]}>
-           <Block>
-            <Text style={{fontSize:24}}>Amount</Text>
-           </Block>
-
-           <Block>
-            <Text style={{fontSize:32}}>₹ 42,300</Text>
-           </Block>
-        </Block>
-
-        <Block style={[styles.Space_Between,{marginTop:30}]}>
-           <Block>
-            <Text style={{fontSize:24}}>Weight</Text>
-           </Block>
-
-           <Block>
-            <Text style={{fontSize:32}}>105 Kgs</Text>
-           </Block>
-        </Block>
-
-
-        <Block style={[{marginTop:30},styles.Center]}>
-    <Button color='black' style={{width:"100%"}}>View Details</Button>
-    </Block>
-
         </Block>
        
+
+        {/* <Block>
+        <Feather name="arrow-right" size={24} color="black" />
+        </Block> */}
       </Block>
-
-
-      <Block style={{marginTop:20, marginBottom:60}}>
-      <Block style={[styles.Center]}>
-    <Button color='white' style={{borderWidth:1,width:"100%",borderColor:"#C8C8C8",height:60,backgroundColor:"#00BC84"}}>
-              <Text style={{fontSize:20,fontWeight:400,color:"#fff"}}>
-              Add Stock
-              </Text>
-            
-              </Button>
     </Block>
-
-    <Block style={[styles.Center]}>
-    <Button color='white' style={{borderWidth:1,width:"100%",borderColor:"#E02D2D",height:60}}>
-              <Text style={{fontSize:20,fontWeight:400,color:"#E02D2D"}}>
-              Remove Stock
-              </Text>
-            
-              </Button>
-    </Block>
-      </Block>
-
-         
-     
-
-       </Block>
-        </ScrollView>
-    </View>
+ 
+</View>
   )
 }
+
 const styles = StyleSheet.create({
     container:{
       flex: 1,
-      backgroundColor:"#FFF",
-  
+      backgroundColor:"#FFF"
+    },
+    displayF:{
+    flexDirection:"row",
+    alignItems:"center"
+    },
+    text1:{
+      fontSize:15,
+       marginLeft:10
     },
     inputContainer: {
       width: '100%',
@@ -134,8 +106,8 @@ const styles = StyleSheet.create({
       borderRadius: 52,
     },
     btn: {
-     width: '95%',
-      height: 55,
+     width: '100%',
+      height: 46,
       borderRadius: 5,
       backgroundColor: '#40A99E',
       justifyContent: 'center',

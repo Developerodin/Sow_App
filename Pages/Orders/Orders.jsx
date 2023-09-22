@@ -7,20 +7,94 @@ import { AntDesign } from '@expo/vector-icons';
 import { Header } from '../../Components/Header/Header';
 import { OrdersCard } from '../../Components/Cards/OrdersCard';
 const {width, height} = Dimensions.get('window');
-
-export const Orders = () => {
-  return (
-    <View style={styles.container}>
-    <Header/>
-    <ScrollView style={{flex:1,backgroundColor:"#F1F1F1"}}>
-
-    <Block style={{padding:10}}>
+import { TabView, SceneMap } from 'react-native-tab-view';
+const FirstRoute = () => (
+  <ScrollView style={{flex:1}}>
+   
+    <Block style={{padding:10,marginBottom:60}}>
          
          <OrdersCard />
            
+         <OrdersCard />
+         <OrdersCard />
         
         </Block>
         </ScrollView>
+);
+const SecondRoute = () => (
+  <ScrollView style={{flex:1}}>
+   
+    <Block style={{padding:10,marginBottom:60}}>
+         
+         <OrdersCard />
+           
+         <OrdersCard />
+         <OrdersCard />
+        
+        </Block>
+        </ScrollView>
+);
+export const Orders = () => {
+  const [index, setIndex] = useState(0);
+  const handleIndexChange = (newIndex) => setIndex(newIndex);
+  const routes = [
+    { key: 'first', title: 'Pending' },
+    { key: 'second', title: 'Completed' },
+  ];
+
+  const renderTabBar = (props) => {
+    const inputRange = props.navigationState.routes.map((x, i) => i);
+
+    return (
+      <View style={styles.tabBar}>
+        {props.navigationState.routes.map((route, i) => {
+        const isTabActive = i === index;
+        const tabBackgroundColor = isTabActive ? '#F3F3F3' : '#F3F3F3';
+        const textColor = isTabActive ? 'black' : 'grey';
+        const borderWidth = isTabActive ? 2 : 0;
+        const borderColor = isTabActive ? 'blue' : 'grey';
+
+        const tabStyle = [
+          styles.tabItem,
+          { borderRadius:8,borderBottomWidth:borderWidth,borderColor:borderColor },
+        ];
+
+        const textStyles = [
+         
+          { color: textColor,fontWeight:"bold",fontSize:16 },
+        ];
+
+        return (
+          <TouchableOpacity
+          activeOpacity={0.8}
+            key={i}
+            style={tabStyle}
+            onPress={() => setIndex(i)}>
+            <Animated.Text style={[textStyles,{fontSize:20}]}>{route.title}</Animated.Text>
+          </TouchableOpacity>
+        );
+      })}
+      </View>
+    );
+  };
+
+  const renderScene = SceneMap({
+    first: FirstRoute,
+    second: SecondRoute,
+  });
+  return (
+    <View style={styles.container}>
+    <Header/>
+   
+    <TabView
+      navigationState={{ index, routes }}
+      renderScene={renderScene}
+      renderTabBar={renderTabBar}
+      onIndexChange={handleIndexChange}
+    />
+   
+    
+    
     </View>
   )
 }
@@ -28,8 +102,22 @@ export const Orders = () => {
 const styles = StyleSheet.create({
   container:{
     flex: 1,
-    backgroundColor:"#FFF",
+    backgroundColor:"#ffffff",
 
+  },
+  tabBar: {
+    flexDirection: 'row',
+    // paddingTop: StatusBar.currentHeight,
+    padding:10,
+    backgroundColor:"#f1f1f1"
+    
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 10,
+    marginTop:10
+    
   },
   inputContainer: {
     width: '100%',

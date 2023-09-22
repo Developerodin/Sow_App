@@ -14,9 +14,17 @@ export const Login = ({navigation}) => {
   const handleOtpComplete = (otp) => {
     // console.log("OTP entered:", otp);
     setOtp(otp);
-    navigation.navigate('Tabs')
+    
     // You can perform any actions with the completed OTP here
   };
+
+ const handelPreviousUser =()=>{
+  navigation.navigate('OTPVerify')
+ }
+
+ const handelNewUser =()=>{
+  navigation.navigate('FillPersonalDetails')
+ }
 
   const handelMobileNumber=()=>{
     setOTPShow(true);
@@ -47,7 +55,7 @@ export const Login = ({navigation}) => {
 {
   showOTP ?
   <View style={{alignItems:"left",padding:10,justifyContent:"center"}}>
-      <Text style={{fontSize:48,fontWeight:400}}>Enter OTP</Text>
+      <Text style={{fontSize:32,fontWeight:400}}>Enter OTP</Text>
       <Text style={{fontSize:14,fontWeight:400,marginTop:10}}>OTP Sent to +91 902 496 7391</Text>
       <Block style={{flexDirection:"row",alignItems:"center"}}>
       <Text style={{fontSize:16,fontWeight:400,marginTop:10,color:"#00A56A"}}>Change Number</Text>
@@ -67,11 +75,20 @@ export const Login = ({navigation}) => {
         Don’t Receive the OTP ? <Text style={{ color: '#00A56A' }}>Resend OTP</Text>
       </Text>
       </Block>
+      <Block style={[styles.Space_Around]}>
+        <TouchableOpacity onPress={handelPreviousUser}>
+          <Text style={{fontSize:16,fontWeight:400,color:"#00A56A"}}>Previous User</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={handelNewUser}>
+          <Text style={{fontSize:16,fontWeight:400,color:"#00A56A"}}>New User</Text>
+        </TouchableOpacity>
+      </Block>
       </View>
 
     :
     <View style={{alignItems:"left",padding:10,justifyContent:"center"}}>
-      <Text style={{fontSize:48,fontWeight:400}}>Login</Text>
+      <Text style={{fontSize:32,fontWeight:400}}>Login</Text>
       <Block style={{flexDirection:"row",alignItems:"center"}}>
       <Text style={{fontSize:24,fontWeight:400,marginTop:20}}>Enter Mobile No.</Text>
         {/* <Image source={Line1} style={{marginTop:10}} /> */}
@@ -104,7 +121,8 @@ export const Login = ({navigation}) => {
     </View>
 
     <Block style={{marginBottom:30}}>
-       
+    
+
         <Block style={[styles.Center,{marginTop:20}]} >
           {
             showOTP ?
@@ -156,6 +174,7 @@ export const Login = ({navigation}) => {
           }
               
         </Block>
+      
       
     </Block>
     </ScrollView>

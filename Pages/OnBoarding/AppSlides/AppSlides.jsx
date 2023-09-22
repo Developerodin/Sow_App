@@ -1,32 +1,33 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { FlatList, SafeAreaView, StyleSheet, Text, View,Dimensions,TouchableOpacity, Image,Animated } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 const {width, height} = Dimensions.get('window');
 import Asset21 from "../../Images/Onbording.png"
-
+import Onboarding from 'react-native-onboarding-swiper';
+import LottieView from 'lottie-react-native';
 const slides =[
   {
     id:'1',
     image:Asset21,
-    title1:"The Current",
-    title2:"eMobility market",
-    colorTitle:"is highly  fragmented",
+    title1:"Scrap, Craft, ",
+    title2:"",
+    colorTitle:"Adore",
     subtitle:`The EV market is extremely fragmented and challenging for consumers to navigate because it is made up of multiple Charge Point Operators each providing their own charging options,making it tedious for users`
   },
   {
     id:'2',
     image:Asset21,
-    title1:"Need for",
+    title1:"Scrap Treasures ",
     title2:"",
-    colorTitle:"Open Collaboration",
+    colorTitle:"Await!",
     subtitle:`With an increase in charge point operators every year, this fragmentation and complexity will grow deeper! The eMobility market will be more complicated without an open eRoaming network, hence the need for Open Collaboration`
   },
   {
     id:'3',
     image:Asset21,
-    title1:"The Network",
+    title1:"Scrap Collection ",
     title2:"",
-    colorTitle:"Effect",
+    colorTitle:"Bliss",
     subtitle:`With the largest user base of EV owners, InterCharge network will be the easiest approach to grow your business and access new markets.`
   }
 ]
@@ -51,6 +52,7 @@ const Slide = ({item}) => {
   );
 };
 export const AppSlides = ({navigation}) => {
+  
   const scrollX = useRef(new Animated.Value(0)).current;
   const [currentSlideIndex, setCurrentSlideIndex] = React.useState(0);
   const ref = React.useRef();
@@ -76,8 +78,9 @@ export const AppSlides = ({navigation}) => {
     setCurrentSlideIndex(lastSlideIndex);
   };
   const HandelGetStarted=()=>{
-    navigation.replace("Login")
+    navigation.replace("StartScreen")
   }
+
 
   const Footer = () => {
     return (
@@ -164,28 +167,125 @@ export const AppSlides = ({navigation}) => {
     );
   };
 
+  const DoneButton=({...props})=>{
+    return(
+       <TouchableOpacity style={styles.DoneButton} {...props}>
+        <Text style={{fontWeight:"bold"}}>Done</Text>
+       </TouchableOpacity>
+    )
+  }
+
+  const NextButton=({...props})=>{
+    return(
+       <TouchableOpacity style={styles.DoneButton} {...props}>
+        <Text style={{fontWeight:"bold"}}>Next</Text>
+       </TouchableOpacity>
+    )
+  }
+  const Square = ({ isLight, selected }) => {
+    let backgroundColor;
+    if (isLight) {
+      backgroundColor = selected ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.3)';
+    } else {
+      backgroundColor = selected ? '#fff' : 'rgba(255, 255, 255, 0.5)';
+    }
+    return (
+      <View
+        style={{
+          width: 6,
+          height: 6,
+          marginHorizontal: 3,
+          backgroundColor,
+        }}
+      />
+    );
+  };
+  const SkipButton=({...props})=>{
+    return(
+       <TouchableOpacity style={styles.SkipButton} {...props}>
+        <Text style={{fontWeight:"bold"}}>Skip</Text>
+       </TouchableOpacity>
+    )
+  }
+  const animationRef = useRef(null);
+  useEffect(() => {
+    animationRef.current?.play();
+
+    // Or set a specific startFrame and endFrame with:
+    animationRef.current?.play(10, 80);
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
-        <StatusBar style="dark" />
-        <FlatList
-        ref={ref}
-        onMomentumScrollEnd={updateCurrentSlideIndex}
-        contentContainerStyle={{height: height * 0.85}}
-        showsHorizontalScrollIndicator={false}
-        horizontal
-        decelerationRate="fast"
-        keyExtractor={(item)=>item.id}
-        data={slides}
-        pagingEnabled
-        bounces={false}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false }
-        )}
-        scrollEventThrottle={32}
-        renderItem={({item}) => <Slide item={item} />}
-      />
-      <Footer />
+        <StatusBar style="dark" hidden={true} />
+      <Onboarding
+      onDone={HandelGetStarted}
+      onSkip={HandelGetStarted}
+      containerStyles={{paddingHorizontal:15}}
+      bottomBarHighlight={false}
+      DoneButtonComponent={DoneButton}
+      NextButtonComponent={NextButton}
+      SkipButtonComponent={SkipButton}
+      titleStyles={{fontWeight:"bold",color: '#333333' }}
+      subTitleStyles={{color: '#333333' }}
+      // DotComponent={Square}
+  pages={[
+    {
+      backgroundColor: '#a7f3d0',
+      image:(
+        <View>
+           <LottieView
+      ref={animationRef}
+      style={styles.lottie}
+     
+      
+      source={require('../../../assets/Animations/Animation - 1694769143135.json')}
+      autoPlay={true} loop={true}
+    />
+         
+          
+        </View>
+      ),
+      title: 'Scrap Craft Adore',
+      subtitle: 'Done with React Native Onboarding Swiper',
+  
+    },
+    {
+      backgroundColor: '#fef3c7',
+      image:(
+        <View>
+           <LottieView
+         style={styles.lottie}
+         source={require('../../../assets/Animations/Animation - 1694768707423.json')}
+      autoPlay loop
+    />
+         
+          
+        </View>
+      ),
+      title: 'Scrap Treasures Await! ',
+      subtitle: 'Done with React Native Onboarding Swiper',
+      
+    },
+    {
+      backgroundColor: '#FFE5E5',
+      image:(
+        <View>
+           <LottieView
+   source={require('../../../assets/Animations/Animation - 1694769001609.json')}
+      style={styles.lottie}
+     
+      autoPlay loop
+    />
+         
+          
+        </View>
+      ),
+      title: 'Scrap Collection Bliss',
+      subtitle: 'Done with React Native Onboarding Swiper',
+    },
+
+  ]}
+/>
     </SafeAreaView>
   )
 }
@@ -195,6 +295,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor:"#FFF"
   },
+  lottie:{
+  width:width*0.9,
+  height:width
+  },
+  DoneButton:{
+   padding:20,
+   backgroundColor:"white",
+   borderRadius:50,
+   borderTopEndRadius:0,
+   borderBottomEndRadius:0
+  },
+  SkipButton:{
+    padding:20,
+    backgroundColor:"white",
+    borderRadius:50,
+    borderTopStartRadius:0,
+    borderBottomStartRadius:0
+   },
   subtitle: {
     color:"black",
     fontSize: 20,

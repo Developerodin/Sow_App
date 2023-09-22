@@ -3,6 +3,7 @@ import { FlatList, SafeAreaView, StyleSheet,ScrollView,  View,Dimensions,Touchab
 import { StatusBar } from 'expo-status-bar';
 import { Block, Text, Input, theme, Button } from "galio-framework";
 import { Header } from '../../Components/Header/Header';
+import HamburgerMenu from '../../Components/HamburgerMenu/HamburgerMenu ';
 const {width, height} = Dimensions.get('window');
 
 
@@ -11,6 +12,8 @@ export const Home = () => {
     <View style={styles.container}>
 
       <Header/>
+
+      <HamburgerMenu />
     <ScrollView >
 
       <Block style={{backgroundColor:"#F1F1F1",padding:10}}>

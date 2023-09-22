@@ -6,14 +6,19 @@ const {width, height} = Dimensions.get('window');
 import { Entypo } from '@expo/vector-icons'; 
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import Logo from "./Logo_1.png"
+import HamburgerMenu from '../HamburgerMenu/HamburgerMenu ';
+import { useAppContext } from '../../Context/AppContext';
 
 export const Header = () => {
+  const [isMenuVisible, setMenuVisible] = useState(false);
+  const {toggleDrwerMenu,isDrwerMenuVisible, setDrawerMenuVisible} =useAppContext()
+ 
   return (
     <View style={[{marginTop:30,padding:10},styles.container]}>
         <Block  style={styles.Space_Between}>
-          <Block>
-          <Entypo name="menu" size={43} color="black" />
-          </Block>
+        <TouchableOpacity onPress={toggleDrwerMenu}>
+          <Entypo name="menu" size={43} color="black"  />
+          </TouchableOpacity>
           <Block style={{alignItems:"center"}}>
       <Image
     
@@ -25,7 +30,7 @@ export const Header = () => {
           <FontAwesome5 name="bell" size={30} color="black" />
           </Block>
         </Block>
-    
+       
     </View>
   )
 }
@@ -34,7 +39,7 @@ export const Header = () => {
 const styles = StyleSheet.create({
     container:{
       backgroundColor:"#FFFFFF",
-      elevation:2
+      elevation:5
   
     },
     inputContainer: {

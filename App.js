@@ -5,7 +5,7 @@ import { NavigationContainer,useFocusEffect,useNavigation  } from "@react-naviga
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Home } from "./Pages/Home/Home";
@@ -26,6 +26,15 @@ import { RegisterSuccessfull } from './Pages/SignUp/Registration/RegisterSuccess
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Inventory } from './Pages/Inventory/Inventory';
 import { Octicons } from '@expo/vector-icons'; 
+import { OrderDetail } from './Pages/Orders/OrderDetail';
+import { AppProvider } from './Context/AppContext';
+import * as SplashScreen from 'expo-splash-screen';
+import { WelcomeScreen } from './Pages/OnBoarding/SplashScreen/WelcomeScreen';
+import { Schedule } from './Pages/Schedule/Schedule';
+import { AboutCompany } from './Pages/Profile/ProfileTabs/AboutCompany';
+import { TermsCondition } from './Pages/Profile/ProfileTabs/TermsCondition';
+import { UpgradeTo } from './Pages/Profile/ProfileTabs/UpgradeTo';
+import { Address } from './Pages/Profile/ProfileTabs/Address/Address';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -65,17 +74,25 @@ const Tabs = ({navigation}) => {
           ),
           headerShown: false,
         }}
-        // listeners={{
-        //   tabPress: (e) => {
-        //     // e.preventDefault();
-        //     handleTabPress(e,'Home');
-        //   },
-        // }}
+       
      
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            // <FontAwesome name="bookmark" size={size} color={color} />
+            <FontAwesome name="user" size={size} color={color} />
+          ),
+          headerShown: false,
+        }}
+      
+       
       />
 
 <Tab.Screen
-        name="Market"
+        name="Rates"
         component={Market}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -84,15 +101,26 @@ const Tabs = ({navigation}) => {
           ),
           headerShown: false,
         }}
-        // listeners={{
-        //   tabPress: (e) => {
-        //     handleTabPress(e,'Saved');
-        //   },
-        // }}
        
       />
       
 
+
+
+<Tab.Screen
+        name="Schedule"
+        component={Schedule}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            // <FontAwesome name="bookmark" size={size} color={color} />
+            <Feather name="file-text" size={size} color={color} />
+          ),
+          
+          headerShown: false,
+        }}
+      
+       
+      />
 <Tab.Screen
         name="Orders"
         component={Orders}
@@ -103,34 +131,10 @@ const Tabs = ({navigation}) => {
           ),
           headerShown: false,
         }}
-        // listeners={{
-        //   tabPress: (e) => {
-        //     handleTabPress(e,'Saved');
-        //   },
-        // }}
+      
        
       />
-
-<Tab.Screen
-        name="Invoices"
-        component={Invoice }
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            // <FontAwesome name="bookmark" size={size} color={color} />
-            <Feather name="file-text" size={size} color={color} />
-          ),
-          
-          headerShown: false,
-        }}
-        // listeners={{
-        //   tabPress: (e) => {
-        //     handleTabPress(e,'Saved');
-        //   },
-        // }}
-       
-      />
-
-<Tab.Screen
+{/* <Tab.Screen
         name="Inventory"
         component={Inventory}
         options={{
@@ -141,13 +145,9 @@ const Tabs = ({navigation}) => {
           ),
           headerShown: false,
         }}
-        // listeners={{
-        //   tabPress: (e) => {
-        //     handleTabPress(e,'Saved');
-        //   },
-        // }}
        
-      />
+       
+      /> */}
 
 {/* <Tab.Screen
         name="Profile"
@@ -212,22 +212,92 @@ const Tabs = ({navigation}) => {
     
   );
 };
+
 export default function App() {
-  return (
+
+  const [Auth, setAuth]=useState(null);
+  const [isAppFirstLaunched, setIsAppFirstLaunched] =useState(null);
+  const [appIsReady, setAppIsReady] = useState(false);
+
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+ 
+ 
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        // Pre-load fonts, make any API calls you need to do here
+        // await Font.loadAsync(Entypo.font);
+        // Artificially delay for two seconds to simulate a slow loading
+        // experience. Please remove this if you copy and paste the code!
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        await SplashScreen.hideAsync()
+        // Tell the application to render
+        setAppIsReady(true);
+      }
+    }
+
+    prepare();
+  }, []);
+
+  useEffect(()=>{
+    const checkAuthAndFirstLaunch = async () => {
+       try {
+         // Check authentication status
+         const authStatus = await AsyncStorage.getItem('Auth') || null;
+         setAuth(authStatus === 'true');
+ 
+         // Check if app is launched for the first time
+         const appData = await AsyncStorage.getItem('isAppFirstLaunched') || null;
+         if (appData === null) {
+           setIsAppFirstLaunched(true);
+           await AsyncStorage.setItem('isAppFirstLaunched', 'false');
+         } else {
+           setIsAppFirstLaunched(false);
+         }
+       } catch (err) {
+         console.log('Error while checking Auth and First Launch:', err);
+       }
+     };
+ 
+     checkAuthAndFirstLaunch();
+   },[])
    
-<NavigationContainer >
+   if (!appIsReady) {
+    return <WelcomeScreen/>
+  }
+ 
+  return (
+    <AppProvider>
+<NavigationContainer onLayout={onLayoutRootView} >
       {/* {
        isAppFirstLaunched !== null && Auth !== null && */}
          {/* <Stack.Navigator initialRouteName={isAppFirstLaunched ? 'AppSlides' : Auth ? 'Tabs' : 'Login'}> */}
-         <Stack.Navigator initialRouteName={'StartScreen'}>
+         <Stack.Navigator initialRouteName={'AppSlides'}>
         {/* <Stack.Screen name="Home" component={Home}
         options={{
           headerShown: false,
         }}
         /> */}
+           
+
          <Stack.Screen name="StartScreen" component={StartScreen}
           options={{
             headerShown: false,
+          }}
+        />
+
+<Stack.Screen name="Order Details" component={OrderDetail}
+          options={{
+            headerShown: true,
           }}
         />
 
@@ -258,11 +328,11 @@ export default function App() {
             headerShown: false,
           }}
         />
-        {/* <Stack.Screen name="AppSlides" component={AppSlides}
+        <Stack.Screen name="AppSlides" component={AppSlides}
           options={{
             headerShown: false,
           }}
-        /> */}
+        />
         <Stack.Screen
           name="Tabs"
           component={Tabs}
@@ -277,13 +347,27 @@ export default function App() {
         <Stack.Screen name="SignUp" component={SignUp} options={{
             headerShown: false,
           }}/>
+
+<Stack.Screen name="About Company" component={AboutCompany} options={{
+            headerShown: true,
+          }}/>
     
+    <Stack.Screen name="Terms and Condition" component={TermsCondition} options={{
+            headerShown: true,
+          }}/>
+           <Stack.Screen name="Upgrade Profile" component={UpgradeTo} options={{
+            headerShown: true,
+          }}/>
+
+<Stack.Screen name="Address" component={Address} options={{
+            headerShown: true,
+          }}/>
       
       </Stack.Navigator>
       {/* } */}
      
     </NavigationContainer>
-    // </AppProvider>
+   </AppProvider>
   );
 }
 

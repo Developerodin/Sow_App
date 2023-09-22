@@ -10,12 +10,19 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+// import CheckBox from 'react-native-check-box';
+
 export const PersonalDetails = () => {
     const navigation= useNavigation()
     const [showShopDetails,setShowShopDetails]= useState(false);
+    const [isChecked, setIsChecked] = useState(false);
 
+    const toggleCheckbox = () => {
+      setIsChecked(!isChecked);
+    };
     const handelPersonalDetailSubmit=()=>{
-        setShowShopDetails(true);
+        // setShowShopDetails(true);
+        navigation.navigate("Tabs")
     }
 
     const handelShopDetails=()=>{
@@ -40,23 +47,23 @@ export const PersonalDetails = () => {
        
      
          <View style={{alignItems:"left",padding:10,justifyContent:"center"}}>
-         {
+         {/* {
         showShopDetails ?
          <Text style={{fontSize:24,fontWeight:500}}>Enter Shop Details</Text>
-         :
-         <Text style={{fontSize:24,fontWeight:500}}>Enter Personal Details</Text>
-}
+         : */}
+         {/* <Text style={{fontSize:24,fontWeight:500}}>Enter Details</Text> */}
+{/* } */}
         
-        <Block style={[styles.Space_Between,{marginTop:30}]}>
+        {/* <Block style={[styles.Space_Between,{marginTop:30}]}>
             <Text style={{fontSize:14,fontWeight:500}}>Registering As: <Text style={{color:"#EA5932"}}>Scrap Collector</Text> </Text>
             <Text style={{fontSize:14,fontWeight:500,color:"#6096FF"}} >change</Text>
-        </Block>
+        </Block> */}
          
          </View>
    
        </View>
 
-       {
+       {/* {
         showShopDetails ?
         <Block style={{padding:10}}>
           
@@ -101,7 +108,7 @@ export const PersonalDetails = () => {
             </Block>
         </Block>
        </Block>
-        :
+        : */}
         <Block style={{padding:10}}>
           
 
@@ -127,37 +134,36 @@ export const PersonalDetails = () => {
 
         <Block style={{marginTop:40}}>
             <Block style={{flexDirection:"row",alignItems:"center"}}>
-            <FontAwesome name="phone" size={20} style={{marginTop:4}} color="black" />
-            <Text style={{fontSize:20,fontWeight:500,marginLeft:6}}>Enter Contact No.</Text>
+            <MaterialIcons name="location-city" size={20} color="black" />
+            <Text style={{fontSize:20,fontWeight:500,marginLeft:6}}>Enter City</Text>
             </Block>
-            <Block style={[styles.Space_Between,{marginTop:10}]} >
-        <Block  style={{width:"18%",height:66,borderWidth:1,borderColor:"#DCDCDC"}}>
-        <TextInput
-        value='+91'
-          style={styles.input}
-          placeholder="Enter text"
-          // Other TextInput props (e.g., onChangeText) can be added here
-        />
+            <Block>
+                <Input/>
+            </Block>
         </Block>
 
-        <Block style={{width:"76%",height:66,borderWidth:1,borderColor:"#DCDCDC"}}>
-        <TextInput
-        
-          style={styles.input}
-        
-          // Other TextInput props (e.g., onChangeText) can be added here
-        />
-</Block>
+        <Block style={{marginTop:40}}>
+            <View>
+   
+      {/* <CheckBox 
+      
+      onClick={()=>{
+        toggleCheckbox()
+      }}
+      isChecked={isChecked}
+      rightText={"Agree to terms & condition"}
+      /> */}
+    </View>
         </Block>
-        </Block>
+       
        </Block>
-    }
+    {/* } */}
 
       
         
        <Block style={[styles.Center,{marginTop:30}]}>
 
-       {
+       {/* {
             showShopDetails ?
             <TouchableOpacity
                 activeOpacity={0.8}
@@ -181,7 +187,7 @@ export const PersonalDetails = () => {
                 </Text>
                 <Feather name="arrow-right" size={24} color="black" style={{marginLeft:10}} />
               </TouchableOpacity>
-              :
+              : */}
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={[
@@ -200,11 +206,11 @@ export const PersonalDetails = () => {
                     fontSize: 22,
                     color:"black",
                   }}>
-                  Proceed 
+                  Sign Up 
                 </Text>
-                <Feather name="arrow-right" size={24} color="black" style={{marginLeft:10}} />
+                {/* <Feather name="arrow-right" size={24} color="black" style={{marginLeft:10}} /> */}
               </TouchableOpacity>
-          }
+          {/* } */}
        </Block>
       
    

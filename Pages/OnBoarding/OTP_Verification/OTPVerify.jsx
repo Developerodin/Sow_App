@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 export const OTPVerify = () => {
     const navigation= useNavigation()
     const handelProceed=()=>{
-         navigation.navigate("RegisterAs")
+         navigation.replace("Tabs")
     }
   return (
     <View style={styles.container}>

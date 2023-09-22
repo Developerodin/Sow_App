@@ -45,32 +45,10 @@ export const StartScreen = ({navigation}) => {
     </View>
 
     <Block>
-        <Block style={[styles.Center]} >
-        <Button color='black' style={{width:"95%",height:55}} onPress={handelLogin}>Login</Button>
+        <Block style={[styles.Center,{marginTop:60}]} >
+        <Button color='black' style={{width:"95%",height:55}} onPress={handelLogin}>Let's Start</Button>
         </Block>
-        <Block style={[styles.Center,{marginTop:10}]} >
-        <TouchableOpacity
-                activeOpacity={0.8}
-                style={[
-                  styles.btn,
-                  {
-                    borderColor:"black",
-                    borderWidth: 1,
-                    backgroundColor: 'transparent',
-                  },
-                ]}
-                onPress={handelSignUp}
-                >
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: 15,
-                    color:"black",
-                  }}>
-                  Signup
-                </Text>
-              </TouchableOpacity>
-        </Block>
+       
       
     </Block>
    
