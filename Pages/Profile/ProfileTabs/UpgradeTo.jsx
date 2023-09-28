@@ -6,8 +6,13 @@ import { Block, Text, Input, theme, Button } from "galio-framework";
 import { AntDesign } from '@expo/vector-icons';
 const {width, height} = Dimensions.get('window');
 import { MaterialIcons } from '@expo/vector-icons'; 
+import { FontAwesome } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons'; 
 import { Header } from '../../../Components/Header/Header';
+import { ToastAndroid } from 'react-native';
+import axios from 'axios';
+import LottieView from 'lottie-react-native';
+import { useNavigation } from '@react-navigation/native';
 const scrapData = [
   {
     title: 'Plastic',
@@ -70,24 +75,120 @@ const scrapData = [
 
 
 
-
+// 08AAHCT9493J1ZI
 
 
 export const UpgradeTo = () => {
-  
+  const navigation = useNavigation();
+  const animationRef = useRef(null);
  const [showGST,setShowGST] = useState(true)
  const [showBank,setShowBank] = useState(false)
  const [showSuccess,setShowSuccess] = useState(false)
 
  const [GstDone,setGstDone] = useState(false)
  const [BankDone,setBankDone] = useState(false)
+ const [isGstVerify,setIsGstVerify] = useState(false)
+ const [GstformData, setGstFormData] = useState({
+  gstNo:'',
+  companyName: '',
+  companyAddress: '',
+});
+const [BankformData, setBankFormData] = useState({
+  AccNo: '',
+  BankName: '',
+  Ifsc: '',
+  AccHolderName:""
+});
+const [Gstresponse, setGstResponse] = useState(null);
+const handleGstInputChange = (fieldName, value) => {
+
+  setGstFormData((prevData) => ({
+    ...prevData,
+    [fieldName]: value,
+  }));
+};
+
+const handleBankInputChange = (fieldName, value) => {
+  setBankFormData((prevData) => ({
+    ...prevData,
+    [fieldName]: value,
+  }));
+};
+const handleGstSearch = async () => {
+  try {
+    const gstin = GstformData.gstNo; // Replace with the GSTIN you want to search for
+    const url = `https://commonapi.mastersindia.co/commonapis/searchgstin?gstin=${gstin}`;
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer 2ba4cf3655b71cae3c89683236ea0e81f9f31ed0',
+      'client_id': 'umNlnmHOkJCgIfmDde',
+    };
+
+    const axiosConfig = {
+      method: 'get',
+      url: url,
+      headers: headers,
+    };
+
+    const response = await axios(axiosConfig);
+
+    if (response.status === 200) {
+      const GStData = response.data.data
+      const GstAddress = GStData.pradr.addr
+      const Address = `${GstAddress.bno},${GstAddress.bnm},${GstAddress.st},${GstAddress.pncd},${GstAddress.loc} ,${GstAddress.stcd}`
+      // console.log("GSt Data ===>",GStData);
+     
+      setGstResponse(response.data);
+      handleGstInputChange("companyName", GStData.lgnm)
+      handleGstInputChange("companyAddress", Address)
+      setIsGstVerify(true)
+    } else {
+      console.error('API request failed');
+      ToastAndroid.show('No Data Found Check Gst Number Again', ToastAndroid.SHORT);
+    }
+  } catch (error) {
+    console.error('An error occurred:', error);
+    ToastAndroid.show('No Data Found Check Gst Number Again', ToastAndroid.SHORT);
+  }
+};
+
+const VerifyGst =()=>{
+  const GSTNO = GstformData.gstNo
+  if (!GSTNO) {
+    // Display a toast message
+    ToastAndroid.show('Please Provide GST Number', ToastAndroid.SHORT);
+    return;
+  }
+  if (GSTNO.length < 15) {
+    // Display a toast message
+    ToastAndroid.show('Please Provide Valid GST Number', ToastAndroid.SHORT);
+    return;
+  }
+  handleGstSearch()
+}
+
  const handelSubmitGSTData =()=>{
+
+  if (!GstformData.gstNo) {
+    // Display a toast message
+    ToastAndroid.show('All fields are required', ToastAndroid.SHORT);
+    return;
+  }
   setGstDone(true)
   setShowGST(false)
-  setShowBank(true)
+  setShowBank(true);
+  // console.log("Gst Data",GstformData)
+  
  }
 
  const handelSubmitBankData =()=>{
+
+  if (!BankformData.AccNo || !BankformData.BankName || !BankformData.Ifsc || !BankformData.AccHolderName) {
+    // Display a toast message
+    ToastAndroid.show('All fields are required', ToastAndroid.SHORT);
+    return;
+  }
   setBankDone(true)
   setShowBank(false)
   setShowSuccess(true)
@@ -99,13 +200,23 @@ export const UpgradeTo = () => {
   setShowBank(false)
   setBankDone(false)
   setShowSuccess(false)
+
+  navigation.navigate("Home")
+  
  }
+ 
  
 
   useEffect(() => {
     
   }, []);
 
+  useEffect(() => {
+    animationRef.current?.play();
+
+    // Or set a specific startFrame and endFrame with:
+    animationRef.current?.play(10, 80);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -157,9 +268,14 @@ export const UpgradeTo = () => {
           </Block>
 
         <Block style={{padding:5,width:70}}>
-        <Block center style={{borderWidth:1,borderColor: "grey",borderRadius:100,width:30,height:30,flexDirection:"row",justifyContent:"center",alignItems:"center",backgroundColor:"#fff"}}>
+        <Block center style={{borderWidth:1,borderColor: "grey",borderRadius:100,width:30,height:30,flexDirection:"row",justifyContent:"center",alignItems:"center",backgroundColor:`${BankDone ? "lightblue" : "#fff"}`}}>
            
+        {
+             BankDone ? 
+             <Entypo name="check" size={17} color="blue" />
+             :
              <Text style={{fontSize:16,fontWeight:500}}>3</Text>
+           }
           
            
             
@@ -177,41 +293,138 @@ export const UpgradeTo = () => {
       <ScrollView>
      
         {
-          showGST && <Block style={{padding:10}}>
-            <Block style={{marginTop:40}}>
-            <Block style={{flexDirection:"row",alignItems:"center"}}>
-            <MaterialIcons name="location-city" size={20} color="black" />
-            <Text style={{fontSize:20,fontWeight:500,marginLeft:6}}>Enter GST No.</Text>
+          showGST &&  <Block style={{ padding: 10 }}>
+          <Block style={{ marginTop: 20 }}>
+            <Block style={{ flexDirection: "row", alignItems: "center" }}>
+              <MaterialIcons name="location-city" size={20} color="black" />
+              <Text style={{ fontSize: 20, fontWeight: 500, marginLeft: 6 }}>GST No.</Text>
             </Block>
             <Block>
-                <Input/>
+              <Input
+                value={GstformData.gstNo}
+                onChangeText={(text) => handleGstInputChange("gstNo", text)}
+              />
+            </Block>
+          </Block>
+    
+          {
+            isGstVerify && <Block>
+                     <Block style={{ marginTop: 20 }}>
+            <Block style={{ flexDirection: "row", alignItems: "center" }}>
+              <MaterialIcons name="location-city" size={20} color="black" />
+              <Text style={{ fontSize: 20, fontWeight: 500, marginLeft: 6 }}>Company Name</Text>
+            </Block>
+            <Block>
+              <Input
+                value={GstformData.companyName}
+                onChangeText={(text) => handleGstInputChange("companyName", text)}
+              />
+            </Block>
+          </Block>
+    
+          <Block style={{ marginTop: 20 }}>
+            <Block style={{ flexDirection: "row", alignItems: "center" }}>
+              <MaterialIcons name="location-city" size={20} color="black" />
+              <Text style={{ fontSize: 20, fontWeight: 500, marginLeft: 6 }}>Company Address</Text>
+            </Block>
+            <Block>
+              <Input
+                value={GstformData.companyAddress}
+                onChangeText={(text) => handleGstInputChange("companyAddress", text)}
+              />
+            </Block>
+          </Block>
+              </Block>
+          }
+         
+        </Block>
+        }
+
+        {
+          showBank && <Block style={{padding:10}}>
+               <Block style={{marginTop:40}}>
+            <Block style={{flexDirection:"row",alignItems:"center"}}>
+            <FontAwesome name="bank" size={16} color="black" />
+            <Text style={{fontSize:20,fontWeight:500,marginLeft:6}}>Account Number</Text>
+            </Block>
+            <Block>
+                <Input
+                 value={BankformData.AccNo}
+                 onChangeText={(text) => handleBankInputChange("AccNo", text)}
+                />
+            </Block>
+        </Block>
+
+        <Block style={{marginTop:20}}>
+            <Block style={{flexDirection:"row",alignItems:"center"}}>
+            <FontAwesome name="bank" size={16} color="black" />
+            <Text style={{fontSize:20,fontWeight:500,marginLeft:6}}>Bank Name</Text>
+            </Block>
+            <Block>
+            <Input
+                 value={BankformData.BankName}
+                 onChangeText={(text) => handleBankInputChange("BankName", text)}
+                />
+            </Block>
+        </Block>
+
+
+        <Block style={{marginTop:20}}>
+            <Block style={{flexDirection:"row",alignItems:"center"}}>
+            <FontAwesome name="bank" size={16} color="black" />
+            <Text style={{fontSize:20,fontWeight:500,marginLeft:6}}>IFSC Code</Text>
+            </Block>
+            <Block>
+            <Input
+                 value={BankformData.Ifsc}
+                 onChangeText={(text) => handleBankInputChange("Ifsc", text)}
+                />
+            </Block>
+        </Block>
+
+        <Block style={{marginTop:20}}>
+            <Block style={{flexDirection:"row",alignItems:"center"}}>
+            <FontAwesome name="bank" size={16} color="black" />
+            <Text style={{fontSize:20,fontWeight:500,marginLeft:6}}>Account Holder Name</Text>
+            </Block>
+            <Block>
+            <Input
+                 value={BankformData.AccHolderName}
+                 onChangeText={(text) => handleBankInputChange("AccHolderName", text)}
+                />
             </Block>
         </Block>
           </Block>
         }
 
         {
-          showBank && <Block style={{padding:10}}>
-           <Text>Bank</Text>
-          </Block>
-        }
-
-        {
-          showSuccess && <Block style={{padding:10}}>
-           <Text>Success</Text>
+          showSuccess && <Block style={{padding:10,marginBottom:100}}>
+           <Block style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
+  <LottieView
+      ref={animationRef}
+      style={styles.lottie}
+     
+      
+      source={require('../../../assets/Animations/Animation - 1695899165253.json')}
+      autoPlay={true} loop={true}
+    />
+  </Block>
           </Block>
         }
         
-
-      </ScrollView>
-
-      <Block style={[styles.footer,styles.Center]}>
-        {
-          showGST && 
-          <Button onPress={handelSubmitGSTData} color='black'>
-              SUBMIT GST DATA
-              </Button>
-        }
+        <Block style={[styles.Center]}>
+          {
+           (showGST && isGstVerify) &&  <Button onPress={handelSubmitGSTData} color='black'>
+           SUBMIT GST DATA
+           </Button> 
+           
+          }
+          {
+           (showGST && !isGstVerify) &&
+            <Button onPress={VerifyGst} color='black'>
+            Verify Gst
+            </Button>
+          }
 
 {
           showBank && 
@@ -223,10 +436,14 @@ export const UpgradeTo = () => {
 {
           showSuccess && 
           <Button onPress={handelSuccess} color='black'>
-               HOME
+               Done
               </Button>
         }
       </Block>
+
+      </ScrollView>
+
+     
 
     </View>
   )
@@ -238,6 +455,10 @@ const styles = StyleSheet.create({
     backgroundColor:"#FFF",
 
   },
+  lottie:{
+    width:350,
+    height:350
+    },
   footer:{
     position: 'absolute',
      left: 0, 

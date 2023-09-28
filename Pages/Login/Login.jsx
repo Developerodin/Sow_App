@@ -8,9 +8,22 @@ import Img from "../Images/Onbording.png"
 import Logo from "../Images/Logo_1.png"
 import { Feather } from '@expo/vector-icons';
 import { OTPInput } from '../../Components/Otp/OtpInputs';
+import { ToastAndroid } from 'react-native';
 export const Login = ({navigation}) => {
+  const [formData, setFormData] = useState({
+    phoneNumber: '',
+  });
   const [showOTP,setOTPShow]=useState(false)
   const [otp, setOtp] = useState("");
+
+  const handleInputChange = (fieldName, value) => {
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [fieldName]: value,
+    }));
+  };
+
   const handleOtpFill = (otp) => {
     console.log("OTP entered:", otp);
     setOtp(otp);
@@ -36,6 +49,10 @@ export const Login = ({navigation}) => {
  }
 
   const handelMobileNumber=()=>{
+    if(!formData.phoneNumber){
+      ToastAndroid.show('Please Provide Mobile Number', ToastAndroid.SHORT);
+    return;
+    }
     setOTPShow(true);
   }
 
@@ -85,7 +102,7 @@ export const Login = ({navigation}) => {
         Don’t Receive the OTP ? <Text style={{ color: '#00A56A' }}>Resend OTP</Text>
       </Text>
       </Block>
-      <Block style={[styles.Space_Around]}>
+      {/* <Block style={[styles.Space_Around]}>
         <TouchableOpacity onPress={handelPreviousUser}>
           <Text style={{fontSize:14,fontWeight:400,color:"#00A56A"}}>Previous User</Text>
         </TouchableOpacity>
@@ -93,7 +110,7 @@ export const Login = ({navigation}) => {
         <TouchableOpacity onPress={handelNewUser}>
           <Text style={{fontSize:14,fontWeight:400,color:"#00A56A"}}>New User</Text>
         </TouchableOpacity>
-      </Block>
+      </Block> */}
       </View>
 
     :
@@ -105,12 +122,15 @@ export const Login = ({navigation}) => {
         <Block style={{width:width*0.15}}>
         <Input 
          value='+91'
-         
+      
         />
         </Block>
 
         <Block style={{width:width*0.7,marginLeft:10}}>
-        <Input />
+        <Input 
+         value={formData.phoneNumber}
+         onChangeText={(text) => handleInputChange("phoneNumber", text)}
+        />
         </Block>
         </Block>
       
