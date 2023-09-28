@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { FlatList, SafeAreaView, StyleSheet,ScrollView,  View,Dimensions,TouchableOpacity, Image,Animated, TextInput } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet,ScrollView,  View,Dimensions,TouchableOpacity, Image,Animated, TextInput, KeyboardAvoidingView } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import { Block, Text, Input, theme, Button } from "galio-framework";
 const {width, height} = Dimensions.get('window');
@@ -11,15 +11,24 @@ import { OTPInput } from '../../Components/Otp/OtpInputs';
 export const Login = ({navigation}) => {
   const [showOTP,setOTPShow]=useState(false)
   const [otp, setOtp] = useState("");
-  const handleOtpComplete = (otp) => {
-    // console.log("OTP entered:", otp);
+  const handleOtpFill = (otp) => {
+    console.log("OTP entered:", otp);
     setOtp(otp);
     
     // You can perform any actions with the completed OTP here
   };
 
+  const handelOtpComplete =()=>{
+    if(otp === "1234"){
+      handelPreviousUser()
+    }
+    else{
+      handelNewUser()
+    }
+  }
+
  const handelPreviousUser =()=>{
-  navigation.navigate('OTPVerify')
+  navigation.navigate('Tabs')
  }
 
  const handelNewUser =()=>{
@@ -35,108 +44,102 @@ export const Login = ({navigation}) => {
       <View style={styles.container}>
  <StatusBar style="dark" />
      <ScrollView>
-   
-    <View style={{alignItems:"left",marginTop:30,width:width}}>
-      
-    <View style={{alignItems:"center",height:130}}>
+     
+    <View style={{alignItems:"left",marginTop:40,width:width}}>
+    
+      <View style={{alignItems:"center"}}>
+      <Image
+        source={Img}
+        style={{resizeMode: 'contain',width:250,height:250}}
+      />
+      </View>
+      <View style={{alignItems:"center",marginTop:10}}>
       <Image
         source={Logo}
-        style={{resizeMode: 'contain'}}
+        style={{resizeMode: 'contain',width:260,height:91}}
       />
       </View>
       
 
-      <View style={{alignItems:"center"}}>
-      <Image
-        source={Img}
-        style={{resizeMode: 'contain'}}
-      />
-      </View>
+     
 {
   showOTP ?
-  <View style={{alignItems:"left",padding:10,justifyContent:"center"}}>
-      <Text style={{fontSize:32,fontWeight:400}}>Enter OTP</Text>
+  <View style={{alignItems:"left",padding:10,justifyContent:"center",marginTop:40}}>
+      <Text style={{fontSize:22,fontWeight:400}}>Enter OTP</Text>
       <Text style={{fontSize:14,fontWeight:400,marginTop:10}}>OTP Sent to +91 902 496 7391</Text>
       <Block style={{flexDirection:"row",alignItems:"center"}}>
-      <Text style={{fontSize:16,fontWeight:400,marginTop:10,color:"#00A56A"}}>Change Number</Text>
+      <Text style={{fontSize:14,fontWeight:400,marginTop:10,color:"#00A56A"}}>Change Number</Text>
         {/* <Image source={Line1} style={{marginTop:10}} /> */}
 
         
       </Block>
       <Block style={[styles.Space_Between,{width:"95%",marginTop:20}]} >
         <Block  style={{flex:1}}>
-        <OTPInput length={4} onComplete={handleOtpComplete} />
+        <OTPInput length={4} onComplete={handleOtpFill} />
         </Block>
       
         </Block>
       
       <Block>
-      <Text style={{ fontSize: 16, fontWeight: '400', marginTop: 30, color: '#BDBDBD' }}>
+      <Text style={{ fontSize: 14, fontWeight: '400', marginTop: 30, color: '#BDBDBD' }}>
         Don’t Receive the OTP ? <Text style={{ color: '#00A56A' }}>Resend OTP</Text>
       </Text>
       </Block>
       <Block style={[styles.Space_Around]}>
         <TouchableOpacity onPress={handelPreviousUser}>
-          <Text style={{fontSize:16,fontWeight:400,color:"#00A56A"}}>Previous User</Text>
+          <Text style={{fontSize:14,fontWeight:400,color:"#00A56A"}}>Previous User</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={handelNewUser}>
-          <Text style={{fontSize:16,fontWeight:400,color:"#00A56A"}}>New User</Text>
+          <Text style={{fontSize:14,fontWeight:400,color:"#00A56A"}}>New User</Text>
         </TouchableOpacity>
       </Block>
       </View>
 
     :
-    <View style={{alignItems:"left",padding:10,justifyContent:"center"}}>
-      <Text style={{fontSize:32,fontWeight:400}}>Login</Text>
-      <Block style={{flexDirection:"row",alignItems:"center"}}>
-      <Text style={{fontSize:24,fontWeight:400,marginTop:20}}>Enter Mobile No.</Text>
-        {/* <Image source={Line1} style={{marginTop:10}} /> */}
-
-        
-      </Block>
+    
+         <View style={{alignItems:"left",padding:10,justifyContent:"center",marginTop:100}}>
+      <Text style={{fontSize:22,fontWeight:400}}>Login</Text>
+      
       <Block style={[styles.Space_Between,{width:"95%",marginTop:20}]} >
-        <Block  style={{width:"18%",height:66,borderWidth:1}}>
-        <TextInput
-        value='+91'
-          style={styles.input}
-          placeholder="Enter text"
-          // Other TextInput props (e.g., onChangeText) can be added here
+        <Block style={{width:width*0.15}}>
+        <Input 
+         value='+91'
+         
         />
         </Block>
 
-        <Block style={{width:"76%",height:66,borderWidth:1}}>
-        <TextInput
-        
-          style={styles.input}
-        
-          // Other TextInput props (e.g., onChangeText) can be added here
-        />
-</Block>
+        <Block style={{width:width*0.7,marginLeft:10}}>
+        <Input />
+        </Block>
         </Block>
       
       </View>
+   
+    
 }
-      
+
     </View>
 
-    <Block style={{marginBottom:30}}>
+    
+    <Block style={{marginBottom:20,marginTop:20}}>
     
 
         <Block style={[styles.Center,{marginTop:20}]} >
           {
             showOTP ?
             <TouchableOpacity
-                activeOpacity={0.8}
+                activeOpacity={0.9}
                 style={[
                   styles.btn,
                   {
                     flexDirection:"row",
                     backgroundColor: '#96DE20',
-                    textAlign:"center"
+                    textAlign:"center",
+                    borderRadius:30
                   },
                 ]}
-                onPress={handleOtpComplete}
+                onPress={handelOtpComplete}
                 >
                 <Text
                   style={{
@@ -156,7 +159,8 @@ export const Login = ({navigation}) => {
                   {
                     flexDirection:"row",
                     backgroundColor: '#96DE20',
-                    textAlign:"center"
+                    textAlign:"center",
+                    borderRadius:30
                   },
                 ]}
                 onPress={handelMobileNumber}
@@ -177,6 +181,7 @@ export const Login = ({navigation}) => {
       
       
     </Block>
+    
     </ScrollView>
     </View>
 

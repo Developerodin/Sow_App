@@ -79,6 +79,7 @@ export const Market = () => {
   const [data, setData] = useState(scrapData);
   const [filteredData, setFilteredData] = useState(data);
   const [Categories,setCategories] = useState([])
+  const [activeCategory, setActiveCategory] = useState("All");
   const filterItems = ( category) => {
     let filteredItems = data;
 
@@ -87,6 +88,7 @@ export const Market = () => {
     }
 
     setFilteredData(filteredItems);
+    setActiveCategory(category);
   };
 
   
@@ -105,13 +107,13 @@ export const Market = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar  style="dark"/>
     <Header/>
-    <ScrollView style={{backgroundColor:"#F1F1F1"}}>
-    <Block style={{backgroundColor:"#F1F1F1",padding:10,marginBottom:60}}>
+    
    
    
      
-<Block style={{marginTop:20}}>
+<Block style={{marginTop:20,padding:10}}>
 <Input
           placeholder="Search for an item..."
           right
@@ -124,28 +126,43 @@ export const Market = () => {
         />
    
    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      <TouchableOpacity activeOpacity={0.9} onPress={() => filterItems("All")}>
-        <View style={{ width: 100, margin: 10, padding: 10, borderRadius: 10, backgroundColor: "#fff", elevation: 1 }}>
-          <Text center style={{ fontWeight: 500, color: "crimson" }}>All</Text>
-        </View>
-      </TouchableOpacity>
+       <TouchableOpacity
+         
+          activeOpacity={0.9}
+          onPress={() => filterItems("All")}
+          style={{
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+            borderBottomWidth: activeCategory === "All" ? 2 : 0,
+            borderBottomColor: activeCategory === "All" ? 'blue' : 'transparent',
+          }}>
+          <Text style={{ fontWeight: '500', color: 'black' }}>All</Text>
+        </TouchableOpacity>
 
       {Categories.map((el, index) => {
         return (
-          <TouchableOpacity key={index} activeOpacity={0.9} onPress={() => filterItems(el)}>
-            <View style={{ width: 100, margin: 10, padding: 10, borderRadius: 10, backgroundColor: "#fff", elevation: 1 }}>
-              <Text center style={{ fontWeight: 500, color: "crimson" }}>{el}</Text>
-            </View>
-          </TouchableOpacity>
+          <TouchableOpacity
+          key={index}
+          activeOpacity={0.9}
+          onPress={() => filterItems(el)}
+          style={{
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+            borderBottomWidth: activeCategory === el ? 2 : 0,
+            borderBottomColor: activeCategory === el ? 'blue' : 'transparent',
+          }}>
+          <Text style={{ fontWeight: '500', color: 'black' }}>{el}</Text>
+        </TouchableOpacity>
         );
       })}
     </ScrollView>
-  <Text center style={{fontSize:32,fontWeight:500,marginTop:20}}>Check Rates</Text>
+  
   
 </Block>
 
- 
-
+<ScrollView style={{backgroundColor:"#F1F1F1"}}>
+    <Block style={{backgroundColor:"#F1F1F1",padding:10,marginBottom:60}}>
+    <Text center style={{fontSize:32,fontWeight:500,marginTop:20}}>Check Rates</Text>
 <Block style={{marginTop:20}}>
   <Text style={{fontWeight:500}}>Normal Recyclables</Text>
 </Block>

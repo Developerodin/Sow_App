@@ -93,7 +93,7 @@ export const Profile = () => {
     <View style={styles.container}>
     {/* <Header/> */}
     <StatusBar  style="dark"/>
-    <ScrollView style={{padding:10,marginBottom:60}}>
+    <ScrollView style={{padding:10,marginBottom:70}}>
      <Block style={{marginTop:100,backgroundColor:"#FFF"}}>
     
         <Block>
@@ -126,7 +126,24 @@ export const Profile = () => {
         </Block>
 
 
-        <Block>
+        <Block style={{marginTop:20,borderWidth:1,borderColor:"#DCDCDC",padding:15,backgroundColor:"#96DE20",paddingBottom:20,borderRadius:7,elevation:2}}>
+
+<Block>
+  <Block>
+    <Text style={{fontSize:16}}>Total Money Earned</Text>
+  </Block>
+<Block style={[styles.Space_Between,{marginTop:10}]}>
+  <Block>
+  <Text style={{fontSize:30,fontWeight:700}}>₹ 56,569</Text>
+  </Block>
+ 
+</Block>
+
+</Block>
+
+</Block>
+
+        <Block style={{marginTop:10}}>
           {
             ProfileTabs.map((el,index)=>{
               return (
@@ -137,8 +154,11 @@ export const Profile = () => {
 
 <ProfileCard  Title={"Share App"} Img={<Entypo name="share" size={24} color="#ff5b71" />}  Fun={handleShare}/>
 <ProfileCard  Title={"Rate the app"} Img={<AntDesign name="star" size={24} color="orange" /> } Fun={handelRateAppliction}/>
-<ProfileCard  Title={"Delete account"} Img={<AntDesign name="delete" size={24} color="crimson" /> } Fun={handelDeleteAccount}/>       
-<ProfileCard  Title={"Logout"} Img={<AntDesign name="logout" size={24} color="#ff9238" /> } Fun={handelLogout}/>    
+<ProfileCard  Title={"Delete account"} Img={<AntDesign name="delete" size={24} color="crimson" /> } Fun={handelDeleteAccount}/>
+<Block style={{marginBottom:10}}>
+<ProfileCard  Title={"Logout"} Img={<AntDesign name="logout" size={24} color="#ff9238" /> } Fun={handelLogout}/> 
+  </Block>       
+   
        
         </Block>
        

@@ -56,7 +56,7 @@ export const Orders = () => {
 
         const tabStyle = [
           styles.tabItem,
-          { borderRadius:8,borderBottomWidth:borderWidth,borderColor:borderColor },
+          { borderRadius:0,borderBottomWidth:borderWidth,borderColor:borderColor },
         ];
 
         const textStyles = [

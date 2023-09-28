@@ -26,6 +26,7 @@ export const Schedule = () => {
     const [showTimePicker, setShowTimePicker] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [Address,setAddress] = useState(null);
+    const [selectedWeight,setselectedWeight] = useState("");
     const toggleAccordion = () => {
         setExpanded(!expanded);
       };
@@ -78,6 +79,11 @@ export const Schedule = () => {
          navigation.navigate("Address")
       }
 
+      const handelWeight = (data)=>{
+        setselectedWeight(data)
+        toggleAccordion()
+      }
+
       useEffect(()=>{
         retrieveAddress();
       },[update])
@@ -114,18 +120,34 @@ export const Schedule = () => {
       </TouchableOpacity>
       {expanded && (
         <View style={{marginTop:20}}>
+          
+          <Block style={[styles.Space_Between,{marginTop:20}]}>
+          <TouchableOpacity activeOpacity={0.6} onPress={()=>handelWeight("Less Than 20 kg")}>
+            <Text style={{fontSize:20}}>Less Than 20 kg</Text>
+            </TouchableOpacity>
+        
+            <TouchableOpacity activeOpacity={0.6} onPress={()=>handelWeight("20-50 kg")}>
+            <Text style={{fontSize:20}}>20-50 Kg</Text>
+            </TouchableOpacity>
+            </Block>
+       
+            
+
             <Block style={[styles.Space_Between,{marginTop:20}]}>
-            <Text style={{fontSize:20}}>Less Than 20kg</Text>
-          <Text style={{fontSize:20,marginTop:10}}>20-50kg</Text>
+            <TouchableOpacity activeOpacity={0.6} onPress={()=>handelWeight("50-100 kg")}>
+            <Text style={{fontSize:20}}>50-100 Kg</Text>
+            </TouchableOpacity>
+         
+          <TouchableOpacity activeOpacity={0.6} onPress={()=>handelWeight("100-700 kg")}>
+            <Text style={{fontSize:20}}>100-700 kg</Text>
+            </TouchableOpacity>
             </Block>
 
             <Block style={[styles.Space_Between,{marginTop:20}]}>
-            <Text style={{fontSize:20}}>50-100kg</Text>
-          <Text style={{fontSize:20,marginTop:10}}>100-700kg</Text>
-            </Block>
-
-            <Block style={[styles.Space_Between,{marginTop:20}]}>
-            <Text left style={{fontSize:20}}>More Than 700kg</Text>
+           
+            <TouchableOpacity activeOpacity={0.6} onPress={()=>handelWeight("More Than 700 kg")}>
+            <Text style={{fontSize:20}}>More Than 700 kg</Text>
+            </TouchableOpacity>
        
             </Block>
          
@@ -247,7 +269,7 @@ export const Schedule = () => {
         <View style={{marginTop:20}}>
 
           <Block right>
-            <Button onPress={handelAddNewAddress}>Add New</Button>
+            <Button color='black' onPress={handelAddNewAddress}>Add New</Button>
           </Block>
           {
            Address !== null &&
@@ -279,7 +301,7 @@ export const Schedule = () => {
           <Text style={{fontSize:16,color:"grey"}}>Please Fill All The Required Details To Schedule Pickup</Text>
           </Block>
 
-          <Block  style={{marginTop:30}}>
+          <Block  style={{marginTop:30,marginBottom:160}}>
            <Button color='black' style={{width:"95%",height:55}}>Schedule Pickup</Button>
            </Block>
 

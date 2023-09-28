@@ -1,94 +1,207 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FlatList, SafeAreaView, StyleSheet,ScrollView,  View,Dimensions,TouchableOpacity, Image,Animated, TextInput } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import { Block, Text, Input, theme, Button } from "galio-framework";
 import { Header } from '../../Components/Header/Header';
 import HamburgerMenu from '../../Components/HamburgerMenu/HamburgerMenu ';
 const {width, height} = Dimensions.get('window');
-
+import LottieView from 'lottie-react-native';
 
 export const Home = () => {
+  const animationRef = useRef(null);
+
+  useEffect(() => {
+    animationRef.current?.play();
+
+    // Or set a specific startFrame and endFrame with:
+    animationRef.current?.play(10, 80);
+  }, []);
   return (
     <View style={styles.container}>
 
       <Header/>
-
-      <HamburgerMenu />
     <ScrollView >
 
-      <Block style={{backgroundColor:"#F1F1F1",padding:10}}>
+      <Block style={{backgroundColor:"#FFF",padding:10}}>
 
      
-      <Block style={{marginTop:30}}>
-        <Text style={{fontSize:32,fontWeight:500}}>Hey Vinod!!</Text>
-        <Text style={{fontSize:20,fontWeight:400,color:"#797979"}}>Glad to see you Back</Text>
-      </Block>
+      <Block style={{marginTop:20}}>
+        <Text style={{fontSize:25,fontWeight:500,color:"#4b4b4b"}}>Hey Vinod !!</Text>
 
-      <Block style={{marginTop:20,borderWidth:1,borderColor:"#DCDCDC",padding:10,backgroundColor:"#FFFFFF"}}>
-
-        <Block>
-        <Block style={styles.Space_Between}>
-          <Text style={{fontSize:20,fontWeight:400,color:"#767676"}}>My Collection</Text>
-          <Text style={{fontSize:18,fontWeight:400,color:"#00BC84"}}>+ ₹ 40,000</Text>
-        </Block>
-
-        <Block style={[styles.Space_Between,{marginTop:30,marginBottom:20}]}>
-          <Block style={{padding:5,backgroundColor:"#F2FFF9",width:160}}>
-            <Text style={{fontSize:14,fontWeight:400,color:"#00BC84"}}>In</Text>
-            <Text style={{fontSize:24,fontWeight:400,color:"#00BC84"}}>₹ 45,000</Text>
+        <Block style={[{marginTop:10},styles.Space_Between]}>
+          <Block>
+          <Text style={{fontSize:14,color:"#797979",letterSpacing:1}}>Let’s Save Environment &</Text>
+          <Text style={{fontSize:14,color:"#797979",letterSpacing:1,marginTop:5}}>Make Some Money</Text>
           </Block>
-          <Block style={{padding:5,backgroundColor:"#FFF2F2",width:160}}>
-            <Text style={{fontSize:14,fontWeight:400,color:"#BC0000"}}>Out</Text>
-            <Text style={{fontSize:24,fontWeight:400,color:"#BC0000"}}>₹ 5,000</Text>
+
+          <Block>
+          <Button color='white' style={{borderWidth:1,width:120}}>
+              <Text style={{fontSize:16,fontWeight:400}}>
+              Sell Scraps
+              </Text>
+            
+              </Button>
           </Block>
-        </Block>
         </Block>
        
       </Block>
 
+      <Block style={{marginTop:20,borderWidth:1,borderColor:"#DCDCDC",padding:10,backgroundColor:"#96DE20",paddingBottom:20,borderRadius:7,elevation:2}}>
 
-      <Block style={{marginTop:30}}>
-        <Text style={{fontSize:20,fontWeight:400,color:"#767676"}}>Quick Actions</Text>
-
-        <Block style={[styles.Space_Between,{marginTop:10}]}>
-          
-            <Button color='black'>+Create Invoice</Button>
-         
-
-         
-            <Button color='white' style={{borderWidth:1}}>
+<Block>
+  <Block>
+    <Text style={{fontSize:16}}>We Buy</Text>
+  </Block>
+<Block style={[styles.Space_Between,{marginTop:-10}]}>
+  <Block>
+  <Text style={{fontSize:30,fontWeight:700}}>Over 10 +</Text>
+  </Block>
+ 
+  <Block>
+          <Button color='white' style={{width:120}}>
               <Text style={{fontSize:16,fontWeight:400}}>
-              Manage Inventory
+              Sell Scraps
               </Text>
             
               </Button>
-         
+          </Block>
+</Block>
+
+<Block>
+  <Text style={{fontSize:16}}>Types of Scrap</Text>
+</Block>
+</Block>
+
+</Block>
+
+
+
+
+<Block style={{marginTop:30}}>
+        <Text style={{fontSize:16,fontWeight:500}}>Latest from Us</Text>
+        
+        <Block style={{marginTop:20,flexDirection:"row",justifyContent:"center",alignItem:"center"}}>
+  <Image style={{width:"100%",height:200}} 
+  source={{ uri: "https://img.freepik.com/premium-vector/mega-sale-discount-banner-set-promotion-with-yellow-background_497837-702.jpg" }} />
+</Block>
+      </Block>
+
+
+      <Block style={{marginTop:30}}>
+
+        <Block style={styles.Space_Between}>
+        <Text style={{fontSize:16,fontWeight:500}}>Scrap Categories</Text>
+        <Text style={{fontSize:12,fontWeight:500,color:"#00a56a"}}>View All</Text>
+        </Block>
+     
+        
+        <Block style={{marginTop:10}}>
+        <View style={styles.row}>
+        <View style={styles.column}>
+          <Block style={styles.gridItem}>
+            <Text style={styles.itemText}>Metal</Text>
+            
+            </Block>
+        </View>
+        <View style={styles.column}>
+          <Block style={styles.gridItem}>
+          <Text style={styles.itemText}>Metal</Text>
+            </Block>
+        </View>
+      </View>
+      <View style={styles.row}>
+        <View style={styles.column}>
+          <Block style={styles.gridItem}>
+          <Text style={styles.itemText}>Metal</Text>
+            </Block>
+        </View>
+        <View style={styles.column}>
+          <Block style={styles.gridItem}>
+          <Text style={styles.itemText}>Metal</Text>
+            </Block>
+        </View>
+      </View>
+
+      <View style={styles.row}>
+        <View style={styles.column}>
+          <Block style={styles.gridItem}>
+          <Text style={styles.itemText}>Metal</Text>
+            </Block>
+        </View>
+        <View style={styles.column}>
+          <Block style={styles.gridItem}>
+          <Text style={styles.itemText}>Metal</Text>
+            </Block>
+        </View>
+      </View>
+
         </Block>
       </Block>
 
-         
-      <Block style={{marginBottom:60,marginTop:20,borderWidth:1,borderColor:"#DCDCDC",padding:10,backgroundColor:"#FFFFFF"}}>
+
+      <Block style={{marginTop:20,borderWidth:1,borderColor:"#DCDCDC",padding:10,backgroundColor:"#3333ef",paddingBottom:20,borderRadius:7,elevation:2}}>
 
 <Block>
-<Block >
-  <Text style={{fontSize:20,fontWeight:400,color:"#767676"}}>Pick-ups for Today</Text>
-  <Text style={{fontSize:36,fontWeight:500}}>345</Text>
-</Block>
-
-<Block style={[styles.Space_Between,{marginTop:30,marginBottom:20}]}>
-  <Block >
-    <Text style={{fontSize:20,fontWeight:400,color:"#767676"}}><Text style={{color:"#00BC84"}}>0</Text> Completed</Text>
-    <Text style={{fontSize:20,fontWeight:400,color:"#767676",marginTop:10}}><Text style={{color:"#FF1010"}}>345</Text> Remaining</Text>
+  <Block>
+    <Text style={{fontSize:16,color:"#fff"}}>We Give</Text>
   </Block>
-  <Block >
-  <Button color='white' style={{borderWidth:1}}>
+<Block style={[styles.Space_Between,{marginTop:-10}]}>
+  <Block>
+  <Text style={{fontSize:30,fontWeight:700,color:"#fff"}}>Max Price</Text>
+  </Block>
+ 
+  <Block>
+          <Button color='white' style={{width:120}}>
               <Text style={{fontSize:16,fontWeight:400}}>
-              View All
+              Sell Scraps
               </Text>
             
               </Button>
-  </Block>
+          </Block>
 </Block>
+
+<Block>
+  <Text style={{fontSize:16,color:"#fff"}}>For Your Scrap</Text>
+</Block>
+</Block>
+
+</Block>
+
+
+
+      
+
+         
+      <Block style={{marginBottom:60,marginTop:30,borderWidth:2,padding:20,backgroundColor:"#FFFFFF",paddingBottom:60,borderRadius:10}}>
+
+<Block style={styles.Space_Between}>
+  <Block style={{height:200}}>
+    <Text style={{fontSize:30,fontWeight:500}}>Trash</Text>
+    <Text style={{fontSize:30,fontWeight:500,color:"grey"}}>ko kro</Text>
+    <Text style={{fontSize:30,fontWeight:500}}>Cash</Text>
+    <Block style={{marginTop:10}}>
+          <Button color='white' style={{borderWidth:1,height:80,borderBottomWidth:5,marginLeft:-3}}>
+              <Text style={{fontSize:18,fontWeight:400}}>
+                 Within
+              </Text>
+              <Text style={{fontSize:20,fontWeight:500,}}>
+                 24 Hours
+              </Text>
+            
+              </Button>
+          </Block>
+  </Block>
+
+  <Block style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
+  <LottieView
+      ref={animationRef}
+      style={styles.lottie}
+     
+      
+      source={require('../../assets/Animations/Animation - 1695806708311.json')}
+      autoPlay={true} loop={true}
+    />
+  </Block>
 </Block>
 
        </Block>
@@ -106,9 +219,14 @@ export const Home = () => {
 const styles = StyleSheet.create({
   container:{
     flex: 1,
-    backgroundColor:"#FFF",
+    backgroundColor:"#FFFFFF",
+    borderWidth:1
 
   },
+  lottie:{
+    width:150,
+    height:150
+    },
   inputContainer: {
     width: '100%',
     height: 66,
@@ -187,5 +305,29 @@ const styles = StyleSheet.create({
     button: {
       width: width,
     },
-
+    row: {
+      flexDirection: 'row',
+      marginTop:10 // This will create a row of items
+    },
+    column: {
+      flex: 1, // Each column should take up equal space
+      alignItems: 'center', // Center items horizontally
+      justifyContent:"space-between",
+      // Center items vertically
+    },
+    gridItem: {
+      width:170,
+      height: 75,
+      backgroundColor: '#fff',
+       margin:5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth:2,
+      borderColor:"#ea5932",
+      borderRadius:10
+    },
+    itemText:{
+      color:"#ea5932",
+      fontSize:17
+    }
   });

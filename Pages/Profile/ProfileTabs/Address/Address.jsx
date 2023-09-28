@@ -85,8 +85,8 @@ export const Address = () => {
     />
 
 <Block style={styles2.Space_Around}>
-<Button onPress={toggleModal}>Add Address</Button>
-<Button  onPress={saveSelectedAddress}>Save Address</Button>
+<Button color='black' onPress={toggleModal}>Add Address</Button>
+<Button color='black' onPress={saveSelectedAddress}>Save Address</Button>
 </Block>
    
 

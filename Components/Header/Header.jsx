@@ -14,11 +14,11 @@ export const Header = () => {
   const {toggleDrwerMenu,isDrwerMenuVisible, setDrawerMenuVisible} =useAppContext()
  
   return (
-    <View style={[{marginTop:30,padding:10},styles.container]}>
-        <Block  style={styles.Space_Between}>
-        <TouchableOpacity onPress={toggleDrwerMenu}>
+    <View style={[{marginTop:10,padding:10},styles.container]}>
+        <Block  style={styles.Center}>
+        {/* <TouchableOpacity onPress={toggleDrwerMenu}>
           <Entypo name="menu" size={43} color="black"  />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <Block style={{alignItems:"center"}}>
       <Image
     
@@ -26,9 +26,9 @@ export const Header = () => {
         style={{resizeMode: 'contain',width:170,height:51}}
       />
           </Block>
-          <Block>
+          {/* <Block>
           <FontAwesome5 name="bell" size={30} color="black" />
-          </Block>
+          </Block> */}
         </Block>
        
     </View>
@@ -39,7 +39,7 @@ export const Header = () => {
 const styles = StyleSheet.create({
     container:{
       backgroundColor:"#FFFFFF",
-      elevation:5
+      
   
     },
     inputContainer: {

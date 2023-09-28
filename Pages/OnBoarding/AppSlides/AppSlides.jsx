@@ -78,7 +78,7 @@ export const AppSlides = ({navigation}) => {
     setCurrentSlideIndex(lastSlideIndex);
   };
   const HandelGetStarted=()=>{
-    navigation.replace("StartScreen")
+    navigation.replace("Login")
   }
 
 
@@ -245,8 +245,8 @@ export const AppSlides = ({navigation}) => {
           
         </View>
       ),
-      title: 'Scrap Craft Adore',
-      subtitle: 'Done with React Native Onboarding Swiper',
+      title: 'Buying Your Scrap at  Your Doorstep ',
+      subtitle: '',
   
     },
     {
@@ -262,8 +262,8 @@ export const AppSlides = ({navigation}) => {
           
         </View>
       ),
-      title: 'Scrap Treasures Await! ',
-      subtitle: 'Done with React Native Onboarding Swiper',
+      title: 'Maximum Price for Scrap Guaranteed',
+      subtitle: '',
       
     },
     {
@@ -280,8 +280,8 @@ export const AppSlides = ({navigation}) => {
           
         </View>
       ),
-      title: 'Scrap Collection Bliss',
-      subtitle: 'Done with React Native Onboarding Swiper',
+      title: '100% Secured & Tested Weighing Scales ',
+      subtitle: '',
     },
 
   ]}
