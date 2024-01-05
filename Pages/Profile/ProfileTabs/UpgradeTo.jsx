@@ -152,7 +152,13 @@ const handleGstSearch = async () => {
     ToastAndroid.show('No Data Found Check Gst Number Again', ToastAndroid.SHORT);
   }
 };
+const isGstValid = gstNo => {
+  // Define a regular expression pattern for a valid GST number
+  const gstPattern = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
 
+  // Test if the provided GST number matches the pattern
+  return gstPattern.test(gstNo);
+};
 const VerifyGst =()=>{
   const GSTNO = GstformData.gstNo
   if (!GSTNO) {
@@ -163,6 +169,10 @@ const VerifyGst =()=>{
   if (GSTNO.length < 15) {
     // Display a toast message
     ToastAndroid.show('Please Provide Valid GST Number', ToastAndroid.SHORT);
+    return;
+  }
+  if (!isGstValid(GSTNO)) {
+    ToastAndroid.show('GST number is not valid', ToastAndroid.SHORT);
     return;
   }
   handleGstSearch()

@@ -35,6 +35,7 @@ import { AboutCompany } from './Pages/Profile/ProfileTabs/AboutCompany';
 import { TermsCondition } from './Pages/Profile/ProfileTabs/TermsCondition';
 import { UpgradeTo } from './Pages/Profile/ProfileTabs/UpgradeTo';
 import { Address } from './Pages/Profile/ProfileTabs/Address/Address';
+import { OrderPlacedSuccessfull } from './Pages/Schedule/OrderPlacedSuccessfull';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -107,7 +108,7 @@ const Tabs = ({navigation}) => {
 
 
 
-<Tab.Screen
+{/* <Tab.Screen
         name="Schedule"
         component={Schedule}
         options={{
@@ -120,7 +121,7 @@ const Tabs = ({navigation}) => {
         }}
       
        
-      />
+      /> */}
 <Tab.Screen
         name="Orders"
         component={Orders}
@@ -134,7 +135,7 @@ const Tabs = ({navigation}) => {
       
        
       />
-{/* <Tab.Screen
+ {/* <Tab.Screen
         name="Inventory"
         component={Inventory}
         options={{
@@ -147,7 +148,7 @@ const Tabs = ({navigation}) => {
         }}
        
        
-      /> */}
+      />  */}
 
 {/* <Tab.Screen
         name="Profile"
@@ -280,8 +281,8 @@ export default function App() {
 <NavigationContainer onLayout={onLayoutRootView} >
       {/* {
        isAppFirstLaunched !== null && Auth !== null && */}
-         {/* <Stack.Navigator initialRouteName={isAppFirstLaunched ? 'AppSlides' : Auth ? 'Tabs' : 'Login'}> */}
-         <Stack.Navigator initialRouteName={'AppSlides'}>
+         <Stack.Navigator initialRouteName={isAppFirstLaunched ? 'AppSlides' : Auth ? 'Tabs' : 'AppSlides'}>
+         {/* <Stack.Navigator initialRouteName={'AppSlides'}> */}
         {/* <Stack.Screen name="Home" component={Home}
         options={{
           headerShown: false,
@@ -296,6 +297,12 @@ export default function App() {
         />
 
 <Stack.Screen name="Order Details" component={OrderDetail}
+          options={{
+            headerShown: true,
+          }}
+        />
+
+<Stack.Screen name="Schedule Pickup" component={Schedule}
           options={{
             headerShown: true,
           }}
@@ -324,6 +331,12 @@ export default function App() {
         />
 
 <Stack.Screen name="RegisterSuccessfull" component={RegisterSuccessfull}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+<Stack.Screen name="Order Placed Successfull" component={OrderPlacedSuccessfull}
           options={{
             headerShown: false,
           }}

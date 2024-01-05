@@ -3,44 +3,104 @@ import { FlatList, SafeAreaView, StyleSheet,ScrollView,  View,Dimensions,Touchab
 import { StatusBar } from 'expo-status-bar';
 import { Block, Text, Input, theme, Button } from "galio-framework";
 const {width, height} = Dimensions.get('window');
-import { Entypo } from '@expo/vector-icons'; 
-import { FontAwesome5 } from '@expo/vector-icons'; 
-import Logo from "./Logo_1.png"
-import HamburgerMenu from '../HamburgerMenu/HamburgerMenu ';
-import { useAppContext } from '../../Context/AppContext';
+import Logo from "../Images/Logo_1.png";
+import Img from "../Images/Onbording.png"
+import { useNavigation } from '@react-navigation/native';
+import { Feather } from '@expo/vector-icons';
+export const OrderPlacedSuccessfull = () => {
+    const navigation = useNavigation();
 
-export const Header = () => {
-  const [isMenuVisible, setMenuVisible] = useState(false);
-  const {toggleDrwerMenu,isDrwerMenuVisible, setDrawerMenuVisible} =useAppContext()
- 
+    const handelContinue=()=>{
+        navigation.navigate("Home");
+        
+    }
   return (
-    <View style={[{marginTop:20,padding:10},styles.container]}>
-        <Block  style={styles.Center}>
-        {/* <TouchableOpacity onPress={toggleDrwerMenu}>
-          <Entypo name="menu" size={43} color="black"  />
-          </TouchableOpacity> */}
-          <Block style={{alignItems:"center"}}>
+    <View style={styles.container}>
+    <StatusBar style="dark" />
+  
+        <ScrollView>
+      
+       <View style={{alignItems:"left",marginTop:35,width:width}}>
+         
+       <View style={{alignItems:"center"}}>
+         <Image
+           source={Logo}
+           style={{resizeMode: 'contain'}}
+         />
+         </View>
+
+         <View style={{alignItems:"center"}}>
       <Image
-    
-        source={Logo}
-        style={{resizeMode: 'contain',width:170,height:51}}
+        source={Img}
+        style={{resizeMode: 'contain'}}
       />
-          </Block>
-          {/* <Block>
-          <FontAwesome5 name="bell" size={30} color="black" />
-          </Block> */}
+      </View>
+   
+       </View>
+     
+       
+      <Block style={{textAlign:"center",padding:10,marginTop:30}}>
+        <Block center>
+        <Text style={{fontSize:36,fontWeight:600}}>Order Confirm</Text>
+        <Text center style={{fontSize:19,fontWeight:400,marginTop:10}}>
+            Your Order Has been Successfully Submitted 
+            and You Can See Status Details In Order Section.
+            </Text>
+        </Block>
+        
+       
+      </Block>
+       
+      
+
+      
+       
+   
+
+      
+        <Block style={{padding:10 ,marginTop:70}}>
+        <Block style={[styles.Center]}>
+
+   
+<TouchableOpacity
+    activeOpacity={0.8}
+    style={[
+      styles.btn,
+      {
+        flexDirection:"row",
+        backgroundColor: '#96DE20',
+        textAlign:"center"
+      },
+    ]}
+    onPress={handelContinue}
+    >
+    <Text
+      style={{
+        fontWeight:500,
+        fontSize: 22,
+        color:"black",
+      }}>
+      Continue
+    </Text>
+    {/* <Feather name="arrow-right" size={24} color="black" style={{marginLeft:10}} /> */}
+  </TouchableOpacity>
+
+        </Block>
         </Block>
        
-    </View>
+      
+   
+      
+       </ScrollView>
+       </View>
   )
 }
 
 
 const styles = StyleSheet.create({
     container:{
-      backgroundColor:"#FFFFFF",
-      
-  
+      flex: 1,
+      backgroundColor:"#FFF"
     },
     inputContainer: {
       width: '100%',
@@ -84,7 +144,7 @@ const styles = StyleSheet.create({
       borderRadius: 52,
     },
     btn: {
-     width: '95%',
+     width: '100%',
       height: 55,
       borderRadius: 5,
       backgroundColor: '#40A99E',

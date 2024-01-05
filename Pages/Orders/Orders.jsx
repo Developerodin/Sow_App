@@ -8,6 +8,9 @@ import { Header } from '../../Components/Header/Header';
 import { OrdersCard } from '../../Components/Cards/OrdersCard';
 const {width, height} = Dimensions.get('window');
 import { TabView, SceneMap } from 'react-native-tab-view';
+import { useAppContext } from '../../Context/AppContext';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons'; 
 const FirstRoute = () => (
   <ScrollView style={{flex:1}}>
    
@@ -19,6 +22,7 @@ const FirstRoute = () => (
          <OrdersCard />
         
         </Block>
+
         </ScrollView>
 );
 const SecondRoute = () => (
@@ -35,7 +39,22 @@ const SecondRoute = () => (
         </ScrollView>
 );
 export const Orders = () => {
+  const navigation = useNavigation();
   const [index, setIndex] = useState(0);
+  const {CartInStorage,CartTotalAmount,CartTotalWeight,showCartSuggestion,setShowCartSuggestion} = useAppContext()
+ 
+  const handelSellScrap =()=>{
+    navigation.navigate("Schedule Pickup")
+ }
+ const handelCloseCartInfo =()=>{
+  if(CartInStorage.length > 0){
+    setTimeout(()=>{
+      setShowCartSuggestion(true);
+    },5000)
+  }
+  setShowCartSuggestion(false);
+ 
+ }
   const handleIndexChange = (newIndex) => setIndex(newIndex);
   const routes = [
     { key: 'first', title: 'Pending' },
@@ -74,6 +93,8 @@ export const Orders = () => {
           </TouchableOpacity>
         );
       })}
+
+
       </View>
     );
   };
@@ -92,7 +113,51 @@ export const Orders = () => {
       renderTabBar={renderTabBar}
       onIndexChange={handleIndexChange}
     />
+           {
+showCartSuggestion && CartInStorage.length >0 && <Block center style={{position:"absolute",bottom:60,elevation:10,borderRadius:15,height:100,backgroundColor:"#fff",width:width*0.9,marginTop:10,borderWidth:1,borderColor:"#65be34"}}>
+<Block right style={{width:width*0.9,position:"absolute",top:2,right:5}}>
+             <Ionicons onPress={handelCloseCartInfo} name="close-circle" size={25} style={{marginLeft:5}} color="red" />
+             </Block>
+    <Block center style={{flexDirection:"row",justifyContent:"space-between",paddding:10,width:width*0.9,marginTop:20}}>
+    
    
+        
+
+    <Block>
+        
+      <Block center>
+      <Text style={{fontSize:16,fontWeight:500,marginLeft:10  }}>Total Weight : {CartTotalWeight} Kg</Text>
+    
+    <Text style={{fontSize:16,fontWeight:500,marginTop:10,marginLeft:10}}> Total Amount : ₹ {CartTotalAmount}</Text>
+
+      </Block>
+    
+  
+ 
+ 
+    </Block>
+
+    <Block style={[{flexDirection:"row",justifyContent:"center",alignItem:"center"}]}>
+
+      <Block center>
+      <Button color='#65be34' onPress={handelSellScrap} style={{width:100,marginRight:30}}>
+      <Text style={{fontSize:16,fontWeight:400,color:"#fff"}}>
+      Sell Scraps
+      </Text>
+    
+      </Button>
+
+      </Block>
+    
+  
+ 
+ 
+    </Block>
+</Block>
+
+</Block>
+
+}
     
     
     </View>

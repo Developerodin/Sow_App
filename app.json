@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "SOW_APP",
-    "slug": "SOW_APP",
+    "slug": "scraponwheels-customer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,19 +18,27 @@
       "supportsTablet": true
     },
     "android": {
+      "permissions": ["ACCESS_BACKGROUND_LOCATION"],
+      "config": {
+        "googleMaps": {
+          
+          "apiKey":"AIzaSyB0nGuxGIXDDJwRlogVWki1gDNMuYmaXgo"
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.akshaypareek_01.SOW_APP"
+      "package": "com.scraponwheels_customer.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "f9d21c53-fe1c-44fa-a131-138e84bef089"
+        "projectId": "63fef1d1-e4aa-4871-bab2-4a41dfd82b74"
       }
-    }
+    },
+    "owner": "akshaypareek_01"
   }
 }

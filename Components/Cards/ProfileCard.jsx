@@ -12,34 +12,26 @@ export const ProfileCard = (props) => {
     const navigation = useNavigation();
    const {Title,Img,Link,Fun} = props
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={Fun}>
- <View style={{borderBottomWidth:0.5,borderColor:"#C8C8C8",padding:10,backgroundColor:"#fff", marginTop:20,borderRadius:5}}>
-    <Block  style={{flexDirection:"row",marginBottom:10}}>
+    <TouchableOpacity activeOpacity={0.9} onPress={Fun}>
+ <View style={{padding:10,backgroundColor:"#fff", margin:5,borderRadius:10,marginTop:20,elevation:5}}>
+    <Block>
 
-      <Block style={{flexDirection:"row",alignItems:"center",width:"10%",}}>
+      <Block center style={{flexDirection:"row",alignItems:"center"}}>
         <Block >
-        {/* <Image
-    
-        source={{uri:Img}}
-        style={{resizeMode: 'contain',width:50,height:50}}
-      /> */}
       {Img}
         </Block>
       </Block>
       
 
-      <Block style={[styles.Space_Between,{width:"85%",marginLeft:10}]}>
-        <Block>
-        <Block>
-        <Text style={{fontSize:16,color:"#424242",fontWeight:"bold"}}>{Title}</Text>
-      </Block>
-
-        </Block>
+      <Block center style={{marginTop:10}}>
+      
+        <Text center style={{fontSize:15,color:"#424242",fontWeight:"bold",letterSpacing:0.3}}>{Title}</Text>
+    
        
 
-        <Block>
+        {/* <Block>
         <AntDesign name="right" size={14} color="black" />
-        </Block>
+        </Block> */}
       </Block>
     </Block>
  

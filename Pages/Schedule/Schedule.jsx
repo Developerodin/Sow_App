@@ -14,9 +14,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useAppContext } from '../../Context/AppContext';
+
 export const Schedule = () => {
   const navigation = useNavigation()
-   const{update} = useAppContext()
+   const{update,setUpdate} = useAppContext()
     const [expanded, setExpanded] = useState(false);
     const [Dateexpanded, setDateExpanded] = useState(false);
     const [Timeexpanded, setTimeExpanded] = useState(false);
@@ -26,7 +27,11 @@ export const Schedule = () => {
     const [showTimePicker, setShowTimePicker] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [Address,setAddress] = useState(null);
+    const [CartData,setCartData] = useState([])
+    const [TotalAmount,setTotalAmount] = useState(0);
+    const [TotalWeight,setTotalWeight] = useState(0);
     const [selectedWeight,setselectedWeight] = useState("");
+    const {Cart,setCart,setShowCartSuggestion} = useAppContext();
     const toggleAccordion = () => {
         setExpanded(!expanded);
       };
@@ -84,13 +89,61 @@ export const Schedule = () => {
         toggleAccordion()
       }
 
+      const getCartFromAsyncStorage = async () => {
+        try {
+          const cartArrayJSON = await AsyncStorage.getItem('cart');
+          if (cartArrayJSON !== null) {
+            const cartArray = JSON.parse(cartArrayJSON);
+            console.log('Cart retrieved from AsyncStorage:', cartArray);
+            setCartData(cartArray);
+            return cartArray;
+          } else {
+            console.log('Cart is empty in AsyncStorage');
+            return [];
+          }
+        } catch (error) {
+          console.error('Error retrieving cart from AsyncStorage:', error);
+        }
+      };
+      
+      const handelShedulePickup = ()=>{
+        setCart([])
+        navigation.navigate("Order Placed Successfull")
+      }
+
+      const clearCartFromAsyncStorage = async () => {
+        try {
+          await AsyncStorage.removeItem('cart');
+          console.log('Cart cleared from AsyncStorage');
+          setUpdate((prev)=>prev+1)
+          setShowCartSuggestion(false);
+          navigation.goBack();
+        } catch (error) {
+          console.error('Error clearing cart from AsyncStorage:', error);
+        }
+      };
+
       useEffect(()=>{
         retrieveAddress();
       },[update])
+
+      useEffect(()=>{
+        getCartFromAsyncStorage().then((res)=>{
+          let amount = 0;
+  let weight = 0;
+
+  res.forEach(item => {
+    amount += parseInt(item.totalValue);
+    weight += parseInt(item.Weight);
+  });
+  setTotalAmount(amount);
+  setTotalWeight(weight);
+        })
+      },[])
      
   return (
     <View style={styles.container}>
-      <Header/>
+      {/* <Header/> */}
       <ScrollView style={{flex:1,backgroundColor:"#F1F1F1"}}>
 
       <Block style={{padding:10}}>
@@ -102,7 +155,7 @@ export const Schedule = () => {
         <Block style={styles.Space_Between}>
           <Block style={{flexDirection:"row",alignItems:"center"}}>
           <FontAwesome5 name="weight" size={24} color="black" style={{marginRight:10}} />
-          <Text style={{fontSize:20}}>Estimated Weight</Text>
+          <Text style={{fontSize:18}}>Details</Text>
           </Block>
 
           <Block>
@@ -122,32 +175,43 @@ export const Schedule = () => {
         <View style={{marginTop:20}}>
           
           <Block style={[styles.Space_Between,{marginTop:20}]}>
-          <TouchableOpacity activeOpacity={0.6} onPress={()=>handelWeight("Less Than 20 kg")}>
-            <Text style={{fontSize:20}}>Less Than 20 kg</Text>
+          <TouchableOpacity activeOpacity={0.6} >
+            <Text style={{fontSize:18}}>Total Item : {CartData && CartData.length}</Text>
             </TouchableOpacity>
         
-            <TouchableOpacity activeOpacity={0.6} onPress={()=>handelWeight("20-50 kg")}>
-            <Text style={{fontSize:20}}>20-50 Kg</Text>
+            <TouchableOpacity activeOpacity={0.6} >
+            <Text style={{fontSize:18}}>Total Weight : {TotalWeight} Kg</Text>
             </TouchableOpacity>
             </Block>
        
             
 
             <Block style={[styles.Space_Between,{marginTop:20}]}>
-            <TouchableOpacity activeOpacity={0.6} onPress={()=>handelWeight("50-100 kg")}>
-            <Text style={{fontSize:20}}>50-100 Kg</Text>
+            <TouchableOpacity activeOpacity={0.6} >
+            
+            <Text style={{fontSize:18}}>Total Amount : ₹ {TotalAmount}</Text>
             </TouchableOpacity>
          
-          <TouchableOpacity activeOpacity={0.6} onPress={()=>handelWeight("100-700 kg")}>
-            <Text style={{fontSize:20}}>100-700 kg</Text>
-            </TouchableOpacity>
+         
             </Block>
 
-            <Block style={[styles.Space_Between,{marginTop:20}]}>
+            <Block style={[{marginTop:20,flexDirection:"row",justifyContent:"start",alignItems:"center"}]}>
            
-            <TouchableOpacity activeOpacity={0.6} onPress={()=>handelWeight("More Than 700 kg")}>
-            <Text style={{fontSize:20}}>More Than 700 kg</Text>
-            </TouchableOpacity>
+             
+              {
+                CartData.map((el,index)=>{
+                  return (
+                    <Block key={index} style={{padding:10,backgroundColor:"teal",borderRadius:15,marginRight:10}}>
+                      <Text style={{fontSize:15,color:"#fff",fontWeight:500,letterSpacing:1}}>{el.title}</Text>
+                    </Block>
+                  )
+                })
+              }
+
+            
+              
+            
+           
        
             </Block>
          
@@ -165,7 +229,7 @@ export const Schedule = () => {
         <Block style={styles.Space_Between}>
           <Block style={{flexDirection:"row",alignItems:"center"}}>
           <Fontisto name="date" size={24} color="black" style={{marginRight:10}}/>
-          <Text style={{fontSize:20}}>Select Date</Text>
+          <Text style={{fontSize:18}}>Select Date</Text>
           </Block>
 
           <Block>
@@ -206,7 +270,7 @@ export const Schedule = () => {
         <Block style={styles.Space_Between}>
           <Block style={{flexDirection:"row",alignItems:"center"}}>
           <Feather name="clock" size={24} color="black" style={{marginRight:10}}/>
-          <Text style={{fontSize:20}}>Select Time</Text>
+          <Text style={{fontSize:18}}>Select Time</Text>
           </Block>
 
           <Block>
@@ -247,7 +311,7 @@ export const Schedule = () => {
         <Block style={styles.Space_Between}>
           <Block style={{flexDirection:"row",alignItems:"center"}}>
           <Ionicons name="location-sharp" size={24} color="black" style={{marginRight:10}} />
-          <Text style={{fontSize:20}}>Pickup Address</Text>
+          <Text style={{fontSize:18}}>Pickup Address</Text>
           </Block>
 
           <Block>
@@ -273,14 +337,35 @@ export const Schedule = () => {
           </Block>
           {
            Address !== null &&
-                 <View style={{backgroundColor:"#fff",padding:10}}>
-                 <Text style={{fontSize:18,fontWeight:500}}>{Address.name}</Text>
-                 <Text style={{fontSize:14,fontWeight:500}}>{Address.address}</Text>
-                 <Text style={{fontSize:14,fontWeight:500}}>{Address.landmark}</Text>
-                 <Text style={{fontSize:14,fontWeight:500}}>{Address.city}</Text>
-                 <Text style={{fontSize:14,fontWeight:500}}>{Address.country}</Text>
-                 <Text style={{fontSize:14,fontWeight:500}}>{Address.mobileNumber}</Text>
-               </View>
+                
+                <View style={{ backgroundColor: "#fff", padding: 15,borderRadius:25 }}>
+                <Block style={styles.Space_Between}>
+                <Text style={{ fontSize: 16, fontWeight: 500 ,letterSpacing:1}}>{Address.name}</Text> 
+                
+                </Block>
+               
+                {
+                  Address.house !== "null" && <Text style={{ fontSize: 12, fontWeight: 500,marginTop:5,letterSpacing:1 }}>
+                  {Address.house},{Address.area}
+                 </Text>
+                }
+                {
+                  Address.address !== "null" &&  <Text style={{ fontSize: 12, fontWeight: 500,marginTop:5,letterSpacing:1 }}>
+                  {Address.address} 
+                  </Text>
+                }
+  
+                {
+                  Address.city !== "null" && <Text style={{ fontSize: 12, fontWeight: 500,marginTop:5,letterSpacing:1 }}>{Address.city},{Address.postalCode},{Address.state}</Text>
+                }
+               
+                {
+                  Address.country !== "null" && <Text style={{ fontSize: 12, fontWeight: 500,marginTop:5,letterSpacing:1 }}>
+                  {Address.country}
+                </Text>
+                }
+              
+              </View>
           } 
          
           
@@ -301,8 +386,9 @@ export const Schedule = () => {
           <Text style={{fontSize:16,color:"grey"}}>Please Fill All The Required Details To Schedule Pickup</Text>
           </Block>
 
-          <Block  style={{marginTop:30,marginBottom:160}}>
-           <Button color='black' style={{width:"95%",height:55}}>Schedule Pickup</Button>
+          <Block  style={{marginTop:30,marginBottom:160,flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}>
+            <Button color='crimson' onPress={clearCartFromAsyncStorage}>Clear Items</Button>
+           <Button color='teal' onPress={handelShedulePickup}>Schedule Pickup</Button>
            </Block>
 
      </Block>
