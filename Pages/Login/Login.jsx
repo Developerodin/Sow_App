@@ -10,18 +10,21 @@ import {
   Image,
   Animated,
   KeyboardAvoidingView,
-  Easing 
+  Easing ,
+  ActivityIndicator,
+  TextInput
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Block, Text, Input, theme } from "galio-framework";
 const { width, height } = Dimensions.get("window");
 import PhoneInput from "react-native-phone-number-input";
-import Img from "../Images/Onbording.png";
-import Logo from "../Images/Logo_1.png";
+// import Img from "../Images/Onbording.png";
+import Logo from "../../assets/logo.png";
+import BgCurve from "../../assets/onboardingCurve.png";
 import { Feather } from "@expo/vector-icons";
 import { OTPInput } from "../../Components/Otp/OtpInputs";
 import { ToastAndroid } from "react-native";
-import { TextInput, Button } from "@react-native-material/core";
+import { Button } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import Shape from "../Images/shape.png";
 import LoginImg from "../Images/loginImg1.jpg";
@@ -29,7 +32,12 @@ import { AntDesign } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
 import { Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from "axios";
+import { Base_url } from "../../Config/BaseUrl";
+import { useAppContext } from "../../Context/AppContext";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 export const Login = ({ navigation }) => {
+  const {setIsLoggedIn,setuserDetails}= useAppContext();
   const initalValuesForm = {
     phoneNumber: "",
   }
@@ -38,6 +46,9 @@ export const Login = ({ navigation }) => {
   const [otp, setOtp] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const [loading,setLoading] = useState(false);
+  const [countdown, setCountdown] = useState(30); // Initial countdown value
+  const [canResend, setCanResend] = useState(false);
   const scaleValue = new Animated.Value(1);
 
   const customStyle ={
@@ -76,9 +87,27 @@ export const Login = ({ navigation }) => {
       console.error('Error saving authentication status:', error);
     }
   };
+
+  const saveMobileNumber = async () => {
+    try {
+      // You can use any key you like to store the authentication status
+      const key = 'Mobile';
+      const value = formData.phoneNumber; // Replace with your actual authentication status
+  
+      // Use AsyncStorage to save the authentication status
+      await AsyncStorage.setItem(key, value);
+      console.log('Mobile saved successfully.');
+    } catch (error) {
+      console.error('Error saving Mobile:', error);
+    }
+  };
+
+
   const handelOtpComplete = () => {
+    // saveMobileNumber()
+    // loginWithOTP()
     if (otp === "1234") {
-      saveAuthStatus()
+    
       handelPreviousUser();
     } else {
       handelNewUser();
@@ -86,6 +115,8 @@ export const Login = ({ navigation }) => {
   };
 
   const handelPreviousUser = () => {
+    setIsLoggedIn(true);
+    saveMobileNumber()
     setFormData(initalValuesForm);
     setOTPShow(false)
     setOtp("")
@@ -93,6 +124,7 @@ export const Login = ({ navigation }) => {
   };
 
   const handelNewUser = () => {
+    saveMobileNumber()
     setFormData(initalValuesForm);
     setOTPShow(false)
     setOtp("")
@@ -104,35 +136,92 @@ export const Login = ({ navigation }) => {
       ToastAndroid.show("Please Provide Mobile Number", ToastAndroid.SHORT);
       return;
     }
-    setOTPShow(true);
+    generateOTP()
+    
   };
 
   const handelBack = () => {
     setOTPShow(false);
   };
 
-  const handleFocus = () => {
-    setIsFocused(true);
-    // Animate the scale when focused
-    Animated.timing(scaleValue, {
-      toValue: 0.8,
-      duration: 300,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: false, // Disable native driver for transforms
-    }).start();
+
+  const generateOTP = async () => {
+    setLoading(true)
+    setCanResend(false);
+      setCountdown(30);
+    // try {
+    //   const response = await axios.post(`${Base_url}api/b2b/generate-otp`, { mobile_number: formData.phoneNumber });
+    //   // handelNewUser();
+    //   console.log(response.data.message);
+    //   setLoading(false);
+    //   if( response.data.message === "User not found"){
+    //     handelNewUser()
+    //     return ;
+    //   }
+    //   ToastAndroid.show("Otp send to mobile number", ToastAndroid.SHORT);
+    //   setOTPShow(true);
+     
+    // } catch (error) {
+    //   console.error('Error:', error);
+    //   ToastAndroid.show("Try After Some Time", ToastAndroid.SHORT);
+    //   setLoading(false);
+    //   console.log('Failed to generate OTP. Please try again.');
+    // }
+
+    setOTPShow(true)
   };
 
-  const handleBlur = () => {
-    setIsFocused(false);
-    // Animate the scale back when blurred
-    Animated.timing(scaleValue, {
-      toValue: 1,
-      duration: 300,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: false,
-    }).start();
+  useEffect(() => {
+    let timer;
+    if (countdown > 0 && showOTP && !canResend) {
+      timer = setInterval(() => {
+        setCountdown(prevCountdown => prevCountdown - 1);
+      }, 1000);
+    } else if (countdown === 0) {
+      setCanResend(true);
+      clearInterval(timer);
+    }
+    return () => clearInterval(timer);
+  }, [countdown, showOTP, canResend]);
+
+  const loginWithOTP = async () => {
+    setLoading(true)
+    try {
+      const response = await axios.post(`${Base_url}api/b2b/login-with-otp`, { mobile_number: formData.phoneNumber, otp: otp });
+      setLoading(false)
+        if(response.data.message === "Login successful"){
+          const User = JSON.stringify(response.data.data);
+         const data = response.data.data;
+          await AsyncStorage.setItem("userDetails", User);
+          if(data.status === false){
+            saveMobileNumber()
+           
+            setOTPShow(false)
+            setOtp("")
+            navigation.navigate("VerifyProfileStatus");
+            return
+          }
+          setuserDetails(response.data.data);
+          saveAuthStatus()
+          handelPreviousUser();
+          console.log("res =>",response.data.data);
+        }
+
+        if(response.data.message === "User not found") {
+          handelNewUser()
+        }
+
+      
+    } catch (error) {
+      setLoading(false)
+      console.error('Error:', error);
+      console.log('Failed to login. Please try again.');
+      ToastAndroid.show("Wrong Otp", ToastAndroid.SHORT);
+    }
   };
+
   const animationRef = useRef(null);
+
   useEffect(() => {
     animationRef.current?.play();
 
@@ -155,43 +244,64 @@ export const Login = ({ navigation }) => {
       keyboardDidHideListener.remove();
     };
   }, []);
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar hidden={true} />
+      <StatusBar  translucent={true} />
       <ScrollView>
 
-      {!isKeyboardOpen &&  <Block
-          style={[styles.Space_Between, { marginTop: -12, marginRight: -13 }]}
-        >
-          <Block>
-            {showOTP && (
-              <AntDesign
-                onPress={handelBack}
-                name="arrowleft"
-                size={30}
-                color="grey"
-                style={{ marginLeft: 20 }}
-              />
-            )}
-          </Block>
-            <Image source={Shape} style={{ width: 130, height: 130 }} /> 
-         
-        </Block>}
+    
+           <View style={{position:"relative"}}>
+      <Image
+        source={BgCurve}
+        style={{width:width,height:height*0.5}}
+      />
+
+      <View style={{position:"absolute",top:120,left:20}}>
+      <Image
+        source={Logo}
+        
+      />
+      {
+        showOTP ?
+        <Block>
+        <Text style={{fontSize:30,color:"#fff",marginTop:30}}>Enter the OTP sent to</Text>
+      
+        <Block style={{flexDirection:"row",justifyContent:"left",alignItems:"center"}}>
+        <Text style={{color:"#FFFFFF",fontSize:18,marginTop:20}}>+91 {formData.phoneNumber}</Text>
+
+        <TouchableOpacity onPress={handelBack} style={{marginTop:20,marginLeft:20,flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
+        <MaterialIcons name="edit" size={20} color="black" style={{marginRight:3}} />
+          <Text style={{color:"#fff",fontSize:18,color:"black"}}>Edit</Text>
+        </TouchableOpacity>
+        </Block>
+      
+    </Block>
+       
+        :
+        <Block>
+          <Text style={{fontSize:30,color:"#fff",marginTop:30}}>Enter your mobile</Text>
+          <Text style={{fontSize:30,color:"#fff"}}>number.</Text>
+
+          <Text style={{color:"#FFFFFF",fontSize:18,marginTop:20}}>Enter your credentials.</Text>
+        </Block>
+      }
+      
+
+      
+      </View>
+      </View>
+       
         
         <View
           style={[
             { marginTop: 0, flexDirection: "row", justifyContent: "center" },
           ]}
         >
-          <Block style={{ padding: 10 }}>
-            <Block center style={{marginTop:20}}>
-              <LottieView
-                style={styles.lottie}
-                source={require("../../assets/Animations/Animation - 1698917253840.json")}
-                autoPlay
-                loop
-              />
-            </Block>
+          <Block>
+         
+
+
 
             {showOTP ? (
               <View
@@ -203,20 +313,19 @@ export const Login = ({ navigation }) => {
               
               }}
               >
-                <Text style={{ fontSize: 27, fontWeight: 700,letterSpacing:2  }}>Enter OTP</Text>
-                <Text
-                   style={{
-                    fontSize: 17,
-                    fontWeight: 500,
-                    color: "grey",
-                    marginTop: 7,
-                    letterSpacing:1,
-                    marginLeft:2,
-                    marginTop:10
-                  }}
-                >
-                  OTP Sent to +91 902 496 7391
-                </Text>
+                {/* <Text style={{ fontSize: 27, fontWeight: 700,letterSpacing:2  }}>
+                {loading ? 
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large"  color="#65be34" />
+        </View>
+        :
+        "Enter OTP"
+      }
+                 
+                  
+                  
+                  </Text> */}
+                
               
                 <Block
                   style={[
@@ -224,88 +333,115 @@ export const Login = ({ navigation }) => {
                     { width: "95%", marginTop: 20 },
                   ]}
                 >
-                  <Block style={{ flex: 1 }}>
+                  <Block center style={{ flex: 1}}>
                     <OTPInput length={4} onComplete={handleOtpFill} />
                   </Block>
                 </Block>
 
-                <Block style={{ marginLeft:0 }}>
+                {/* <Block center style={{width: "95%",marginTop:30,marginBottom: -40, }}>
                   <Text
                     style={{
                       fontSize: 16,
                       fontWeight: "400",
-                      marginTop: 30,
+                      
                       color: "#BDBDBD",
+                      marginLeft:-40
                     }}
                   >
                     OTP Not Receive ?{" "}
-                    <Text style={{ color: "#65be34", fontWeight: 500 }}>
-                      Resend OTP
+                    <Text style={{ color: "black", fontWeight: 500 }}>
+                    {canResend ? (
+            <Text onPress={generateOTP}>Resend OTP</Text>
+          ) : (
+            `Resend OTP in ${countdown} sec`
+          )}
                     </Text>
                   </Text>
-                </Block>
+                </Block> */}
               </View>
             ) : (
               <View
                 style={{
-                  padding: 20,
+                 
                   justifyContent: "center",
                   width: width,
-                  marginTop: 30,
+                  
                 
                 }}
               >
-                <Text style={{ fontSize: 27, fontWeight: 700,letterSpacing:2 }}>Login</Text>
-                <Text
+                <Text style={{ fontSize: 27, fontWeight: 700,letterSpacing:2 }}>
+                {/* {loading ? 
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large"  color="#65be34" />
+        </View>
+        :
+        "Login"
+      } */}
+                </Text>
+                
+
+                <Block style={{flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
+                  <Block style={{width:width*0.9}}>
+                  <Text
                   style={{
-                    fontSize: 17,
-                    fontWeight: 500,
-                    color: "grey",
-                    marginTop: 7,
-                    letterSpacing:1
+                    fontSize: 15,
+                    
+                    color: "#A6A6A6",
+                   
+                    letterSpacing:1,
+                    marginBottom:5
                   }}
                 >
-                  Please sign in to continue. 
+                  Enter your mobile number. 
                 </Text>
+                  </Block>
+                
+                {/* <TextInput
 
-                <Block style={[customStyle.Card ,{marginTop:50}]}>
-                <TextInput
-
-        variant="standard"
+         style={{width:width*0.9}}
         keyboardType="numeric"
-        label="Mobile Number"
-        leading={(props) => <Icon name={isFocused ? 'phone' : 'account'} {...props} />}
+        label="+91"
+ 
         value={formData.phoneNumber}
         onChangeText={(text) => handleInputChange("phoneNumber", text)}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        color={ 'white'}
-        inputStyle={{ borderWidth: 0, paddingBottom:0,color:"black",fontSize:20,letterSpacing:3 }}
-        // inputContainerStyle={{ borderBottomWidth:1, paddingBottom:0,borderColor:`${isFocused ? "#65be34" : "#fff" }`}}
         
-      />
+        color={ 'black'}
+        inputStyle={{ borderWidth:1,borderRadius:10,borderColor:"grey", paddingBottom:0,fontSize:20,letterSpacing:3,backgroundColor:'#fff' }}
+        
+        
+      /> */}
+
+<TextInput
+          style={styles.input}
+          placeholder="+ 91"
+          keyboardType="numeric"
+          placeholderTextColor="black"
+          value={formData.phoneNumber}
+        onChangeText={(text) => handleInputChange("phoneNumber", text)}
+        />
                 </Block>
       
               </View>
             )}
 
-            <Block right style={[{ padding: 20, marginTop: 40 }]}>
+            <Block center style={[{ marginTop: 40,marginBottom:40 }]}>
               {showOTP ? (
                 <Button
-                  title="Proceed"
-                  color="#65be34"
-                  style={{ width: 150, padding: 5 }}
+                  title="Login"
+                  color="#14B57C"
+                  style={{ width:width*0.88, padding:10 }}
                   onPress={handelOtpComplete}
-                  trailing={(props) => <Icon name="send" {...props} />}
+                 
                   tintColor="#fff"
                 />
               ) : (
                 <Button
-                  title="Get Otp"
-                  color="#65be34"
-                  style={{ width: 150, padding: 5 }}
+                  title="Send OTP"
+                  color="#14B57C"
+                 
+                  style={{ width:width*0.88, padding:10 }}
                   onPress={handelMobileNumber}
-                  trailing={(props) => <Icon name="send" {...props} />}
+                  
                   tintColor="#fff"
                 />
               )}
@@ -318,7 +454,7 @@ export const Login = ({ navigation }) => {
           style={{
             fontSize: 16,
             fontWeight: "500",
-            marginTop: 30,
+            marginTop: 30,`
             color: "#BDBDBD",
           }}
         >
@@ -341,6 +477,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFF",
   },
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+     // Fully opaque background
+  },
  
   inputContainer: {
     width: "100%",
@@ -354,9 +496,14 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    textAlign: "center",
-    padding: 0,
-    fontSize: 22,
+    textAlign: "left",
+    padding:15,
+    fontSize:16,
+    borderWidth:1,
+    borderRadius:8,
+    borderColor:"#A6A6A6",
+    width:width*0.9,
+    letterSpacing:3
     // Remove padding to make it look borderless
   },
   subtitle: {

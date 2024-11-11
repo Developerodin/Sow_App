@@ -3,7 +3,8 @@ import { FlatList, SafeAreaView, StyleSheet,ScrollView,  View,Dimensions,Touchab
 import { StatusBar } from 'expo-status-bar';
 import { Block, Text, Input, theme, Button } from "galio-framework";
 const {width, height} = Dimensions.get('window');
-import Logo from "../../Images/Logo_1.png";
+// import Logo from "../../Images/Logo_1.png";
+import Logo from "../../../assets/logo-spalsh.png"
 import Img from "../../Images/Onbording.png";
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -28,21 +29,22 @@ export const WelcomeScreen = () => {
   )
 }
 const styles = StyleSheet.create({
-    container:{
-      flex: 1,
-      width:width,
-      height:height
-    },
-    Text_Container:{
-      flex: 0.9,
-      justifyContent:"center",
-      alignItems:"left",
-      padding:30
-    },
-    Image: {
-      ...StyleSheet.absoluteFillObject,
-      height:height,
-      width : width
+  container:{
+    flex: 1,
+    width:width,
+    height:height,
+    backgroundColor:"#14B57C"
   },
-  
-    });
+  Text_Container:{
+    flex: 0.9,
+    justifyContent:"center",
+    alignItems:"left",
+    padding:30
+  },
+  Image: {
+    ...StyleSheet.absoluteFillObject,
+    height:height,
+    width : width
+},
+
+  });

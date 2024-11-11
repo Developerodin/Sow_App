@@ -113,9 +113,20 @@ export const Profile = () => {
     }
   };
 
-  const handelLogout = () => {
+  const handelLogout = async() => {
     console.log("Log out");
-    navigation.navigate("AppSlides");
+    try {
+     await AsyncStorage.removeItem("userDetails");
+     await AsyncStorage.setItem("Auth",'false');
+     console.log('AsyncStorage cleared successfully');
+   } catch (error) {
+     console.error('Error clearing AsyncStorage:', error);
+   }
+   // navigation.navigate("Login")
+   navigation.reset({
+     index: 0,
+     routes: [{ name: 'Login' }],
+   });
   };
 
   const handelRateAppliction = () => {

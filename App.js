@@ -37,6 +37,9 @@ import { UpgradeTo } from './Pages/Profile/ProfileTabs/UpgradeTo';
 import { Address } from './Pages/Profile/ProfileTabs/Address/Address';
 import { OrderPlacedSuccessfull } from './Pages/Schedule/OrderPlacedSuccessfull';
 import { AddAddress } from './Pages/SignUp/Registration/AddAddress';
+import { KycVerification } from './Pages/Kyc/KycVerification';
+import { KycVerification2 } from './Pages/Kyc/KycVerification2';
+import { KycPanUplode } from './Pages/Kyc/KycPanUplode';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -292,7 +295,8 @@ export default function App() {
 <NavigationContainer onLayout={onLayoutRootView} >
       {/* {
        isAppFirstLaunched !== null && Auth !== null && */}
-         <Stack.Navigator initialRouteName={isAppFirstLaunched ? 'AppSlides' : Auth ? 'Tabs' : 'AppSlides'}>
+       {/* Login */}
+         <Stack.Navigator initialRouteName={ Auth ? 'Tabs' : 'KYC Verification'}>
          {/* <Stack.Navigator initialRouteName={'AppSlides'}> */}
         {/* <Stack.Screen name="Home" component={Home}
         options={{
@@ -353,6 +357,24 @@ export default function App() {
           }}
         />
 <Stack.Screen name="AddAddress" component={AddAddress}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+<Stack.Screen name="KYC Verification" component={KycVerification}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+<Stack.Screen name="KYC Verification2" component={KycVerification2}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+<Stack.Screen name="KycPanUplode" component={KycPanUplode}
           options={{
             headerShown: false,
           }}
