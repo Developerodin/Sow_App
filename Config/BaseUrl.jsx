@@ -1,0 +1,1 @@
+export const Base_url ="https://apis.scraponwheels.com/";

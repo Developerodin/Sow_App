@@ -16,6 +16,7 @@ export const OTPVerify = () => {
     <View style={styles.container}>
     <StatusBar style="dark" />
         <ScrollView>
+          
       
        <View style={{alignItems:"left",marginTop:30,width:width}}>
          

@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View,Alert,Modal  } from "react-native";
+import { StyleSheet, Text, View,Alert,Modal ,Image  } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import { NavigationContainer,useFocusEffect,useNavigation  } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -36,6 +36,7 @@ import { TermsCondition } from './Pages/Profile/ProfileTabs/TermsCondition';
 import { UpgradeTo } from './Pages/Profile/ProfileTabs/UpgradeTo';
 import { Address } from './Pages/Profile/ProfileTabs/Address/Address';
 import { OrderPlacedSuccessfull } from './Pages/Schedule/OrderPlacedSuccessfull';
+import { AddAddress } from './Pages/SignUp/Registration/AddAddress';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -59,9 +60,9 @@ const Tabs = ({navigation}) => {
 <Tab.Navigator
     screenOptions={{
       tabBarActiveTintColor: 'black',
-      tabBarInactiveTintColor :'grey',
-      tabBarLabelStyle:{color:"black"},
-      tabBarStyle: { backgroundColor: '#F1F1F1',color:"#fff",position:'absolute',bottom:0,paddingTop:2,paddingBottom:3},
+      tabBarInactiveTintColor :'#fff',
+      
+      tabBarStyle: { backgroundColor: '#14B57C',color:"#fff",position:'absolute',bottom:0,paddingTop:10,paddingBottom:10,height:64,borderTopLeftRadius:30,borderTopRightRadius:30},
     }}
     >
       <Tab.Screen
@@ -71,7 +72,10 @@ const Tabs = ({navigation}) => {
           tabBarIcon: ({ color, size }) => (
 
           
-            <Ionicons name="home" color={color} size={size}  />
+            <Image
+            source={require('./assets/media/home.png')} 
+            style={{ width: 25, height: 25, tintColor: color }}
+          />
           ),
           headerShown: false,
         }}
@@ -83,8 +87,10 @@ const Tabs = ({navigation}) => {
         component={Profile}
         options={{
           tabBarIcon: ({ color, size }) => (
-            // <FontAwesome name="bookmark" size={size} color={color} />
-            <FontAwesome name="user" size={size} color={color} />
+            <Image
+            source={require('./assets/media/sell.png')} 
+            style={{ width: 25, height: 25, tintColor: color }}
+          />
           ),
           headerShown: false,
         }}
@@ -98,7 +104,10 @@ const Tabs = ({navigation}) => {
         options={{
           tabBarIcon: ({ color, size }) => (
            
-            <MaterialCommunityIcons name="tag-outline" size={size} color={color} />
+            <Image
+            source={require('./assets/media/cart.png')} 
+            style={{ width: 25, height: 25, tintColor: color }}
+          />
           ),
           headerShown: false,
         }}
@@ -127,8 +136,10 @@ const Tabs = ({navigation}) => {
         component={Orders}
         options={{
           tabBarIcon: ({ color, size }) => (
-            // <FontAwesome name="bookmark" size={size} color={color} />
-            <FontAwesome name="shopping-bag" size={size} color={color} />
+            <Image
+            source={require('./assets/media/profile.png')} 
+            style={{ width: 25, height: 25, tintColor: color }}
+          />
           ),
           headerShown: false,
         }}
@@ -338,9 +349,15 @@ export default function App() {
 
 <Stack.Screen name="Order Placed Successfull" component={OrderPlacedSuccessfull}
           options={{
+            headerShown: true,
+          }}
+        />
+<Stack.Screen name="AddAddress" component={AddAddress}
+          options={{
             headerShown: false,
           }}
         />
+
         <Stack.Screen name="AppSlides" component={AppSlides}
           options={{
             headerShown: false,

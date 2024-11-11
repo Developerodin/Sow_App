@@ -15,6 +15,7 @@ import { StatusBar } from "expo-status-bar";
 import { Block, Text, Input, theme, Button } from "galio-framework";
 import { Header } from "../../Components/Header/Header";
 import HamburgerMenu from "../../Components/HamburgerMenu/HamburgerMenu ";
+import HorizontalScroller from "../../Components/Scroller/HorizontalScroller";
 const { width, height } = Dimensions.get("window");
 import LottieView from "lottie-react-native";
 import { useAppContext } from "../../Context/AppContext";
@@ -56,6 +57,7 @@ export const Home = () => {
       <Header />
       <ScrollView>
         <Block style={{ backgroundColor: "#FFF", padding: 10 }}>
+          <HorizontalScroller />
           <Block style={{ marginTop: 20 }}>
             <Text style={{ fontSize: 25, fontWeight: 500, color: "#4b4b4b" }}>
               Hey Vinod !!
