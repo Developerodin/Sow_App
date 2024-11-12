@@ -7,7 +7,8 @@ const { width } = Dimensions.get('window');
 const data = [
   {
     id: '1',
-    title: 'Sell Scrap in Bulk!',
+    title: 'Sell Scrap in',
+    title2: 'Bulk!',
     subtitle1: 'Upgrade to Commercial. ',
     subtitle2: 'Complete your KYC now.',
     buttonLabel: 'Upgrade',
@@ -15,7 +16,8 @@ const data = [
   },
   {
     id: '2',
-    title: 'Sell Scrap in Bulk!',
+    title: 'Sell Scrap in',
+    title2: 'Bulk!',
     subtitle1: 'Upgrade to Commercial.',
     subtitle2: 'Complete your KYC now.',
     buttonLabel: 'Upgrade',
@@ -28,11 +30,12 @@ const Card = ({ item }) => (
   <View style={styles.card}>
       <Image source={item.image} style={styles.image} />
     <Text style={styles.title}>{item.title}</Text>
+    <Text style={styles.title}>{item.title2}</Text>
     <View style={styles.textContainer}>
         <View>
         
         </View>
-        <View>
+        <View style={{marginTop:10,marginBottom:10}}>
         <Text style={styles.subtitle}>{item.subtitle1}</Text>
         <Text style={styles.subtitle}>{item.subtitle2}</Text>
         </View>
@@ -68,9 +71,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 15,
     marginHorizontal: 10,
+   
   },
   title: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
@@ -86,10 +90,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    position:'absolute',
+    bottom:0,
+    right:0,
   },
   image: {
-    width: 65,
-    height: 65,
+    width: 85,
+    height: 85,
     
     position: 'absolute',
     right: 0,
@@ -98,13 +105,13 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
+    borderTopLeftRadius: 20,
     paddingVertical: 5,
     paddingHorizontal: 15,
   },
   buttonText: {
     fontSize: 14,
-    color: '#2BB673',
+    color: 'black',
     fontWeight: 'bold',
   },
 });
