@@ -34,7 +34,7 @@ import { Schedule } from './Pages/Schedule/Schedule';
 import { AboutCompany } from './Pages/Profile/ProfileTabs/AboutCompany';
 import { TermsCondition } from './Pages/Profile/ProfileTabs/TermsCondition';
 import { UpgradeTo } from './Pages/Profile/ProfileTabs/UpgradeTo';
-import { Address } from './Pages/Profile/ProfileTabs/Address/Address';
+// import { Address } from './Pages/Profile/ProfileTabs/Address/Address';
 import { OrderPlacedSuccessfull } from './Pages/Schedule/OrderPlacedSuccessfull';
 import { AddAddress } from './Pages/SignUp/Registration/AddAddress';
 import { KycVerification } from './Pages/Kyc/KycVerification';
@@ -42,6 +42,11 @@ import { KycVerification2 } from './Pages/Kyc/KycVerification2';
 import { KycPanUplode } from './Pages/Kyc/KycPanUplode';
 import { KycEnterGstDeatils } from './Pages/Kyc/KycEnterGstDeatils';
 import { KYCPending } from './Pages/Kyc/KYCPending';
+import { PrivacyPolicy } from './Pages/Profile/ProfileTabs/PrivacyPolicy';
+import { AccountType } from './Pages/Profile/ProfileTabs/AccountType';
+import { AccountSettings } from './Pages/Profile/ProfileTabs/AccountSettings';
+import { ManageAddress } from './Pages/Profile/ProfileTabs/ManageAddress';
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -88,8 +93,8 @@ const Tabs = ({navigation}) => {
      
       />
       <Tab.Screen
-        name="Profile"
-        component={Profile}
+        name="Sell"
+        component={Market}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image
@@ -298,7 +303,7 @@ export default function App() {
       {/* {
        isAppFirstLaunched !== null && Auth !== null && */}
        {/* Login */}
-         <Stack.Navigator initialRouteName={ Auth ? 'Tabs' : 'Login'}>
+         <Stack.Navigator initialRouteName={ Auth ? 'Tabs' : 'Tabs'}>
          {/* <Stack.Navigator initialRouteName={'AppSlides'}> */}
         {/* <Stack.Screen name="Home" component={Home}
         options={{
@@ -312,7 +317,29 @@ export default function App() {
             headerShown: false,
           }}
         />
+<Stack.Screen name="Profile" component={Profile}
+          options={{
+            headerShown: false,
+          }}
+        />
 
+<Stack.Screen name="AccountType" component={AccountType}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+<Stack.Screen name="AccountSettings" component={AccountSettings}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+<Stack.Screen name="ManageAddress" component={ManageAddress}
+          options={{
+            headerShown: false,
+          }}
+        />
 <Stack.Screen name="Order Details" component={OrderDetail}
           options={{
             headerShown: true,
@@ -411,18 +438,31 @@ export default function App() {
             headerShown: false,
           }}/>
 
-<Stack.Screen name="About Company" component={AboutCompany} options={{
-            headerShown: true,
-          }}/>
-    
-    <Stack.Screen name="Terms and Condition" component={TermsCondition} options={{
-            headerShown: true,
-          }}/>
-           <Stack.Screen name="Upgrade Profile" component={UpgradeTo} options={{
-            headerShown: true,
-          }}/>
 
-<Stack.Screen name="Address" component={Address} options={{
+<Stack.Screen
+            name="About Company"
+            component={AboutCompany}
+            options={{
+              headerShown: true,
+            }}
+          />
+
+          <Stack.Screen
+            name="Privacy Policy"
+            component={PrivacyPolicy}
+            options={{
+              headerShown: true,
+            }}
+          />
+
+          <Stack.Screen
+            name="Terms and Condition"
+            component={TermsCondition}
+            options={{
+              headerShown: true,
+            }}
+          />
+           <Stack.Screen name="Upgrade Profile" component={UpgradeTo} options={{
             headerShown: true,
           }}/>
       

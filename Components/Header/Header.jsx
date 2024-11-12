@@ -9,15 +9,24 @@ import Logo from "./Logo_2.png"
 import ProfileLogo from "../../assets/profileMenu.png"
 import HamburgerMenu from '../HamburgerMenu/HamburgerMenu ';
 import { useAppContext } from '../../Context/AppContext';
+import { useNavigation } from '@react-navigation/native';
 
 export const Header = () => {
+
+  const navigation = useNavigation();
   const [isMenuVisible, setMenuVisible] = useState(false);
   const {toggleDrwerMenu,isDrwerMenuVisible, setDrawerMenuVisible} =useAppContext()
  
+
+  const handelProfile = ()=>{
+    navigation.navigate('Profile')
+  }
+
+
   return (
     <View style={[{marginTop:40,padding:10},styles.container]}>
         <Block  style={styles.Space_Between}>
-        <TouchableOpacity activeOpacity={0.9} >
+        <TouchableOpacity onPress={handelProfile} activeOpacity={0.9} >
         <Image
     
     source={ProfileLogo}

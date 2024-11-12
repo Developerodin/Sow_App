@@ -135,7 +135,6 @@ const handleGstSearch = async () => {
 
     if (response.status === 200) {
       const GStData = response.data.data
-      console.log("DAta of gst ==>",response.data)
       const GstAddress = GStData.pradr.addr
       const Address = `${GstAddress.bno},${GstAddress.bnm},${GstAddress.st},${GstAddress.pncd},${GstAddress.loc} ,${GstAddress.stcd}`
       // console.log("GSt Data ===>",GStData);
