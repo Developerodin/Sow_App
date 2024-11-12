@@ -17,16 +17,21 @@ export const Cart = () => {
     const handlePickupAddress = () => {
         navigation.navigate('Schedule Address');
     };
+
+    const handleBack = () => {
+        navigation.goBack();
+    };
+
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <Image
-        source={require('./Book.png')} // Replace with the correct path
+        source={require('../../assets/Book.png')} // Replace with the correct path
         style={styles.icon}
         />
       <View style={styles.itemDetails}>
         <Text style={styles.itemName}>{item.name}</Text>
         <Text style={styles.itemWeight}>{item.weight}</Text>
-        <Text style={styles.editText}>Edit ></Text>
+        <Text style={styles.editText}>Edit </Text>
       </View>
       <TouchableOpacity style={styles.quantityButton}>
         <Text style={styles.quantityText}>-  {item.quantity} kg  +</Text>
@@ -38,9 +43,11 @@ export const Cart = () => {
     <ScrollView style={{marginBottom: 50}} showsVerticalScrollIndicator={false}>
     <View style={styles.container}>
       <Block style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center" ,marginTop : 50 ,marginBottom: 20}}>
+        <TouchableOpacity onPress={handleBack}>
         <Block style={{ backgroundColor: "#fff", width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 150 }}>
           <MaterialIcons  name="arrow-back-ios" size={22} style={{ marginLeft: 5 }} color="#000" />
         </Block>
+        </TouchableOpacity>
         <Text style={{ marginLeft: 10, fontSize: 25, fontWeight: '500' }}>Your Scrap Start</Text>
       </Block>
 

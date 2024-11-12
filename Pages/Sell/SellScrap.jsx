@@ -5,12 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import { Block } from 'galio-framework'; 
 
 const scrapItems = [
-  { id: '1', name: 'Note Book', price: '₹2/Kg', image: require('./Book.png') },
-  { id: '2', name: 'Cartoon Box', price: '₹2/Kg', image: require('./Box.png') },
-  { id: '3', name: 'News Paper', price: '₹2/Kg', image: require('./Paper.png') },
-  { id: '4', name: 'Magazines', price: '₹2/Kg', image: require('./Magazines.png') },
-  { id: '5', name: 'News Paper', price: '₹2/Kg', image: require('./Paper.png') },
-  { id: '6', name: 'Cartoon Box', price: '₹2/Kg', image: require('./Box.png') },
+  { id: '1', name: 'Note Book', price: '₹2/Kg', image: require('../../assets/Book.png') },
+  { id: '2', name: 'Cartoon Box', price: '₹2/Kg', image: require('../../assets/Box.png') },
+  { id: '3', name: 'News Paper', price: '₹2/Kg', image: require('../../assets/Paper.png') },
+  { id: '4', name: 'Magazines', price: '₹2/Kg', image: require('../../assets/Magazines.png') },
+  { id: '5', name: 'News Paper', price: '₹2/Kg', image: require('../../assets/Paper.png') },
+  { id: '6', name: 'Cartoon Box', price: '₹2/Kg', image: require('../../assets/Box.png') },
 ];
 
 export const SellScrap = () => {
@@ -18,6 +18,10 @@ export const SellScrap = () => {
 
     const handleBack = () => {
         navigation.goBack();
+    };
+
+    const handleCart = () => {
+        navigation.navigate('Cart');
     };
 
   const [selectedId, setSelectedId] = useState(null);
@@ -61,6 +65,11 @@ export const SellScrap = () => {
       <TouchableOpacity style={styles.addCategoryButton}>
         <Ionicons name="add-circle" size={24} color="#14B57C" />
         <Text style={styles.addCategoryText}>Add more Categories</Text>
+      </TouchableOpacity>
+
+
+      <TouchableOpacity style={styles.pickupButton} onPress={handleCart}>
+        <Text style={styles.pickupButtonText}>Go to Cart</Text>
       </TouchableOpacity>
     </View>
   );
@@ -121,11 +130,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
     alignSelf: 'center',
+    marginBottom: 16,
   },
   addCategoryText: {
     fontSize: 16,
     color: '#000',
     marginLeft: 8,
+  },
+  pickupButton: {
+    backgroundColor: '#14B57C',
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 20,
+    marginHorizontal: 20,
+  },
+  pickupButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

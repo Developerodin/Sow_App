@@ -3,15 +3,15 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList } from 'react
 import { useNavigation } from '@react-navigation/native';
 
 const categories = [
-  { id: '1', name: 'Paper', image: require('./Paper.png') },
-  { id: '2', name: 'Plastic', image: require('./Plastic.png') },
-  { id: '3', name: 'Metal', image: require('./Metal.png') },
-  { id: '4', name: 'Plastic', image: require('./Plastic.png') },
-  { id: '5', name: 'Metal', image: require('./Metal.png') },
-  { id: '6', name: 'Paper', image: require('./Paper.png') },
-  { id: '7', name: 'Metal', image: require('./Metal.png') },
-  { id: '8', name: 'Paper', image: require('./Paper.png') },
-  { id: '9', name: 'Plastic', image: require('./Plastic.png') },
+  { id: '1', name: 'Paper', image: require('../../assets/Paper.png') },
+  { id: '2', name: 'Plastic', image: require('../../assets/Plastic.png') },
+  { id: '3', name: 'Metal', image: require('../../assets/Metal.png') },
+  { id: '4', name: 'Plastic', image: require('../../assets/Plastic.png') },
+  { id: '5', name: 'Metal', image: require('../../assets/Metal.png') },
+  { id: '6', name: 'Paper', image: require('../../assets/Paper.png') },
+  { id: '7', name: 'Metal', image: require('../../assets/Metal.png') },
+  { id: '8', name: 'Paper', image: require('../../assets/Paper.png') },
+  { id: '9', name: 'Plastic', image: require('../../assets/Plastic.png') },
 ];
 
 export const Sell = () => {
