@@ -473,9 +473,7 @@ export default function App() {
             headerShown: true,
           }}/>
 
-<Stack.Screen name="Address" component={Address} options={{
-            headerShown: true,
-          }}/>
+
       
       </Stack.Navigator>
       {/* } */}
