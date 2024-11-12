@@ -50,6 +50,8 @@ import { PrivacyPolicy } from './Pages/Profile/ProfileTabs/PrivacyPolicy';
 import { AccountType } from './Pages/Profile/ProfileTabs/AccountType';
 import { AccountSettings } from './Pages/Profile/ProfileTabs/AccountSettings';
 import { ManageAddress } from './Pages/Profile/ProfileTabs/ManageAddress';
+import { Sell} from './Pages/Sell/Sell';
+import { SellScrap} from './Pages/Sell/SellScrap';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -98,7 +100,7 @@ const Tabs = ({navigation}) => {
       />
       <Tab.Screen
         name="Sell"
-        component={Market}
+        component={Sell}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image
@@ -446,6 +448,8 @@ export default function App() {
           }}/>
 
 
+
+
 <Stack.Screen
             name="About Company"
             component={AboutCompany}
@@ -477,6 +481,14 @@ export default function App() {
             headerShown: true,
           }}/>
           <Stack.Screen name="Schedule Address" component={ScheduleAddress} options={{
+            headerShown: false,
+          }}/>
+
+          <Stack.Screen name="SellScrap" component={SellScrap} options={{
+           headerShown: false,
+          }}/>
+
+          <Stack.Screen name="Cart" component={Cart} options={{
             headerShown: false,
           }}/>
 
