@@ -11,15 +11,35 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 import { useAppContext } from '../../Context/AppContext';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons'; 
+
+
+const data = {
+  status: 'pending', // or 'canceled'
+  to: {
+    name: 'Vishal Rao',
+  },
+  orderDate: '2024-11-11T00:00:00Z',
+  totalAmount: 1500,
+  details: {
+    category: 'Electronics',
+  },
+  from: {
+    Address: 'Near Dmart',
+    pincode: '302033',
+    city: 'Jaipur',
+    country: 'India',
+  },
+};
+
 const FirstRoute = () => (
   <ScrollView style={{flex:1}}>
    
     <Block style={{padding:10,marginBottom:60}}>
          
-         <OrdersCard />
+         <OrdersCard  data={data}/>
            
-         <OrdersCard />
-         <OrdersCard />
+         <OrdersCard data={data}/>
+         <OrdersCard data={data}/>
         
         </Block>
 
@@ -30,10 +50,10 @@ const SecondRoute = () => (
    
     <Block style={{padding:10,marginBottom:60}}>
          
-         <OrdersCard />
+    <OrdersCard  data={data}/>
            
-         <OrdersCard />
-         <OrdersCard />
+           <OrdersCard data={data}/>
+           <OrdersCard data={data}/>
         
         </Block>
         </ScrollView>
@@ -68,19 +88,19 @@ export const Orders = () => {
       <View style={styles.tabBar}>
         {props.navigationState.routes.map((route, i) => {
         const isTabActive = i === index;
-        const tabBackgroundColor = isTabActive ? '#F3F3F3' : '#F3F3F3';
-        const textColor = isTabActive ? 'black' : 'grey';
-        const borderWidth = isTabActive ? 2 : 0;
-        const borderColor = isTabActive ? 'blue' : 'grey';
+        const tabBackgroundColor = isTabActive ? '#0EB77B' : '#fff';
+        const textColor = isTabActive ? '#fff' : '#000';
+        const borderWidth = isTabActive ? 1 : 1;
+        const borderColor = isTabActive ? '#0EB77B' : '#0EB77B';
 
         const tabStyle = [
           styles.tabItem,
-          { borderRadius:0,borderBottomWidth:borderWidth,borderColor:borderColor },
+          { borderRadius:0,borderWidth:borderWidth,borderColor:'#0EB77B',backgroundColor:tabBackgroundColor },
         ];
 
         const textStyles = [
          
-          { color: textColor,fontWeight:"bold",fontSize:16 },
+          { color: textColor,fontWeight: 400,fontSize:16 },
         ];
 
         return (
@@ -105,7 +125,19 @@ export const Orders = () => {
   });
   return (
     <View style={styles.container}>
-    <Header/>
+    <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: 60,
+            marginLeft: 30,
+            marginRight: 30,
+          }}
+        >
+          <Text style={{ fontSize: 22, fontWeight: 500 }}>Your Orders</Text>
+          <Ionicons name="filter" size={26} color="#000" />
+        </View>
    
     <TabView
       navigationState={{ index, routes }}
@@ -174,7 +206,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // paddingTop: StatusBar.currentHeight,
     padding:10,
-    backgroundColor:"#f1f1f1"
+    backgroundColor:"#fff",
     
   },
   tabItem: {

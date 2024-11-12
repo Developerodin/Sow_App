@@ -42,6 +42,10 @@ import { KycVerification2 } from './Pages/Kyc/KycVerification2';
 import { KycPanUplode } from './Pages/Kyc/KycPanUplode';
 import { KycEnterGstDeatils } from './Pages/Kyc/KycEnterGstDeatils';
 import { KYCPending } from './Pages/Kyc/KYCPending';
+import { Notification } from './Pages/Notification/Notification';
+import { PickupAddress } from './Pages/Cart/PickupAddress';
+import { Cart } from './Pages/Cart/Cart';
+import { ScheduleAddress } from './Pages/Cart/ScheduleAddress';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -104,8 +108,8 @@ const Tabs = ({navigation}) => {
       />
 
 <Tab.Screen
-        name="Rates"
-        component={Market}
+        name="Cart"
+        component={Cart}
         options={{
           tabBarIcon: ({ color, size }) => (
            
@@ -403,6 +407,9 @@ export default function App() {
             headerShown: false,
           }}
         />
+        <Stack.Screen name="Notification" component={Notification} options={{
+            headerShown: false ,
+          }}/>
        
         <Stack.Screen name="Login" component={Login} options={{
             headerShown: false,
@@ -425,6 +432,14 @@ export default function App() {
 <Stack.Screen name="Address" component={Address} options={{
             headerShown: true,
           }}/>
+
+<Stack.Screen name="Pickup Address" component={PickupAddress} options={{
+         headerShown: false,
+          }}/>
+
+<Stack.Screen name="Schedule Address" component={ScheduleAddress} options={{
+         headerShown: false,
+           }}/>          
       
       </Stack.Navigator>
       {/* } */}

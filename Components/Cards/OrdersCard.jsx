@@ -7,7 +7,28 @@ import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-export const OrdersCard = (props) => {
+import { FontAwesome } from '@expo/vector-icons';
+
+
+const data = {
+  status: 'pending', // or 'canceled'
+  to: {
+    name: 'John Doe',
+  },
+  orderDate: '2023-10-01T00:00:00Z',
+  totalAmount: 1500,
+  details: {
+    category: 'Electronics',
+  },
+  from: {
+    Address: '123 Main St',
+    pincode: '123456',
+    city: 'New York',
+    country: 'USA',
+  },
+};
+
+export const OrdersCard = ({ data }) => {
   const navigation = useNavigation();
 
   const handeViewDetail=()=>{
@@ -15,155 +36,135 @@ export const OrdersCard = (props) => {
   }
     // const {Img,Title,SubTitle} = props
   return (
-    <View style={{borderWidth:1,borderColor:"#C8C8C8",padding:15,backgroundColor:"#fff", marginTop:10,borderRadius:5}}>
-      <Block>
-        <Block style={[styles.displayF]}>
-        <Ionicons name="person" size={18} color="black" />
-        <Text style={[styles.text1]} >Ankit Dixit</Text>
-        </Block>
+    <View style={styles.cardContainer}>
+      <View style={[styles.header, {backgroundColor: data.status === 'canceled' ? '#FF2020' : (data.status === 'pending' ? '#FFD12C' : '#FFD12C'),}]}>
+               {data.status === 'pending' ? (
+          <Feather name="clock" size={18} color="#000" />
+        ) : data.status === 'canceled' ? (
+          <Feather name="x-circle" size={18} color="#fff" />
+        ) : null}
+        <Text style={[styles.statusText,{color : data.status === 'canceled' ? '#fff' : (data.status === 'pending' ? '#000' : '#000'),}]}>{data.status}</Text>
+        
+      </View>
 
-        <Block style={{marginTop:15}}>
-          <Text style={{fontSize:18,fontWeight:400}}>Estimated Value</Text>
-          <Text style={{fontSize:20,fontWeight:500,marginTop:3}}>₹ 45,000</Text>
-        </Block>
+      
 
-        <Block style={[styles.displayF,{marginTop:10}]}>
-        <AntDesign name="calendar" size={20} color="black" />
-        <Text style={[styles.text1]} >Pickup Date : <Text style={{color:"#6096FF"}}>20 March 2023</Text> </Text>
-        </Block>
+      <Block style={styles.row}>
+        <View style={styles.column}>
+        <Text style={{fontSize: 16,fontWeight: 600}}>{data.to.name}</Text>
+                   <View style={{ flexDirection: 'row', alignItems: 'center',marginTop: 5 }}>
+            <AntDesign name="calendar" size={20} color="#0EB77B" />
+            <Text style={[styles.text, { marginLeft: 8 }]}>
+              <Text style={styles.blueText}>{new Date(data.orderDate).toLocaleDateString('en-GB')}</Text>
+            </Text>
+          </View>
+        </View>
 
-        <Block style={[styles.displayF,{marginTop:10}]}>
-        <Ionicons name="location" size={20} color="black" />
-        <Text style={[styles.text1]} >Pickup Location : 302039 </Text>
-        </Block>
+        <View style={[styles.column, styles.divider]}>
+        <Text style={{fontSize: 16,fontWeight: 600}}>Est. Value</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center',marginTop: 5 }}>
+          <View style={{ backgroundColor: '#0EB77B', borderRadius: 50, padding: 5 }}>
+            <FontAwesome name="rupee" size={10} color="#fff" />
+          </View>
+          <Text style={styles.amountText}>₹{data.totalAmount}</Text>
+          </View>
+        </View>
 
-        <Block style={[styles.Center]} >
-        <Block style={[styles.Center,{marginTop:20}]} >
-        <TouchableOpacity
-                activeOpacity={1}
-                style={[
-                  styles.btn,
-                  {
-                    borderColor:"black",
-                    borderWidth: 1,
-                    backgroundColor: 'black',
-                    flexDirection:"row",
-                    alignItems:"center"
-                  },
-                ]}
-                onPress={handeViewDetail}
-                >
-                <Text
-                  style={{
-                  
-                    fontSize: 15,
-                    color:"#fff",
-                   
-                  }}>
-                  View Details
-                  
-                </Text>
-                
-               
-        </TouchableOpacity>
-        </Block>
-        </Block>
+        <View style={styles.column}>
+          <Text style={[styles.text,{fontSize: 16,fontWeight: 600}]}>Items</Text>
+          <Text style={[styles.text,{marginTop: 5}]}>{data.details.category}</Text>
+         
+        </View>
       </Block>
-   
-</View>
+
+
+            <View style={{ flexDirection: 'row', alignItems: 'center',paddingTop: 15 }}>
+        <Ionicons name="location" size={26} color="#0EB77B" />
+        <Text style={[styles.text, { flex: 1,paddingRight: 24 }]}>
+          Pickup Location: {data.from.Address}, {data.from.pincode}, {data.from.city}, {data.from.country}
+        </Text>
+        <TouchableOpacity style={styles.viewDetailsButton} onPress={handeViewDetail}>
+          <Text style={styles.viewDetailsText}>View Details</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-    container:{
-      flex: 1,
-      backgroundColor:"#FFF"
-    },
-    displayF:{
-    flexDirection:"row",
-    alignItems:"center"
-    },
-    text1:{
-      fontSize:15,
-       marginLeft:10
-    },
-    inputContainer: {
-      width: '100%',
-      height: 66,
-      borderBottomWidth: 1, // Add a bottom border for the input
-      borderColor: 'transparent', // Make the border color transparent
-    },
-    input: {
-      flex: 1,
-      textAlign:"center",
-      padding:0,
-      fontSize:22
-       // Remove padding to make it look borderless
-    },
-    subtitle: {
-      color:"black",
-      fontSize: 20,
-      marginTop: 10,
+  cardContainer: {
+    borderWidth: 1,
+    borderColor: "#b3b3b3",
+    borderRadius: 15,
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+    backgroundColor: "#FFFFFF",
+    marginTop: 20,
+    marginBottom: 15,
     
-      textAlign: 'left',
-      lineHeight: 23,
-      letterSpacing:0.3
-    },
-    title: {
-      color:"black",
-      fontSize: 22,
-      fontWeight: 'bold',
-      marginTop: 20,
-      textAlign: 'center',
-    },
-    image: {
-      height: '100%',
-      width: '100%',
-      resizeMode: 'contain',
-    },
-    indicator: {
-      height: 10,
-      width: 10,
-      backgroundColor: 'grey',
-      marginHorizontal: 3,
-      borderRadius: 52,
-    },
-    btn: {
-     width: '100%',
-      height: 46,
-      borderRadius: 5,
-      backgroundColor: '#40A99E',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    border: {
-        borderWidth: 1,
-        borderColor: "blue",
-      },
-      Center: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-      },
-      Space_Around: {
-        flexDirection: "row",
-        justifyContent: "space-around",
-        alignItems: "center",
-      },
-      Space_Between: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-      },
-      shadow: {
-        shadowColor: "black",
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 4,
-        shadowOpacity: 0.2,
-        elevation: 2,
-      },
-      button: {
-        width: width,
-      },
+  },
+   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    borderRadius: 15,
+     // Default to #FFD12C if status is not 'canceled' or 'pending'
+    width: 110,
+    position: 'absolute',
+    right: 10,
+    top: -15,
+  },
+  statusText: {
+    color: "#000",
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 5,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+  },
+  column: {
+    flex: 1,
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  divider: {
+    borderRightWidth: 1,
+    borderRightColor: "#b3b3b3",
+    borderLeftWidth: 1,
+    borderLeftColor: "#63b3b3",
+    paddingHorizontal: 12,
+    
+  },
+  amountText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: "#000",
+    
+    marginLeft: 5,
+  },
+  text: {
+    fontSize: 14,
+    color: "#000",
+    textAlign: 'center',
+    
+  },
+  blueText: {
+    color: "#000",
+    fontWeight: '500',
+  },
+  viewDetailsButton: {
+    
+  },
+  viewDetailsText: {
+    fontSize: 16,
+    color: "#0EB77B",
+    fontWeight: '600',
+    textDecorationLine: 'underline',
+  },
   
     });
