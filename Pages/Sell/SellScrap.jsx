@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from 'react
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Block } from 'galio-framework'; 
+import SelectWeightModal from '../../Components/Model/SelectWeightModal';
 
 const scrapItems = [
   { id: '1', name: 'Note Book', price: '₹2/Kg', image: require('../../assets/Book.png') },
@@ -24,14 +25,25 @@ export const SellScrap = () => {
         navigation.navigate('Cart');
     };
 
+   
   const [selectedId, setSelectedId] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const openModal = (item) => {
+    setSelectedId(item);
+    setModalVisible(true);
+};
+
+const closeModal = () => {
+    setModalVisible(false);
+};
 
   const renderItem = ({ item }) => {
     const isSelected = item.id === selectedId;
     return (
       <TouchableOpacity
         style={[styles.itemContainer, isSelected && styles.selectedItem]}
-        onPress={() => setSelectedId(item.id)}
+        onPress={() => openModal(item)}
       >
         <Image source={item.image} style={styles.itemImage} />
         <View style={styles.itemTextContainer}>
@@ -71,6 +83,15 @@ export const SellScrap = () => {
       <TouchableOpacity style={styles.pickupButton} onPress={handleCart}>
         <Text style={styles.pickupButtonText}>Go to Cart</Text>
       </TouchableOpacity>
+
+      {selectedId && (
+          <SelectWeightModal 
+            isVisible={isModalVisible}
+            onClose={closeModal}
+            selectedItem={selectedId} // Pass the selected item if needed inside the modal
+          />
+        )}
+      
     </View>
   );
 }
