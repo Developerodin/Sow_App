@@ -251,7 +251,7 @@ const setnewAddressinStorage =async(address)=>{
               </Block>
               
 
-              <Text style={{marginLeft:15,fontSize:25,fontWeight:500}}>Manage Address</Text>
+              <Text style={{marginLeft:15,fontSize:20,fontWeight:500}}>Select pickup Address</Text>
             
           </Block>
 
@@ -306,7 +306,7 @@ const setnewAddressinStorage =async(address)=>{
              <Block center>
              <LottieView
                 style={styles.lottie}
-                source={require("../assets/Animations/Animation - 1699520734986.json")}
+                source={require("../../assets/Animations/Animation - 1699520734986.json")}
                 autoPlay
                 loop
               />
@@ -374,7 +374,7 @@ const setnewAddressinStorage =async(address)=>{
          <Block center>
              <LottieView
                 style={styles.lottie}
-                source={require("../../../assets/Animations/Animation - 1699521355549.json")}
+                source={require("../../assets/Animations/Animation - 1699521355549.json")}
                 autoPlay
                 loop
               />

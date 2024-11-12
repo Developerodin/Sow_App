@@ -473,6 +473,13 @@ export default function App() {
             headerShown: true,
           }}/>
 
+          <Stack.Screen name="Pickup Address" component={PickupAddress} options={{
+            headerShown: true,
+          }}/>
+          <Stack.Screen name="Schedule Address" component={ScheduleAddress} options={{
+            headerShown: false,
+          }}/>
+
 
       
       </Stack.Navigator>

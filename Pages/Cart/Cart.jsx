@@ -15,7 +15,7 @@ export const Cart = () => {
     const navigation = useNavigation();
 
     const handlePickupAddress = () => {
-        navigation.navigate('Pickup Address');
+        navigation.navigate('Schedule Address');
     };
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
