@@ -40,6 +40,8 @@ import { AddAddress } from './Pages/SignUp/Registration/AddAddress';
 import { KycVerification } from './Pages/Kyc/KycVerification';
 import { KycVerification2 } from './Pages/Kyc/KycVerification2';
 import { KycPanUplode } from './Pages/Kyc/KycPanUplode';
+import { KycEnterGstDeatils } from './Pages/Kyc/KycEnterGstDeatils';
+import { KYCPending } from './Pages/Kyc/KYCPending';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -296,7 +298,7 @@ export default function App() {
       {/* {
        isAppFirstLaunched !== null && Auth !== null && */}
        {/* Login */}
-         <Stack.Navigator initialRouteName={ Auth ? 'Tabs' : 'KYC Verification'}>
+         <Stack.Navigator initialRouteName={ Auth ? 'Tabs' : 'Login'}>
          {/* <Stack.Navigator initialRouteName={'AppSlides'}> */}
         {/* <Stack.Screen name="Home" component={Home}
         options={{
@@ -379,7 +381,16 @@ export default function App() {
             headerShown: false,
           }}
         />
-
+        <Stack.Screen name="KycEnterGstDeatils" component={KycEnterGstDeatils}
+          options={{
+            headerShown: false,
+          }}
+        />
+<Stack.Screen name="KYCPending" component={KYCPending}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen name="AppSlides" component={AppSlides}
           options={{
             headerShown: false,

@@ -126,7 +126,7 @@ export const AddAddress = () => {
       //   console.error("Error:", error);
         
       // }
-     navigation.navigate('Tabs')
+     navigation.navigate('KYC Verification')
  
   
   }

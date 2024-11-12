@@ -27,6 +27,10 @@ export const KycVerification2 = () => {
       const handelPanUplode = () => {
         navigation.navigate("KycPanUplode")
       };
+
+      const handelGSTUplode = ()=>{
+        navigation.navigate("KycEnterGstDeatils")
+      }
   return (
     <View style={styles.container}>
     <StatusBar style="dark" />
@@ -87,7 +91,7 @@ export const KycVerification2 = () => {
             </TouchableOpacity>
 
 
-            <Block style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center",marginTop:30}}>
+            <TouchableOpacity onPress={handelGSTUplode} style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center",marginTop:30}}>
                 
                 <Block style={{flexDirection:"row"}}> 
                 <Block style={{width:50,height:50,justifyContent:"center",alignItems:"center"}}>
@@ -108,7 +112,7 @@ export const KycVerification2 = () => {
               <Block>
               <AntDesign name="right" size={24} color="black" />
               </Block>
-            </Block>
+            </TouchableOpacity>
           </Block>
        </Block>
       

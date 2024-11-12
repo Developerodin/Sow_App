@@ -5,7 +5,7 @@ import { Block, Text, Input, theme, Button } from "galio-framework";
 const {width, height} = Dimensions.get('window');
 import Logo from "../Images/Logo_1.png";
 import Img from "../Images/Onbording.png"
-import idCard from "../../assets/idCard.png"
+import KycPendingStatus from "../../assets/KycPendingStatus.png"
 
 import user from "../../assets/userVector.png"
 import file from "../../assets/fileVector.png"
@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import {AntDesign} from '@expo/vector-icons';
 
-export const KycPanUplode = () => {
+export const KYCPending = () => {
     const navigation = useNavigation();
 
     const handelContinue=()=>{
@@ -23,49 +23,20 @@ export const KycPanUplode = () => {
     const handelBack = () => {
         navigation.navigate("KYC Verification2")
       };
+
+    
+
   return (
     <View style={styles.container}>
     <StatusBar style="dark" />
-    <Block style={{flexDirection:"row",justifyContent:"left",alignItems:"center",marginTop:55}}>
-              
-              <Block style={{flexDirection:"row",justifyContent:"center",alignItems:"center",borderRadius:150,marginLeft:20}}>
-             
-              <MaterialIcons onPress={handelBack} name="arrow-back-ios" size={24} style={{marginLeft:5}} color="black" />
-              </Block>
-              
-
-              <Text style={{marginLeft:15,fontSize:25,fontWeight:500}}>Uplode your Documents</Text>
-            
-          </Block>
-        <View>
-      
-        <View style={{alignItems:"center",marginTop:150}}>
-         <Image
-           source={idCard}
+    
+    <Image
+           source={KycPendingStatus}
            
          />
-         </View>
 
-       </View>
-
-
-       <Block style={{padding:30,marginTop:120}}>
-          <Block>
-            <Text style={{fontSize:35,fontWeight:700}}>
-                Uplode your PAN for 
-            </Text>
-            <Text style={{fontSize:35,fontWeight:700}}>
-                proof of your
-            </Text>
-            <Text style={{fontSize:35,fontWeight:700}}>
-                identity.
-            </Text>
-           
-          </Block>
-
-           <Block style={{marginTop:60}}>
-           <TouchableOpacity
-           onPress={handelBack}
+<TouchableOpacity
+           onPress={handelContinue}
     activeOpacity={0.8}
     style={[
       styles.btn,
@@ -73,7 +44,9 @@ export const KycPanUplode = () => {
         flexDirection:"row",
         backgroundColor: '#14B57C',
         textAlign:"center",
-        alignItems:"center"
+        alignItems:"center",
+        marginTop:25,
+
       },
     ]}
   
@@ -84,17 +57,11 @@ export const KycPanUplode = () => {
         fontSize: 20,
         color:"#fff",
       }}>
-      Uplode PAN
+      Login
     </Text>
     
   </TouchableOpacity>
-           </Block>
-       </Block>
        
-
-       <Block center style={{marginTop:40}}>
-        <Text style={{fontSize:16,fontWeight:500}}>Need help ?</Text>
-       </Block>
        </View>
   )
 }
@@ -103,20 +70,28 @@ export const KycPanUplode = () => {
 const styles = StyleSheet.create({
     container:{
       flex: 1,
-      backgroundColor:"#FFF"
+      backgroundColor:"#FFF",
+      flexDirection:'column',
+      justifyContent:'center',
+      alignItems:'center'
     },
     inputContainer: {
       width: '100%',
-      height: 66,
+      // height: 66,
       borderBottomWidth: 1, // Add a bottom border for the input
       borderColor: 'transparent', // Make the border color transparent
     },
     input: {
-      flex: 1,
-      textAlign:"center",
-      padding:0,
-      fontSize:22
-       // Remove padding to make it look borderless
+      // flex: 1,
+      // textAlign: "left",
+      padding:15,
+      fontSize:16,
+      borderWidth:1,
+      borderRadius:8,
+      borderColor:"#A6A6A6",
+      width:'100%',
+      marginTop:4,
+     
     },
     subtitle: {
       color:"black",
@@ -147,9 +122,9 @@ const styles = StyleSheet.create({
       borderRadius: 52,
     },
     btn: {
-     width: '100%',
-      height: 55,
-      borderRadius: 5,
+     width:width*0.6,
+      height: 60,
+      borderRadius: 8,
       backgroundColor: '#40A99E',
       justifyContent: 'center',
       alignItems: 'center',

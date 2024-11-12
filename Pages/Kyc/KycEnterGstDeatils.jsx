@@ -17,14 +17,39 @@ export const KycEnterGstDeatils = () => {
     const navigation = useNavigation();
 
     const handelContinue=()=>{
-        navigation.navigate("Tabs")
+        navigation.navigate("KYCPending")
     }
 
     const handelBack = () => {
-        navigation.navigate("KYC Verification")
+        navigation.navigate("KYC Verification2")
       };
+
+      const customStyle ={
+        Card1: {
+        
+          borderRadius:5,
+          padding:10,
+          backgroundColor:"#fff",
+      
+        },
+        Card2: {
+        
+          borderRadius:5,
+          padding:10,
+          backgroundColor:"#fff",
+        
+        },
+        Card3: {
+        
+          borderRadius:5,
+          padding:10,
+          backgroundColor:"#fff",
+         
+        },
+      }
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
     <StatusBar style="dark" />
     <Block style={{flexDirection:"row",justifyContent:"left",alignItems:"center",marginTop:55}}>
               
@@ -34,7 +59,7 @@ export const KycEnterGstDeatils = () => {
               </Block>
               
 
-              <Text style={{marginLeft:15,fontSize:25,fontWeight:500}}>Uplode your Documents</Text>
+              <Text style={{marginLeft:15,fontSize:25,fontWeight:500}}>Enter your Details</Text>
             
           </Block>
         <View>
@@ -49,22 +74,34 @@ export const KycEnterGstDeatils = () => {
        </View>
 
 
-       <Block style={{padding:30,marginTop:120}}>
-          <Block>
+       <Block  style={{marginTop:80,padding:20}}>
+          <Block >
             <Text style={{fontSize:35,fontWeight:700}}>
-                Uplode your PAN for 
+                Enter your GST 
             </Text>
             <Text style={{fontSize:35,fontWeight:700}}>
-                proof of your
+                Number
             </Text>
-            <Text style={{fontSize:35,fontWeight:700}}>
-                identity.
-            </Text>
-           
           </Block>
 
-           <Block style={{marginTop:60}}>
+          <Block style={{marginTop:10}}>
+        <Block >
+        <Text style={{fontSize:16,marginBottom:20}}>Company info will auto filled using your GST No.</Text>
+      <TextInput
+          style={styles.input}
+          placeholder="Enter your GST No."
+        //   value={formData.email}
+        // onChangeText={(text) => handleInputChange("email", text)}
+          placeholderTextColor="#B7B7B7"
+        //   value={formData.phoneNumber}
+        // onChangeText={(text) => handleInputChange("phoneNumber", text)}
+        />
+                </Block>
+        </Block>
+
+           <Block style={{marginTop:30}}>
            <TouchableOpacity
+           onPress={handelContinue}
     activeOpacity={0.8}
     style={[
       styles.btn,
@@ -83,18 +120,20 @@ export const KycEnterGstDeatils = () => {
         fontSize: 20,
         color:"#fff",
       }}>
-      Uplode PAN
+      Verify
     </Text>
     
   </TouchableOpacity>
            </Block>
+
+           <Block center style={{marginTop:40}}>
+        <Text style={{fontSize:16,fontWeight:500,marginLeft:30}}>Need help ?</Text>
+       </Block>
        </Block>
        
 
-       <Block center style={{marginTop:40}}>
-        <Text style={{fontSize:16,fontWeight:500}}>Need help ?</Text>
-       </Block>
-       </View>
+       
+       </ScrollView>
   )
 }
 
@@ -106,16 +145,21 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
       width: '100%',
-      height: 66,
+      // height: 66,
       borderBottomWidth: 1, // Add a bottom border for the input
       borderColor: 'transparent', // Make the border color transparent
     },
     input: {
-      flex: 1,
-      textAlign:"center",
-      padding:0,
-      fontSize:22
-       // Remove padding to make it look borderless
+      // flex: 1,
+      // textAlign: "left",
+      padding:15,
+      fontSize:16,
+      borderWidth:1,
+      borderRadius:8,
+      borderColor:"#A6A6A6",
+      width:'100%',
+      marginTop:4,
+     
     },
     subtitle: {
       color:"black",
@@ -146,9 +190,9 @@ const styles = StyleSheet.create({
       borderRadius: 52,
     },
     btn: {
-     width: '100%',
-      height: 55,
-      borderRadius: 5,
+     width:'100%',
+      height: 60,
+      borderRadius: 8,
       backgroundColor: '#40A99E',
       justifyContent: 'center',
       alignItems: 'center',
