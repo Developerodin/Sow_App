@@ -89,6 +89,8 @@ const closeModal = () => {
             isVisible={isModalVisible}
             onClose={closeModal}
             selectedItem={selectedId} // Pass the selected item if needed inside the modal
+            isModalVisible={isModalVisible}
+             setModalVisible={setModalVisible}
           />
         )}
       

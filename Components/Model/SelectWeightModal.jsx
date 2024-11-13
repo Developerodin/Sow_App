@@ -1,29 +1,50 @@
 // WeightSelectionModal.js
-import React, { useState } from 'react';
-import {  View, Text, TouchableOpacity, Image, StyleSheet, TextInput } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Dimensions,
+  TextInput,
+} from "react-native";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
-
+const { width, height } = Dimensions.get("screen");
 const weightOptions = [
-  { id: '1', label: 'Less than 10 KG' },
-  { id: '2', label: '10-20 KG' },
-  { id: '3', label: '20-30 KG' },
-  { id: '4', label: '30-40 KG' },
-  { id: '5', label: 'More than 50 KG', upgrade: true },
+  { id: "1", label: "Less than 10 KG" },
+  { id: "2", label: "10-20 KG" },
+  { id: "3", label: "20-30 KG" },
+  { id: "4", label: "30-40 KG" },
+  { id: "5", label: "More than 50 KG", upgrade: true },
 ];
 
-const SelectWeightModal = ({ visible, onClose }) => {
+const SelectWeightModal = ({ visible, onClose,isModalVisible, setModalVisible }) => {
   const [selectedWeight, setSelectedWeight] = useState(null);
 
   return (
-    <Modal visible={visible} animationType="slide" transparent={true} backdropOpacity={0.1} swipeDirection={[ "down"]} onSwipeComplete={() => onClose()} onBackdropPress={() => onClose()}>
+    <Modal
+    isVisible={isModalVisible}
+      animationType="slide"
+      transparent={true}
+      backdropOpacity={0.1}
+      swipeDirection={["down"]}
+      onSwipeComplete={() => setModalVisible(false)}
+      onBackdropPress={() => setModalVisible(false)}
+      coverScreen={true}
+      style={{justifyContent:'flex-end'}}
+      >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.title}>Select Approximate Weight</Text>
           {weightOptions.map((option) => (
             <TouchableOpacity
               key={option.id}
-              style={[styles.optionContainer, selectedWeight === option.id && styles.selectedOption]}
+              style={[
+                styles.optionContainer,
+                selectedWeight === option.id && styles.selectedOption,
+              ]}
               onPress={() => setSelectedWeight(option.id)}
             >
               <Text style={styles.optionLabel}>{option.label}</Text>
@@ -64,8 +85,8 @@ const SelectWeightModal = ({ visible, onClose }) => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <MaterialIcons name="close" size={24} color="#000" />
+          <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+            <MaterialIcons name="close" size={24} color="#000" style={{marginRight:10,marginTop:10}} />
           </TouchableOpacity>
         </View>
       </View>
@@ -75,107 +96,122 @@ const SelectWeightModal = ({ visible, onClose }) => {
 
 const styles = StyleSheet.create({
   modalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    
-    
-    
+    // flex:1,
+    justifyContent: "flex-end",
+   
+    alignItems: "center",
+    marginBottom:-50
   },
   modalContent: {
-    
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    // margin: 20,
+    backgroundColor: "white",
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
+   
+   
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: width,
+    height: height *0.7,
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   optionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 8,
     marginBottom: 10,
   },
   selectedOption: {
-    borderColor: '#14B57C',
+    borderColor: "#14B57C",
   },
   optionLabel: {
     fontSize: 16,
   },
   upgradeButton: {
-    backgroundColor: '#14B57C',
+    backgroundColor: "#14B57C",
     paddingVertical: 4,
     paddingHorizontal: 8,
     borderRadius: 4,
   },
   upgradeText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 12,
   },
   uploadLabel: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 20,
   },
   uploadContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 10,
   },
   uploadInput: {
     flex: 1,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 8,
   },
   uploadButton: {
-    backgroundColor: '#14B57C',
+    backgroundColor: "#14B57C",
     padding: 10,
     borderRadius: 8,
     marginLeft: 10,
   },
   uploadButtonText: {
-    color: '#fff',
+    color: "#fff",
   },
   infoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 20,
   },
   cartContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 20,
   },
   quantityButton: {
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 8,
   },
   quantityText: {
     marginHorizontal: 10,
   },
   cartButton: {
-    backgroundColor: '#14B57C',
+    backgroundColor: "#14B57C",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
     marginLeft: 10,
   },
   cartButtonText: {
-    color: '#fff',
+    color: "#fff",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: 10,
   },

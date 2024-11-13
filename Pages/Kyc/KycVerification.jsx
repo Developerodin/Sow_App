@@ -63,7 +63,8 @@ export const KycVerification = () => {
         flexDirection:"row",
         backgroundColor: '#14B57C',
         textAlign:"center",
-        alignItems:"center"
+        alignItems:"center",
+        zIndex:999
       },
     ]}
     onPress={handelContinue}
