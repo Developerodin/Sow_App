@@ -52,6 +52,7 @@ import { AccountSettings } from './Pages/Profile/ProfileTabs/AccountSettings';
 import { ManageAddress } from './Pages/Profile/ProfileTabs/ManageAddress';
 import { Sell} from './Pages/Sell/Sell';
 import { SellScrap} from './Pages/Sell/SellScrap';
+import { PickupConfirmation } from './Pages/Cart/PickupConfirmation';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -78,7 +79,7 @@ const Tabs = ({navigation}) => {
       tabBarActiveTintColor: 'black',
       tabBarInactiveTintColor :'#fff',
       
-      tabBarStyle: { backgroundColor: '#14B57C',color:"#fff",position:'absolute',bottom:0,paddingTop:10,paddingBottom:10,height:64,borderTopLeftRadius:30,borderTopRightRadius:30},
+      tabBarStyle: { backgroundColor: '#14B57C',color:"#fff",position:'absolute',bottom:0,paddingTop:10,paddingBottom:10,height:64,borderTopLeftRadius:30,borderTopRightRadius:30,borderColor:'#14b57c',borderWidth:1}
     }}
     >
       <Tab.Screen
@@ -489,6 +490,10 @@ export default function App() {
           }}/>
 
           <Stack.Screen name="Cart" component={Cart} options={{
+            headerShown: false,
+          }}/>
+
+          <Stack.Screen name="PickupConfirmation" component={PickupConfirmation} options={{
             headerShown: false,
           }}/>
 

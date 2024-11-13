@@ -30,7 +30,10 @@ export const Sell = () => {
       ]}
       onPress={handelSellScrap}
     >
-      <Image source={item.image} style={styles.categoryImage} />
+        <Image
+              source={item.image}
+              style={item.name === 'Plastic' ? styles.plasticImage : styles.image}
+            />
       <Text style={styles.categoryText}>{item.name}</Text>
     </TouchableOpacity>
   );
@@ -96,9 +99,14 @@ const styles = StyleSheet.create({
     borderColor: '#14B57C',
     borderWidth: 1,
   },
-  categoryImage: {
-    width: 50,
-    height: 50,
+  image: {
+    width: 60,
+    height: 60,
+    marginBottom: 10,
+  },
+  plasticImage: {
+    width: 40,
+    height: 60,
     marginBottom: 10,
   },
   categoryText: {

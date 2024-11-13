@@ -37,6 +37,9 @@ export const ScheduleAddress = () => {
   });
 
   
+ const handleSubmit = () => {
+    navigation.navigate("PickupConfirmation");
+  };
 
   const selectAddress = (address) => {
     setSelectedAddress(address);
@@ -318,6 +321,7 @@ const setnewAddressinStorage =async(address)=>{
 
       <Block style={styles2.Space_Around}>
       <Button color="#14B57C" title="Add New Address" style={{width:width*0.5}} tintColor="#fff" onPress={toggleModal} />
+      <Button color="#14B57C" title="Submit" style={{width:width*0.3}} tintColor="#fff" onPress={handleSubmit} />
       
       </Block>
 

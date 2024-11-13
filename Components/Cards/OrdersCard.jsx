@@ -63,8 +63,8 @@ export const OrdersCard = ({ data }) => {
         <View style={[styles.column, styles.divider]}>
         <Text style={{fontSize: 16,fontWeight: 600}}>Est. Value</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center',marginTop: 5 }}>
-          <View style={{ backgroundColor: '#0EB77B', borderRadius: 50, padding: 5 }}>
-            <FontAwesome name="rupee" size={10} color="#fff" />
+          <View >
+            <Image source={require('../../assets/Rupee.png')} style={{ width: 20, height: 20 }} />
           </View>
           <Text style={styles.amountText}>₹{data.totalAmount}</Text>
           </View>
