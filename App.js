@@ -310,7 +310,7 @@ export default function App() {
       {/* {
        isAppFirstLaunched !== null && Auth !== null && */}
        {/* Login */}
-         <Stack.Navigator initialRouteName={ Auth ? 'Tabs' : 'Tabs'}>
+         <Stack.Navigator initialRouteName={ Auth ? 'Tabs' : 'Login'}>
          {/* <Stack.Navigator initialRouteName={'AppSlides'}> */}
         {/* <Stack.Screen name="Home" component={Home}
         options={{
