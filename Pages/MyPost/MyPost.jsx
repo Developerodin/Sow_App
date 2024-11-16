@@ -55,10 +55,10 @@ const FirstRoute = () => (
 
         <Block style={{marginTop:15}}>
 <Block >
-          <Text style={{fontSize:16}}>Uplode</Text>
+          <Text style={{fontSize:18}}>Uplode images*</Text>
       <TextInput
           style={styles.input}
-          placeholder="Enter you name"
+          placeholder="Choose files"
           // value={formData.firstname}
           // onChangeText={(text) => handleInputChange("firstname", text)}
           placeholderTextColor="#B7B7B7"
@@ -67,8 +67,177 @@ const FirstRoute = () => (
                 </Block>
             
         </Block>
+
+<Block style={{marginTop:20}}>
+  <Text style={{fontSize:22}}>Item Details</Text>
+</Block>
+
+        <Block style={{marginTop:18}}>
+<Block >
+          <Text style={{fontSize:16}}>Title</Text>
+      <TextInput
+          style={styles.input}
+          placeholder="Enter your title"
+          // value={formData.firstname}
+          // onChangeText={(text) => handleInputChange("firstname", text)}
+          placeholderTextColor="#B7B7B7"
+
+        />
+                </Block>
+            
+        </Block>
+
+        <Block style={{marginTop:15}}>
+<Block >
+          <Text style={{fontSize:16}}>Description</Text>
+      <TextInput
+          style={styles.input}
+          placeholder="Enter your description"
+          // value={formData.firstname}
+          // onChangeText={(text) => handleInputChange("firstname", text)}
+          placeholderTextColor="#B7B7B7"
+
+        />
+                </Block>
+            
+        </Block>
+
+
+        <Block style={{marginTop:15}}>
+<Block >
+          <Text style={{fontSize:16}}>Price</Text>
+      <TextInput
+          style={styles.input}
+          placeholder="0000"
+          // value={formData.firstname}
+          // onChangeText={(text) => handleInputChange("firstname", text)}
+          placeholderTextColor="#B7B7B7"
+
+        />
+                </Block>
+            
+        </Block>
+
+
+        <Block style={{marginTop:15}}>
+<Block >
+          <Text style={{fontSize:16}}>Quantity</Text>
+      <TextInput
+          style={styles.input}
+          placeholder="0000"
+          // value={formData.firstname}
+          // onChangeText={(text) => handleInputChange("firstname", text)}
+          placeholderTextColor="#B7B7B7"
+
+        />
+                </Block>
+            
+        </Block>
+
+
+        <Block style={{marginTop:20}}>
+          <Text style={{fontSize:22}}>Your Details</Text>
+        </Block>
          
         
+        <Block style={{marginTop:18}}>
+<Block >
+          <Text style={{fontSize:16}}>Comapny name</Text>
+      <TextInput
+          style={styles.input}
+          placeholder="Enter your Co. Name"
+          // value={formData.firstname}
+          // onChangeText={(text) => handleInputChange("firstname", text)}
+          placeholderTextColor="#B7B7B7"
+
+        />
+                </Block>
+            
+        </Block>
+
+
+        <Block style={{marginTop:15}}>
+<Block >
+          <Text style={{fontSize:16}}>Email address</Text>
+      <TextInput
+          style={styles.input}
+          placeholder="Enter your Email Address"
+          // value={formData.firstname}
+          // onChangeText={(text) => handleInputChange("firstname", text)}
+          placeholderTextColor="#B7B7B7"
+
+        />
+                </Block>
+            
+        </Block>
+
+
+        <Block style={{marginTop:15}}>
+<Block >
+          <Text style={{fontSize:16}}>Phone Number</Text>
+      <TextInput
+          style={styles.input}
+          placeholder="Enter your Number"
+          // value={formData.firstname}
+          // onChangeText={(text) => handleInputChange("firstname", text)}
+          placeholderTextColor="#B7B7B7"
+
+        />
+                </Block>
+            
+        </Block>
+
+        <Block style={{marginTop:15}}>
+<Block >
+          <Text style={{fontSize:16}}>State</Text>
+      <TextInput
+          style={styles.input}
+          placeholder="Enter your State"
+          // value={formData.firstname}
+          // onChangeText={(text) => handleInputChange("firstname", text)}
+          placeholderTextColor="#B7B7B7"
+
+        />
+                </Block>
+            
+        </Block>
+
+        <Block style={{marginTop:15}}>
+<Block >
+          <Text style={{fontSize:16}}>City</Text>
+      <TextInput
+          style={styles.input}
+          placeholder="Enter your City"
+          // value={formData.firstname}
+          // onChangeText={(text) => handleInputChange("firstname", text)}
+          placeholderTextColor="#B7B7B7"
+
+        />
+                </Block>
+            
+        </Block>
+
+        <Block style={{marginTop:15}}>
+<Block >
+          <Text style={{fontSize:16}}>Address</Text>
+      <TextInput
+          style={styles.input}
+          placeholder="Enter your Address"
+          // value={formData.firstname}
+          // onChangeText={(text) => handleInputChange("firstname", text)}
+          placeholderTextColor="#B7B7B7"
+
+        />
+                </Block>
+            
+        </Block>
+
+
+        <Block style={{marginTop:50,marginBottom:30}}>
+        <TouchableOpacity style={styles.pickupButton} >
+        <Text style={styles.pickupButtonText}>Submit</Text>
+      </TouchableOpacity>
+        </Block>
         
         </Block>
 
@@ -230,7 +399,7 @@ const styles = StyleSheet.create({
     borderWidth:1,
     borderRadius:8,
     borderColor:"#A6A6A6",
-    width:width*0.9,
+    width:width*0.95,
     
     marginTop:4
     // Remove padding to make it look borderless
@@ -299,6 +468,19 @@ const styles = StyleSheet.create({
     },
     button: {
       width: width,
+    },
+    pickupButton: {
+      backgroundColor: '#14B57C',
+      paddingVertical: 15,
+      borderRadius: 8,
+      alignItems: 'center',
+      marginBottom: 20,
+      marginHorizontal: 20,
+    },
+    pickupButtonText: {
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: 'bold',
     },
 
   });

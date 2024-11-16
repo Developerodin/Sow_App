@@ -54,6 +54,7 @@ import { Sell} from './Pages/Sell/Sell';
 import { SellScrap} from './Pages/Sell/SellScrap';
 import { PickupConfirmation } from './Pages/Cart/PickupConfirmation';
 import { MyPost } from './Pages/MyPost/MyPost';
+import { MyPostHistoryDetails } from './Pages/MyPost/MyPostHistoryDetails';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -372,6 +373,12 @@ export default function App() {
           }}
         />
 <Stack.Screen name="Order Details" component={OrderDetail}
+          options={{
+            headerShown: true,
+          }}
+        />
+
+<Stack.Screen name="Post Details" component={MyPostHistoryDetails}
           options={{
             headerShown: true,
           }}
