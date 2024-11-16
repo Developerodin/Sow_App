@@ -53,6 +53,7 @@ import { ManageAddress } from './Pages/Profile/ProfileTabs/ManageAddress';
 import { Sell} from './Pages/Sell/Sell';
 import { SellScrap} from './Pages/Sell/SellScrap';
 import { PickupConfirmation } from './Pages/Cart/PickupConfirmation';
+import { MyPost } from './Pages/MyPost/MyPost';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -106,6 +107,22 @@ const Tabs = ({navigation}) => {
           tabBarIcon: ({ color, size }) => (
             <Image
             source={require('./assets/media/sell.png')} 
+            style={{ width: 25, height: 25, tintColor: color }}
+          />
+          ),
+          headerShown: false,
+        }}
+      
+       
+      />
+
+<Tab.Screen
+        name="My Post"
+        component={MyPost}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Image
+            source={require('./assets/media/Plus.png')} 
             style={{ width: 25, height: 25, tintColor: color }}
           />
           ),
@@ -310,7 +327,7 @@ export default function App() {
       {/* {
        isAppFirstLaunched !== null && Auth !== null && */}
        {/* Login */}
-         <Stack.Navigator initialRouteName={ Auth ? 'Tabs' : 'Login'}>
+         <Stack.Navigator initialRouteName={ Auth ? 'Tabs' : 'Tabs'}>
          {/* <Stack.Navigator initialRouteName={'AppSlides'}> */}
         {/* <Stack.Screen name="Home" component={Home}
         options={{
@@ -324,6 +341,13 @@ export default function App() {
             headerShown: false,
           }}
         />
+
+{/* <Stack.Screen name="MyPost" component={MyPost}
+          options={{
+            headerShown: false,
+          }}
+        /> */}
+
 <Stack.Screen name="Profile" component={Profile}
           options={{
             headerShown: false,
