@@ -32,7 +32,7 @@ export const QuatationCard = ({ data }) => {
   const navigation = useNavigation();
 
   const handeViewDetail=()=>{
-    navigation.navigate("Order Details")
+    navigation.navigate("QuotationsDetails")
   }
     // const {Img,Title,SubTitle} = props
   return (

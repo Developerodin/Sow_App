@@ -40,7 +40,7 @@ export const Cart = () => {
   );
 
   return (
-    <ScrollView style={{marginBottom: 50}} showsVerticalScrollIndicator={false}>
+   
     <View style={styles.container}>
       <Block style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center" ,marginTop : 50 ,marginBottom: 20}}>
         <TouchableOpacity onPress={handleBack}>
@@ -50,6 +50,7 @@ export const Cart = () => {
         </TouchableOpacity>
         <Text style={{ marginLeft: 10, fontSize: 25, fontWeight: '500' }}>Your Scrap Start</Text>
       </Block>
+      <ScrollView style={{marginBottom: 50}} showsVerticalScrollIndicator={false}>
 
       <View style={styles.pointsContainer}>
         <FontAwesome name="circle" size={20} color="gold" />
@@ -82,8 +83,8 @@ export const Cart = () => {
       <TouchableOpacity style={styles.pickupButton} onPress={handlePickupAddress}>
         <Text style={styles.pickupButtonText}>Select Pickup Address</Text>
       </TouchableOpacity>
-    </View>
     </ScrollView>
+    </View>
   );
 };
 

@@ -55,6 +55,9 @@ import { SellScrap} from './Pages/Sell/SellScrap';
 import { PickupConfirmation } from './Pages/Cart/PickupConfirmation';
 import { MyPost } from './Pages/MyPost/MyPost';
 import { MyPostHistoryDetails } from './Pages/MyPost/MyPostHistoryDetails';
+import { QuotationsDetails } from './Pages/MyPost/QuotationsDetails';
+import { Quotations } from './Pages/MyPost/Quotations';
+import { QuotationAccepted } from './Pages/MyPost/QuotationAccepted';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -520,11 +523,23 @@ export default function App() {
            headerShown: false,
           }}/>
 
-          <Stack.Screen name="Cart" component={Cart} options={{
+          {/* <Stack.Screen name="Cart" component={Cart} options={{
+            headerShown: false,
+          }}/> */}
+
+          <Stack.Screen name="PickupConfirmation" component={PickupConfirmation} options={{
             headerShown: false,
           }}/>
 
-          <Stack.Screen name="PickupConfirmation" component={PickupConfirmation} options={{
+          <Stack.Screen name="QuotationsDetails" component={QuotationsDetails} options={{
+            headerShown: false,
+          }}/>
+
+          <Stack.Screen name="Quotations" component={Quotations} options={{
+            headerShown: false,
+          }}/>
+
+          <Stack.Screen name="QuotationAccepted" component={QuotationAccepted} options={{
             headerShown: false,
           }}/>
 

@@ -13,142 +13,101 @@ import { AntDesign } from '@expo/vector-icons';
 
 const {width, height} = Dimensions.get('window');
 
-export const MyPostHistoryDetails = () => {
+export const Quotations = () => {
+    const navigation = useNavigation();
+
+    const handelBack = () => {
+        navigation.goBack();
+        };
+
+    const handelAccept = () => {
+        navigation.navigate("QuotationAccepted");
+    };    
   return (
     <View style={styles.container}>
     <ScrollView showsVerticalScrollIndicator={false}>
 
    
     <Block style={{padding:15,backgroundColor:"#fff", marginTop:0,borderRadius:10}}>
-    {/* <Block style={styles.Space_Between}>
-         <Text style={{fontSize:20,color:"grey"}}>OTP :{orderDetails && orderDetails.otp}</Text>
-         <Button  style={{backgroundColor:"crimson",borderRadius:10}}>
-              <Text style={{fontSize:16,fontWeight:400,color:"#fff"}}>
-              {orderDetails && (orderDetails.status).toUpperCase()}
-              </Text>
-            
-              </Button>
-        </Block> */}
-             <Block style={{ marginTop: 0 }}>
-           <Block style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ fontSize: 18, fontWeight: 700, color: '#000' }}>
-              Aluminium
+    <Block >
+      <Block style={{ flexDirection: 'row', alignItems: 'center', marginTop: 55 }}>
+        <Block style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderRadius: 150, marginLeft: 0 }}>
+          <MaterialIcons onPress={handelBack} name="arrow-back-ios" size={24} style={{ marginLeft: 5 }} color="black" />
+        </Block>
+        <Text style={{ marginLeft: 15, fontSize: 25, fontWeight: '500', flex: 1 }}>Quotations Details</Text>
+       
+      </Block>
+    </Block>
+    
+             <Block style={{ marginTop: 10 }}>
+             <Block style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
+            <Ionicons name="people" size={20} color="#0EB77B" />
+            <Text style={{ fontSize: 18, marginLeft: 8 ,fontWeight : 600 }}>
+              Mr. Xyz
             </Text>
-          </Block> 
+          </Block>
 
-          <Block style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
+         
+          
+          <Block style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
+            <Ionicons name="document" size={20} color="#0EB77B" />
+            <Text style={{ fontSize: 18, marginLeft: 8 ,fontWeight : 600 }}>
+              XYZ Metals
+            </Text>
+          </Block>
+
+          <Block style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
             <Image source={require('../../assets/Rupee.png')} style={{height:20,width:20}} />
             <Text style={{ fontSize: 18, marginLeft: 8 ,fontWeight : 700 }}>
+                Rate :
 
              ₹ 33/KG
             </Text>
           </Block>  
-          
-          <Block style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name="document" size={20} color="#0EB77B" />
-            <Text style={{ fontSize: 18, marginLeft: 8 ,fontWeight : 700 }}>
-              1500 kg
-            </Text>
-          </Block>
-          <Block style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
+
+          <Block style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
             <Ionicons name="calendar" size={20} color="#0EB77B" />
             <Text style={{ fontSize: 16, marginLeft: 8 ,fontWeight : 500}}>
               11 Nov 2024
             </Text>
           </Block>
-          <Block style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
+          <Block style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}>
             <Ionicons name="location" size={20} color="#0EB77B" />
             <Text style={{ fontSize: 16, marginLeft: 8 ,fontWeight : 500}}>
               Pickup Location :   Near Dmart, Mahavir Nagar, 302033,Jaipur
             </Text>
           </Block>
          
+
+         <View style={{marginTop: 20 ,paddingHorizontal : 15}}>
+          <View style={styles.cardActions}>
+              <TouchableOpacity onPress={handelAccept} >
+                <View style={styles.acceptButton}>
+                <Text style={styles.acceptText}>Accept Offer</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity >
+                <View style={styles.declineButton}>
+                <Text style={styles.declineText}>Decline</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            </View>
+          
            
           </Block>
 
-        {/* <Block style={styles.tableContainer}>
-      
+       
+         
 
-     
-      <View style={[styles.tableRow, styles.tableHeader]}>
-        <Text style={[styles.headerText, styles.tableCell]}>Items</Text>
-        <Text style={[styles.headerText, styles.tableCell]}>Est. Weight</Text>
-        <Text style={[styles.headerText, styles.tableCell]}>Est. Price</Text>
-      </View>
+
 
     
-      <View style={styles.tableRow}>
-        <Text style={[styles.cellText, styles.tableCell]}>
-          Paper
-        </Text>
-        <Text style={[styles.cellText, styles.tableCell]}>
-          40 kg
-        </Text>
-        <Text style={[styles.cellText, styles.tableCell]}>
-        ₹ 4000
-        </Text>
-      </View>
-
-      
-
-      <View style={styles.tableRow}>
-        <Text style={[styles.cellText, styles.tableCell]}>Plastic</Text>
-        <Text style={[styles.cellText, styles.tableCell]}>20 kg</Text>
-        <Text style={[styles.cellText, styles.tableCell]}>₹ 3000</Text>
-      </View>
-
-      <View style={styles.tableRow}>
-        <Text style={[styles.cellText, styles.tableCell]}>Metal</Text>
-        <Text style={[styles.cellText, styles.tableCell]}>20 kg</Text>
-        <Text style={[styles.cellText, styles.tableCell]}>₹ 3000</Text>
-      </View>
-
-      <View style={styles.tableRow}>
-        <Text style={[styles.cellText, styles.tableCell]}>Total Est. Amount</Text>
-        
-        <Text style={[styles.cellText, styles.tableCell]}>₹ 10000</Text>
-      </View>
-    </Block> */}
- 
 
 
-      <Text style={{fontSize: 24 ,fontWeight : 700, color: '#000' ,marginVertical: 15}}>Photos</Text>
-    <View style={styles.boxContainer}>
-      <View style={styles.row}>
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-      </View>
-      <View style={styles.row}>
-        <View style={styles.box} />
-        <View style={styles.box} />
-        <View style={styles.box} />
-      </View>
-    </View>
 
-{/* {
-  orderDetails && orderDetails.details.discription &&<Block style={{marginTop:20}} >
-  <Block>
-   <Text style={styles.text1}>Discription</Text>
-  </Block>
-  <Block style={{marginTop:10}}>
-  <Text style={{fontSize:20}}>{orderDetails && orderDetails.details.discription}</Text>
-  </Block>
-  
-</Block>
 
-} */}
      
-
-
-     <Block style={{marginTop:20}} >
-
-    
-       
-
-       
-        
-     </Block>
     </Block>
 
     
@@ -277,13 +236,7 @@ const styles = StyleSheet.create({
       paddingLeft : 30,
       
     },
-    title: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      marginBottom: 15,
-      color: '#333',
-      textAlign: 'center',
-    },
+  
     tableHeader: {
       backgroundColor: '#fff',
       borderBottomWidth: 1,
@@ -336,5 +289,37 @@ const styles = StyleSheet.create({
       backgroundColor: '#D3D3D3', // Light grey color
       borderRadius: 8,
     },
+    cardActions: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+
+      },
+      acceptButton: {
+        flex: 1,
+        backgroundColor: "#14B57C",
+        paddingVertical: 12,
+        borderRadius: 7,
+        marginRight: 8,
+        alignItems: "center",
+        width: width * 0.5,
+      },
+      acceptText: {
+        fontSize: 14,
+        color: "#fff",
+        fontWeight: "bold",
+      },
+      declineButton: {
+        flex: 1,
+        backgroundColor: "#FF2020",
+        paddingVertical: 12,
+        borderRadius: 7,
+        alignItems: "center",
+        width: width * 0.3,
+      },
+      declineText: {
+        fontSize: 14,
+        color: "#fff",
+        fontWeight: "bold",
+      },
   
     });

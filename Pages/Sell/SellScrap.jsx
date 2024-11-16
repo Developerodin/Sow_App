@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet,ScrollView } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Block } from 'galio-framework'; 
@@ -65,6 +65,7 @@ const closeModal = () => {
         </TouchableOpacity>
         <Text style={{ marginLeft: 2, fontSize: 25, fontWeight: '500' }}>Sell your Scrap</Text>
       </Block>
+      <ScrollView showsVerticalScrollIndicator={false}>
       <Text style={styles.category}>
         Category: <Text style={styles.categoryName}>Paper</Text>
       </Text>
@@ -93,7 +94,7 @@ const closeModal = () => {
              setModalVisible={setModalVisible}
           />
         )}
-      
+      </ScrollView>
     </View>
   );
 }
@@ -103,6 +104,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: '#fff',
+    
   },
   header: {
     fontSize: 20,
