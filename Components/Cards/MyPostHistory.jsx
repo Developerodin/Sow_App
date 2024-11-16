@@ -32,7 +32,7 @@ export const MyPostHistory = ({ data }) => {
   const navigation = useNavigation();
 
   const handeViewDetail=()=>{
-    navigation.navigate("Order Details")
+    navigation.navigate("Post Details")
   }
     // const {Img,Title,SubTitle} = props
   return (
