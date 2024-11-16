@@ -62,10 +62,13 @@ export const Login = ({ navigation }) => {
   }
   
   const handleInputChange = (fieldName, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [fieldName]: value,
-    }));
+   
+    const numericValue = value.replace("+91 ", "");
+
+    
+    if (numericValue.length <= 10) {
+      setFormData({ ...formData, [fieldName]: numericValue });
+    }
   };
 
   const handleOtpFill = (otp) => {
@@ -270,7 +273,7 @@ export const Login = ({ navigation }) => {
         <Block style={{flexDirection:"row",justifyContent:"left",alignItems:"center"}}>
         <Text style={{color:"#FFFFFF",fontSize:18,marginTop:20}}>+91 {formData.phoneNumber}</Text>
 
-        <TouchableOpacity onPress={handelBack} style={{marginTop:20,marginLeft:20,flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
+        <TouchableOpacity onPress={handelBack} style={{marginTop:20,marginLeft:8,flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
         <MaterialIcons name="edit" size={20} color="black" style={{marginRight:3}} />
           <Text style={{color:"#fff",fontSize:18,color:"black"}}>Edit</Text>
         </TouchableOpacity>
@@ -416,8 +419,9 @@ export const Login = ({ navigation }) => {
           placeholder="+ 91"
           keyboardType="numeric"
           placeholderTextColor="black"
-          value={formData.phoneNumber}
+          value={`+91 ${formData.phoneNumber}`}
         onChangeText={(text) => handleInputChange("phoneNumber", text)}
+        maxLength={14}
         />
                 </Block>
       
