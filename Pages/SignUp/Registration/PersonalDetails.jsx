@@ -153,7 +153,7 @@ export const PersonalDetails = () => {
     const savePersonalDetails = async () => {
       try {
         const RegisterAs = await AsyncStorage.getItem('RegisterAs') || null;
-        const Mobile = await AsyncStorage.getItem('Mobile') || null;
+        const PhoneNumber = await AsyncStorage.getItem('Mobile') || null;
         // const Category = await AsyncStorage.getItem('selectedCategory') || null;
         const categoryNames = selectedCategories.map(category => {
           return {
@@ -169,23 +169,17 @@ export const PersonalDetails = () => {
         // console.log("categoryNames",categoryNames)
         const Category = JSON.stringify(categoryNames);
         const UserData = {
-          firstname: formData.firstname,
-          lastname:formData.lastname,
+          firstName: formData.firstname,
+          lastName:formData.lastname,
           email: formData.email ,
-          password: '1234',
-          mobile: Mobile,
-          Address:[],
-          country: 'India',
-          registerAs: RegisterAs,
-          adharData:'',
-          images:[],
-          categories:Category,
-          businessName:formData.businessName,
-          referralCode:formData.referralCode
+          phoneNumber: PhoneNumber,
+          referralCode:formData.referralCode,
+          profileType: 'customer',
         };
         const UserDetails = JSON.stringify(UserData);
         await AsyncStorage.setItem("UserDetails", UserDetails);
         console.log('Details saved successfully.',UserDetails);
+        await SubmitSigupData();
       } catch (error) {
         console.error('Error saving Details :', error);
       }
@@ -213,72 +207,34 @@ export const PersonalDetails = () => {
         // navigation.navigate("VerificationDetails")
     }
 
-    const SubmitSigupData= async()=>{
-      setLoading(true)
+    const SubmitSigupData = async () => {
+      console.log("need to do more");
       const UserDetails = await AsyncStorage.getItem('UserDetails') || null;
-    const UserData = JSON.parse(UserDetails);
+      const UserData = JSON.parse(UserDetails);
     
-      
-      // console.log("Data of user ====>",UserData)
-         try {
-          const response = await axios.post(`${Base_url}api/b2b`, UserData);
-             
-          if(response.status === 200){
-               if(response.data){
-                const data = response.data
-                  console.log("Data ==>",response.data)
-                  ToastAndroid.show(data.error, ToastAndroid.SHORT);
-                  setLoading(false);
-                  // setShowPAN(true);
-                  // navigation.reset({
-                  //   index: 0,
-                  //   routes: [{ name: 'FillPersonalDetails' }],
-                  // });
-                  // navigation.navigate("FillPersonalDetails")
-                  return
-               }
-               return
+      console.log("Data of user ====>", UserDetails);
+      setLoading(true);
+      try {
+        const response = await axios.post(`${Base_url}b2cUser`, UserData);
+        console.log("Response of user ====>", response.data);
+        const data = response.data;
+            const userId = data.id;
+            console.log("Data after submit  ==>", data,userId);
+            await AsyncStorage.setItem('userID', userId);
+            navigation.navigate('AddAddress');
+    
+        if (response.status === 200) {
+          if (response.data) {
+            
+            return;
           }
-          
-          if (response.status === 201) {
-               if(response.data){
-          ToastAndroid.show("Signup Successfull", ToastAndroid.SHORT);
-          // setShowSuccess(true);
-          // setLoading(false)
-          navigation.navigate("VerifyProfileStatus")
-    
-         }
-           else {
-            console.error("Error creating user:", response);
-            // setLoading(false)
-          }
+          return;
         }
-        } catch (error) {
-                ToastAndroid.show("Eroor : Try again", ToastAndroid.SHORT);
-        
-        //  setShowPAN(true);
-          console.error("Error:", error);
-          // setLoading(false)
-        }
-    
-      // try {
-      //   const response = await axios.post(`${Base_url}b2b`, formData); // Update the API endpoint accordingly
-      //   console.log("Res ==>",response.data);
-      //   if(response.data){
-      //     ToastAndroid.show("Signup Successfull", ToastAndroid.SHORT);
-      //     setShowSuccess(true);
-    
-      //   }
-        
-      // } catch (error) {
-      //   console.error('Error creating user:', error);
-        
-      //     ToastAndroid.show("Eroor : Try again", ToastAndroid.SHORT);
-        
-      //   setShowPAN(true);
-      // }
-    
-    }
+      } catch (error) {
+        console.error('Error submitting data:', error);
+        setLoading(false);
+      }
+    };
 
     const handleInputChange = (fieldName, value) => {
       setFormData((prevData) => ({
@@ -531,21 +487,13 @@ export const PersonalDetails = () => {
     <Block right style={[{ padding: 20, marginTop: 20 }]}>
              
                 
-                    {loading ? 
-        <View >
-          <ActivityIndicator size="large"  color="#65be34" />
-        </View>
-        :
-        <Button
-                  title="Next"
-                  color="#14B57C"
-                 
-                  style={{ width:width*0.88, padding:10 }}
-                  onPress={handelPersonalDetailSubmit}
-                  
-                  tintColor="#fff"
-                />
-      }
+    <TouchableOpacity onPress={handelPersonalDetailSubmit} style={[styles.btn,{backgroundColor:"#14B57C"}]} activeOpacity={0.8} disabled={loading}>
+   {loading ? (
+          <ActivityIndicator size="small" color="#fff" />
+        ) : (
+    <Text style={{color:"#fff",fontSize:18}}>Next</Text>
+    )}
+    </TouchableOpacity>
               
             </Block>
       
@@ -625,7 +573,7 @@ const styles = StyleSheet.create({
       borderRadius: 52,
     },
     btn: {
-     width: '95%',
+     width: '100%',
       height: 55,
       borderRadius: 5,
       backgroundColor: '#40A99E',

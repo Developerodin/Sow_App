@@ -34,7 +34,7 @@ export const KycVerification = () => {
   };
 
   const handelSkip = () => {
-    navigation.navigate("Tabs");
+    navigation.navigate("VerifyProfileStatus");
   };
 
   return (

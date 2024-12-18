@@ -8,10 +8,12 @@ import {
   StyleSheet,
   TouchableHighlight,
   Dimensions,
-  TextInput
+  TextInput,
+  ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { useAppContext } from "../../../Context/AppContext";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation ,useRoute} from "@react-navigation/native";
 import { MyMap } from "../../../Components/Maps/MyMap";
 import { Ionicons } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons'; 
@@ -24,12 +26,15 @@ import axios from "axios";
 const { width, height } = Dimensions.get("window");
 export const AddAddress = () => {
   const navigation = useNavigation();
-  const { update, setUpdate,SelectedAddressFromMap,setSelectedAddressFromMap } = useAppContext();
+  // const route = useRoute();
+  // const { userId } = route.params;
+  const { update, setUpdate,SelectedAddressFromMap,setSelectedAddressFromMap,userId } = useAppContext();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAddressModalVisible, setIsAddressModalVisible] = useState(false);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [AllUserAddresses, setAllUsersAddresses] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [newAddress, setNewAddress] = useState({
     house: "",
     area: "",
@@ -73,7 +78,10 @@ export const AddAddress = () => {
       name: SelectedAddressFromMap.name,
       house:newAddress.house,
       area:newAddress.area,
-      directions:newAddress.directions
+      directions:newAddress.directions,
+      latitude: SelectedAddressFromMap.latitude,
+    longitude: `${SelectedAddressFromMap.longitude}`,
+
     }
     // setAddresses([...addresses, newAddress1]);
     setnewAddressinStorage(newAddress1)
@@ -89,47 +97,53 @@ export const AddAddress = () => {
     
   };
 
-  const SubmitSigupData= async()=>{
-    // setLoading(true)
-    console.log("need to do more")
-    const UserDetails = await AsyncStorage.getItem('UserDetails') || null;
-  const UserData = JSON.parse(UserDetails);
+  const SubmitAddressData = async()=>{
   
-    
-    console.log("Data of user ====>",UserDetails)
-      //  try {
-      //   const response = await axios.post(`${Base_url}api/b2b`, UserData);
-           
-      //   if(response.status === 200){
-      //        if(response.data){
-      //         const data = response.data
-      //           console.log("Data after vsubmit  ==>",data)
-                
-      //           return
-      //        }
-      //        return
-      //   }
-        
-      //   if (response.status === 201) {
-      //        if(response.data){
-     
-      //   navigation.navigate("VerifyProfileStatus")
+    console.log("save address to database")
+    const UserAddress ={
+      userId : userId,
+      latitude:  SelectedAddressFromMap.latitude || 1.3456 ,
+      longitude:  SelectedAddressFromMap.longitude || 1.3456,
+      googleAddress: SelectedAddressFromMap.formattedAddress,
+      buildingName: newAddress.house,
+      roadArea: newAddress.area,
+      note: newAddress.directions,
+      addressType: "Warehouse",
+      city: SelectedAddressFromMap.city,
+      state: SelectedAddressFromMap.region,
+    }
+    console.log("User Address",UserAddress)
   
-      //  }
-      //    else {
-      //     console.error("Error creating user:", response);
+    setLoading(true)
+    try {
+      const response = await axios.post(`${Base_url}b2cUser/address`, UserAddress); // Update the API endpoint accordingly
+      console.log("Res ==>",response.data);
+      if(response.data){
+        console.log("Address save to database")
+        setNewAddress({
+          house:"",
+          area:"",
+          directions:"",
+        });
+        setIsModalVisible(false)
+      setIsAddressModalVisible(false)
+      setUpdate((prev) => prev + 1);
         
-      //   }
-      // }
-      // } catch (error) {
-            
-      //   console.error("Error:", error);
-        
-      // }
-     navigation.navigate('KYC Verification')
- 
-  
-  }
+      }
+      
+    } catch (error) {
+      console.error('Error save address to database:', error);
+      
+        // ToastAndroid.show("Eroor : Try again", ToastAndroid.SHORT);
+      
+      // setShowPAN(true);
+      setLoading(false)
+    }
+   }
+
+   const handelNext = ()=>{
+    navigation.navigate("KYC Verification")
+    }
 const setnewAddressinStorage =async(address)=>{
   const Data = [...AllUserAddresses,address]
   // console.log("Data",Data)
@@ -308,8 +322,35 @@ const setnewAddressinStorage =async(address)=>{
      
 
       <Block style={styles2.Space_Around}>
-      <Button color="#14B57C" title="Add New Address" style={{width:width*0.5}} tintColor="#fff" onPress={toggleModal} />
-      <Button color="#14B57C" title="Next" style={{width:width*0.3}} tintColor="#fff" onPress={SubmitSigupData} />
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#14B57C',
+          width: width * 0.5,
+          padding: 15,
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 30,
+        }}
+        onPress={toggleModal}
+        activeOpacity={0.8}
+      >
+        <Text style={{ color: '#fff', fontSize: 16 }}>Add New Address</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#14B57C',
+          width: width * 0.3,
+          padding: 15,
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 30,
+        }}
+        onPress={handelNext}
+        activeOpacity={0.8}
+      >
+        <Text style={{ color: '#fff', fontSize: 16 }}>Next</Text>
+      </TouchableOpacity>
       </Block>
 
       <Modal visible={isModalVisible} animationType="slide">
@@ -576,8 +617,13 @@ const setnewAddressinStorage =async(address)=>{
           {/* Add similar TextInput fields for other address details */}
 
           <Block center style={[styles2.Space_Between, { width:width*0.9,marginTop:60 }]}>
-            <Button color="#14B57C" title="save" style={{width:width*0.9}} tintColor="#fff" onPress={saveAddress} />
-            {/* <Button color="black" title="close" style={{width:width*0.4}} tintColor="#fff" onPress={toggleModal2} /> */}
+          <TouchableOpacity style={[styles.btn,{backgroundColor:"#14B57C"}]}  onPress={SubmitAddressData} disabled={loading}>
+            {loading ? (
+          <ActivityIndicator size="small" color="#fff" />
+        ) : (
+            <Text style={{color:"#fff",fontSize:16,fontWeight:500}}>Save</Text>
+        )}
+            </TouchableOpacity>
           </Block>
         </View>
       </Modal>

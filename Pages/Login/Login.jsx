@@ -107,14 +107,14 @@ export const Login = ({ navigation }) => {
 
 
   const handelOtpComplete = () => {
-    // saveMobileNumber()
-    // loginWithOTP()
-    if (otp === "1234") {
+    saveMobileNumber()
+    loginWithOTP()
+    // if (otp === "1234") {
     
-      handelPreviousUser();
-    } else {
-      handelNewUser();
-    }
+    //   handelPreviousUser();
+    // } else {
+    //   handelNewUser();
+    // }
   };
 
   const handelPreviousUser = () => {
@@ -139,7 +139,7 @@ export const Login = ({ navigation }) => {
       ToastAndroid.show("Please Provide Mobile Number", ToastAndroid.SHORT);
       return;
     }
-    generateOTP()
+    generateOTP();
     
   };
 
@@ -152,24 +152,29 @@ export const Login = ({ navigation }) => {
     setLoading(true)
     setCanResend(false);
       setCountdown(30);
-    // try {
-    //   const response = await axios.post(`${Base_url}api/b2b/generate-otp`, { mobile_number: formData.phoneNumber });
-    //   // handelNewUser();
-    //   console.log(response.data.message);
-    //   setLoading(false);
-    //   if( response.data.message === "User not found"){
-    //     handelNewUser()
-    //     return ;
-    //   }
-    //   ToastAndroid.show("Otp send to mobile number", ToastAndroid.SHORT);
-    //   setOTPShow(true);
+    try {
+      console.log('Phone Number:', formData.phoneNumber);
+      const response = await axios.post(`${Base_url}b2cUser/generateOTP`, { phoneNumber: formData.phoneNumber });
+      
+      console.log('Response:', response);
+      console.log('Message:', response.data.message);
+  
+      setLoading(false);
+  
+      if (response.data.message === "User not found") {
+        handelNewUser(); // Ensure this function is defined
+        return;
+      }
+  
+      ToastAndroid.show("OTP sent to mobile number", ToastAndroid.SHORT);
+      setOTPShow(true);
      
-    // } catch (error) {
-    //   console.error('Error:', error);
-    //   ToastAndroid.show("Try After Some Time", ToastAndroid.SHORT);
-    //   setLoading(false);
-    //   console.log('Failed to generate OTP. Please try again.');
-    // }
+    } catch (error) {
+      console.error('Error:', error);
+      ToastAndroid.show("Try After Some Time", ToastAndroid.SHORT);
+      setLoading(false);
+      console.log('Failed to generate OTP. Please try again.');
+    }
 
     setOTPShow(true)
   };
@@ -190,28 +195,25 @@ export const Login = ({ navigation }) => {
   const loginWithOTP = async () => {
     setLoading(true)
     try {
-      const response = await axios.post(`${Base_url}api/b2b/login-with-otp`, { mobile_number: formData.phoneNumber, otp: otp });
+      const response = await axios.post(`${Base_url}b2cUser/loginWithOTP`, { phoneNumber: formData.phoneNumber, otp: otp });
       setLoading(false)
         if(response.data.message === "Login successful"){
-          const User = JSON.stringify(response.data.data);
+          const User = JSON.stringify(response.data.user);
+          console.log("User =>",User);
+
          const data = response.data.data;
+         const token = response.data.token;
           await AsyncStorage.setItem("userDetails", User);
-          if(data.status === false){
-            saveMobileNumber()
-           
-            setOTPShow(false)
-            setOtp("")
-            navigation.navigate("VerifyProfileStatus");
-            return
-          }
-          setuserDetails(response.data.data);
+          await AsyncStorage.setItem("authToken", token);
+        
+          setuserDetails(response.data.user);
           saveAuthStatus()
           handelPreviousUser();
-          console.log("res =>",response.data.data);
+          console.log("res =>",response.data.user);
         }
 
         if(response.data.message === "User not found") {
-          handelNewUser()
+          handelNewUser();
         }
 
       
@@ -414,40 +416,65 @@ export const Login = ({ navigation }) => {
         
       /> */}
 
-<TextInput
-          style={styles.input}
-          placeholder="+ 91"
-          keyboardType="numeric"
-          placeholderTextColor="black"
-          value={`+91 ${formData.phoneNumber}`}
-        onChangeText={(text) => handleInputChange("phoneNumber", text)}
-        maxLength={14}
-        />
+<View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ccc', borderRadius: 5, paddingHorizontal: 10,paddingVertical: 12,width: width * 0.9 }}>
+  <Text style={{ fontSize: 16, color: 'black', marginRight: 5 }}>+ 91</Text>
+  <TextInput
+    style={{ flex: 1, fontSize: 16, color: 'black' }}
+    keyboardType="numeric"
+    placeholder="Phone Number"
+    placeholderTextColor="black"
+    value={formData.phoneNumber}
+    onChangeText={(text) => handleInputChange("phoneNumber", text)}
+    maxLength={10} // Limiting to 10 digits for the phone number
+    editable={!loading} // Disable input while loading
+  />
+</View>
                 </Block>
       
               </View>
             )}
 
             <Block center style={[{ marginTop: 40,marginBottom:40 }]}>
-              {showOTP ? (
-                <Button
-                  title="Login"
-                  color="#14B57C"
-                  style={{ width:width*0.88, padding:10 }}
+            {showOTP ? (
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#14B57C',
+                    width: width * 0.88,
+                    padding: 15,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 10,
+                  }}
                   onPress={handelOtpComplete}
-                 
-                  tintColor="#fff"
-                />
+                  activeOpacity={0.8}
+                  disabled={loading} // Disable button while loading
+                >
+                  {loading ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Text style={{ color: '#fff', fontSize: 16 }}>Login</Text>
+                  )}
+                </TouchableOpacity>
               ) : (
-                <Button
-                  title="Send OTP"
-                  color="#14B57C"
-                 
-                  style={{ width:width*0.88, padding:10 }}
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#14B57C',
+                    width: width * 0.88,
+                    padding: 15,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 10,
+                  }}
                   onPress={handelMobileNumber}
-                  
-                  tintColor="#fff"
-                />
+                  activeOpacity={0.8}
+                  disabled={loading} // Disable button while loading
+                >
+                  {loading ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Text style={{ color: '#fff', fontSize: 16 }}>Send OTP</Text>
+                  )}
+                </TouchableOpacity>
               )}
             </Block>
           </Block>

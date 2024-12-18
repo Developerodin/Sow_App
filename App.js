@@ -58,6 +58,7 @@ import { MyPostHistoryDetails } from './Pages/MyPost/MyPostHistoryDetails';
 import { QuotationsDetails } from './Pages/MyPost/QuotationsDetails';
 import { Quotations } from './Pages/MyPost/Quotations';
 import { QuotationAccepted } from './Pages/MyPost/QuotationAccepted';
+import { VerifyProfileStatus } from './Pages/SignUp/Registration/VerifyProfileStatus';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -331,7 +332,7 @@ export default function App() {
       {/* {
        isAppFirstLaunched !== null && Auth !== null && */}
        {/* Login */}
-         <Stack.Navigator initialRouteName={ Auth ? 'Tabs' : 'Tabs'}>
+         <Stack.Navigator initialRouteName={ Auth ? 'Tabs' : 'Login'}>
          {/* <Stack.Navigator initialRouteName={'AppSlides'}> */}
         {/* <Stack.Screen name="Home" component={Home}
         options={{
@@ -540,6 +541,10 @@ export default function App() {
           }}/>
 
           <Stack.Screen name="QuotationAccepted" component={QuotationAccepted} options={{
+            headerShown: false,
+          }}/>
+
+          <Stack.Screen name="VerifyProfileStatus" component={VerifyProfileStatus} options={{
             headerShown: false,
           }}/>
 
