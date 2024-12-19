@@ -10,6 +10,7 @@ import {
   Image,
   Animated,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Block, Text, Input, theme, Button } from "galio-framework";
@@ -25,9 +26,15 @@ import paper from "../../assets/Paper.png";
 import plastic from "../../assets/Plastic.png";
 import metal from "../../assets/Metal.png";
 import HomeImg from "../../assets/HomeImg.png";
+import { Base_url } from "../../Config/BaseUrl";
+import axios from "axios";
+
 export const Home = () => {
   const navigation = useNavigation();
   const animationRef = useRef(null);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(false);
   const {
     CartInStorage,
     CartTotalAmount,
@@ -38,6 +45,27 @@ export const Home = () => {
 
   const handelSellScrap = () => {
     navigation.navigate("Sell");
+  };
+
+  const getCategories = async () => {
+    try {
+      const response = await axios.get(`${Base_url}categories`);
+      console.log('Categories:', response.data);
+      setCategories(response.data.slice(0, 5)); // Get only the first three categories
+      setLoading(false); // Set loading to false after data is fetched
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setLoading(false); // Set loading to false if there is an error
+      setError(true); // Set error to true if there is an error
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  const handleSell = (categoryName) => {
+    navigation.navigate('SellScrap', { categoryName });
   };
 
   const handelCloseCartInfo = () => {
@@ -62,135 +90,49 @@ export const Home = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <Block style={{ backgroundColor: "#FFF", padding: 10 }}>
           <HorizontalScroller />
-          <Block style={{ marginTop: 30 }}>
+          <Block style={{ marginTop: 30 ,marginLeft: 5  }}>
             <Text style={{ fontSize: 25, fontWeight: 500, color: "black" }}>
               Sell your Scrap!
             </Text>
-            <Block style={{ flexDirection: "row" }}>
-              <Text style={{ fontSize: 14 }}>Select your scrap</Text>
-              <Text style={{ fontSize: 14, color: "#14B57C", marginLeft: 8 }}>
-                category -
-              </Text>
+            <Block style={{ flexDirection: "row",}}>
+              <Text style={{ fontSize: 15,fontWeight: 500 }}>Select your scrap <Text style={{color: "#14B57C"}}>category -</Text></Text>
+              
             </Block>
           </Block>
           
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollView}>
-          <Block
-            style={{
-              marginTop: 30,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              
-            }}
-          >
-            <Block
+          {loading ? (
+          <ActivityIndicator size="large" color="#14B57C" style={{alignContent: "center"}}/>
+        ) : error || categories.length === 0 ? (
+          <Block center style={{ marginTop: 40 }}>
+            <Image
+              source={require("../../assets/media/5-dark.png")}
               style={{
-                width: 140,
-                padding: 5,
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
+                width: 300,
+                height: 300,
+                marginRight: 10,
               }}
-            >
-              <Image source={paper} style={{ width: 70, height: 70 }} />
-              <Text
-                style={{
-                  fontSize: 14,
-                  marginLeft: 10,
-                  fontWeight: 500,
-                  marginTop: 10,
-                }}
-              >
-                Paper
-              </Text>
-
-              <TouchableOpacity
-                style={{
-                  marginTop: 10,
-                  width: "100%",
-                  borderWidth: 1,
-                  borderColor: "#14B57C",
-                  height: 30,
-                  borderRadius: 8,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text style={{ color: "#14B57C" }}>Sell</Text>
-              </TouchableOpacity>
-            </Block>
-
-            <Block
-              style={{
-                width: 140,
-                padding: 5,
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Image source={plastic} style={{ width: 40, height: 60 }} />
-              <Text style={{ fontSize: 14, fontWeight: 500, marginTop: 10 }}>
-                Plastic
-              </Text>
-
-              <TouchableOpacity
-                style={{
-                  marginTop: 20,
-                  width: "100%",
-                  borderWidth: 1,
-                  borderColor: "#14B57C",
-                  height: 30,
-                  borderRadius: 8,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text style={{ color: "#14B57C" }}>Sell</Text>
-              </TouchableOpacity>
-            </Block>
-
-            <Block
-              style={{
-                width: 140,
-                padding: 5,
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Image source={metal} style={{ width: 70, height: 70 }} />
-              <Text
-                style={{
-                  fontSize: 14,
-                  marginLeft: 10,
-                  fontWeight: 500,
-                  marginTop: 10,
-                }}
-              >
-                Metal
-              </Text>
-
-              <TouchableOpacity
-                style={{
-                  marginTop: 10,
-                  width: "100%",
-                  borderWidth: 1,
-                  borderColor: "#14B57C",
-                  height: 30,
-                  borderRadius: 8,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text style={{ color: "#14B57C" }}>Sell</Text>
-              </TouchableOpacity>
-            </Block>
+            />
           </Block>
+        ) : (
+          categories.map((category) => (
+            <Block
+              key={category._id}
+              style={styles.categoryBlock}
+            >
+              <Image source={require("../../assets/Metal.png")} style={{height: 70,width: 70}} />
+              <Text style={styles.categoryText}>
+                {category.name}
+              </Text>
+              <TouchableOpacity
+                style={styles.sellButton}
+                onPress={() => handleSell(category.name)}
+              >
+                <Text style={{ color: "#14B57C" }}>Sell</Text>
+              </TouchableOpacity>
+            </Block>
+          ))
+        )}
           </ScrollView>
 
           <Block center style={{ marginTop: 30 }}>
@@ -374,5 +316,36 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontSize: 18,
+  },
+  categoryBlock: {
+    width: 140,
+    padding: 5,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+    backgroundColor: "#f4f4f4",
+    borderRadius: 10,
+    marginTop: 15,
+  },
+  image: {
+    width: 70,
+    height: 70,
+  },
+  categoryText: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginTop: 10,
+  },
+  sellButton: {
+    marginTop: 10,
+    width: "80%",
+    borderWidth: 1,
+    borderColor: "#14B57C",
+    height: 25,
+    borderRadius: 8,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

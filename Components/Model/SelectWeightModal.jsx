@@ -123,7 +123,7 @@ const SelectWeightModal = ({
               >
                 <Text style={{ fontSize: 22 }}>-</Text>
               </TouchableOpacity>
-              <Text style={styles.quantityText}>{quantity} kg</Text>
+              <Text style={styles.quantityText}>   {quantity}  </Text>
               <TouchableOpacity
                 style={styles.quantityButton}
                 onPress={() => handleQuantityChange("increment")}

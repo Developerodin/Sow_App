@@ -18,6 +18,11 @@ export const SellScrap = () => {
   const [loading, setLoading] = useState(true); // Add loading state
   const [error, setError] = useState(false); // Add error state
 
+
+  const handelSellScrap = () => {
+    navigation.navigate('Sell');
+  };
+
   const getSubCategoriesByCategoryName = async (categoryName) => {
     console.log('Getting SubCategories', categoryName);
     try {
@@ -120,7 +125,7 @@ export const SellScrap = () => {
         )}
            {!loading && !error && subCategoryData.length > 0 && (
           <>
-            <TouchableOpacity style={styles.addCategoryButton}>
+            <TouchableOpacity style={styles.addCategoryButton} onPress={handelSellScrap} activeOpacity={0.8}>
               <Ionicons name="add-circle" size={24} color="#14B57C" />
               <Text style={styles.addCategoryText}>Add more Categories</Text>
             </TouchableOpacity>
