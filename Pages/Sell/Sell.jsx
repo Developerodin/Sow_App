@@ -1,47 +1,52 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
-const categories = [
-  { id: '1', name: 'Paper', image: require('../../assets/Paper.png') },
-  { id: '2', name: 'Plastic', image: require('../../assets/Plastic.png') },
-  { id: '3', name: 'Metal', image: require('../../assets/Metal.png') },
-  { id: '4', name: 'Plastic', image: require('../../assets/Plastic.png') },
-  { id: '5', name: 'Metal', image: require('../../assets/Metal.png') },
-  { id: '6', name: 'Paper', image: require('../../assets/Paper.png') },
-  { id: '7', name: 'Metal', image: require('../../assets/Metal.png') },
-  { id: '8', name: 'Paper', image: require('../../assets/Paper.png') },
-  { id: '9', name: 'Plastic', image: require('../../assets/Plastic.png') },
-];
+import { Base_url } from '../../Config/BaseUrl';
+import axios from 'axios';
 
 export const Sell = () => {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
+  const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const handelSellScrap = () => {
-    navigation.navigate('SellScrap');
-    };
+  const getCategories = async () => {
+    try {
+      const response = await axios.get(`${Base_url}categories`);
+      console.log('Categories:', response.data);
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  const handleSellScrap = (categoryName) => {
+    navigation.navigate('SellScrap', { categoryName });
+  };
 
   const renderCategoryItem = ({ item }) => (
     <TouchableOpacity
       style={[
         styles.categoryContainer,
-        selectedCategory === item.id && styles.selectedCategoryContainer,
+        selectedCategory === item._id && styles.selectedCategoryContainer,
       ]}
-      onPress={handelSellScrap}
+      onPress={() => handleSellScrap(item.name)}
     >
-        <Image
-              source={item.image}
-              style={item.name === 'Plastic' ? styles.plasticImage : styles.image}
-            />
+      <Image
+        source={require('../../assets/Metal.png')}
+        style={styles.image}
+      />
       <Text style={styles.categoryText}>{item.name}</Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-        <View style={{marginTop: 50}}>
-      <Text style={styles.headerText}>Sell your Scrap</Text>
+      <View style={{ marginTop: 50 }}>
+        <Text style={styles.headerText}>Sell your Scrap</Text>
       </View>
       <Text style={styles.subHeaderText}>
         Select your <Text style={styles.highlightText}>scrap category</Text> -
@@ -50,10 +55,11 @@ export const Sell = () => {
       <FlatList
         data={categories}
         renderItem={renderCategoryItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         numColumns={3}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.grid}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
@@ -91,9 +97,8 @@ const styles = StyleSheet.create({
     padding: 15,
     margin: 5,
     borderRadius: 12,
-    
-    
     backgroundColor: '#f9f9f9',
+    
   },
   selectedCategoryContainer: {
     borderColor: '#14B57C',
@@ -101,11 +106,6 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 60,
-    height: 60,
-    marginBottom: 10,
-  },
-  plasticImage: {
-    width: 40,
     height: 60,
     marginBottom: 10,
   },

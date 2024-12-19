@@ -1,8 +1,9 @@
-import React from 'react';
+import React ,{useState ,useEffect} from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity,Image,ScrollView } from 'react-native';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { Block } from 'galio-framework'; 
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const data = [
   { id: '1', name: 'Note Book', weight: '>10KG', quantity: 2 },
@@ -13,6 +14,31 @@ const data = [
 
 export const Cart = () => {
     const navigation = useNavigation();
+    const [cartData , setCartData] = useState([]);
+
+    const getCartData = async () => {
+        try {
+            const cartItems = await AsyncStorage.getItem('cartItems');
+               console.log('Cart Items:', cartItems);
+                setCartData(JSON.parse(cartItems));
+            
+        } catch (error) {
+            console.log('Error getting cart data:', error);
+        }
+    };
+
+    useEffect(() => {
+        getCartData();
+    }, []);
+
+        const totalWeight = cartData.reduce((acc, item) => {
+      const weight = parseInt(item.weight.replace('kg', ''), 10); // Parse the weight as a number
+      return acc + item.quantity * weight;
+    }, 0);
+    
+    const totalValue = cartData.reduce((acc, item) => acc + item.price * item.quantity, 0); // Multiply price by quantity
+
+
 
     const handlePickupAddress = () => {
         navigation.navigate('Schedule Address');
@@ -34,7 +60,7 @@ export const Cart = () => {
         <Text style={styles.editText}>Edit </Text>
       </View>
       <TouchableOpacity style={styles.quantityButton}>
-        <Text style={styles.quantityText}>-  {item.quantity} kg  +</Text>
+        <Text style={styles.quantityText}>-  {item.quantity}  +</Text>
       </TouchableOpacity>
     </View>
   );
@@ -58,7 +84,7 @@ export const Cart = () => {
       </View>
 
       <FlatList
-        data={data}
+        data={cartData}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         style={styles.list}
@@ -72,11 +98,11 @@ export const Cart = () => {
       <View style={styles.summaryContainer}>
         <View style={styles.summaryItem}>
           <Text style={styles.summaryTitle}>Est. Weight</Text>
-          <Text style={styles.summaryValue}>8 kg</Text>
+          <Text style={styles.summaryValue}>{totalWeight} kg</Text>
         </View>
         <View style={styles.summaryItem}>
           <Text style={styles.summaryTitle}>Est. Value</Text>
-          <Text style={styles.summaryValue}>₹3000</Text>
+          <Text style={styles.summaryValue}>₹ {totalValue}</Text>
         </View>
       </View>
 
