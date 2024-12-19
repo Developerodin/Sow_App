@@ -1,59 +1,49 @@
-import React ,{useState ,useEffect} from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity,Image,ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { Block } from 'galio-framework'; 
+import { Block } from 'galio-framework';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const data = [
-  { id: '1', name: 'Note Book', weight: '>10KG', quantity: 2 },
-  { id: '2', name: 'Note Book', weight: '>10KG', quantity: 2 },
-  { id: '3', name: 'Note Book', weight: '>10KG', quantity: 2 },
-  { id: '4', name: 'Note Book', weight: '>10KG', quantity: 2 },
-];
-
 export const Cart = () => {
-    const navigation = useNavigation();
-    const [cartData , setCartData] = useState([]);
+  const navigation = useNavigation();
+  const [cartData, setCartData] = useState([]);
 
-    const getCartData = async () => {
-        try {
-            const cartItems = await AsyncStorage.getItem('cartItems');
-               console.log('Cart Items:', cartItems);
-                setCartData(JSON.parse(cartItems));
-            
-        } catch (error) {
-            console.log('Error getting cart data:', error);
-        }
-    };
+  const getCartData = async () => {
+    try {
+      const cartItems = await AsyncStorage.getItem('cartItems');
+      console.log('Cart Items:', cartItems);
+      setCartData(cartItems ? JSON.parse(cartItems) : []);
+    } catch (error) {
+      console.log('Error getting cart data:', error);
+    }
+  };
 
-    useEffect(() => {
-        getCartData();
-    }, []);
+  useEffect(() => {
+    getCartData();
+  }, []);
 
-        const totalWeight = cartData.reduce((acc, item) => {
-      const weight = parseInt(item.weight.replace('kg', ''), 10); // Parse the weight as a number
-      return acc + item.quantity * weight;
-    }, 0);
-    
-    const totalValue = cartData.reduce((acc, item) => acc + item.price * item.quantity, 0); // Multiply price by quantity
+  const totalWeight = cartData.reduce((acc, item) => {
+    const weight = parseInt(item.weight.replace('kg', ''), 10); // Parse the weight as a number
+    return acc + item.quantity * weight;
+  }, 0);
 
+  const totalValue = cartData.reduce((acc, item) => acc + item.price * item.quantity, 0); // Multiply price by quantity
 
+  const handlePickupAddress = () => {
+    navigation.navigate('Schedule Address');
+  };
 
-    const handlePickupAddress = () => {
-        navigation.navigate('Schedule Address');
-    };
-
-    const handleBack = () => {
-        navigation.goBack();
-    };
+  const handleBack = () => {
+    navigation.goBack();
+  };
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <Image
         source={require('../../assets/Book.png')} // Replace with the correct path
         style={styles.icon}
-        />
+      />
       <View style={styles.itemDetails}>
         <Text style={styles.itemName}>{item.name}</Text>
         <Text style={styles.itemWeight}>{item.weight}</Text>
@@ -66,50 +56,66 @@ export const Cart = () => {
   );
 
   return (
-   
     <View style={styles.container}>
-      <Block style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center" ,marginTop : 50 ,marginBottom: 20}}>
+      <Block style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center", marginTop: 50, marginBottom: 20 }}>
         <TouchableOpacity onPress={handleBack}>
-        <Block style={{ backgroundColor: "#fff", width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 150 }}>
-          <MaterialIcons  name="arrow-back-ios" size={22} style={{ marginLeft: 5 }} color="#000" />
-        </Block>
+          <Block style={{ backgroundColor: "#fff", width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 150 }}>
+            <MaterialIcons name="arrow-back-ios" size={22} style={{ marginLeft: 5 }} color="#000" />
+          </Block>
         </TouchableOpacity>
         <Text style={{ marginLeft: 10, fontSize: 25, fontWeight: '500' }}>Your Scrap Start</Text>
       </Block>
-      <ScrollView style={{marginBottom: 50}} showsVerticalScrollIndicator={false}>
+      <ScrollView style={{ marginBottom: 50 }} showsVerticalScrollIndicator={false}>
+        {cartData.length === 0 ? (
+          <Block center style={{ marginTop: 40 }}>
+            <Image
+              source={require("../../assets/media/5-dark.png")}
+              style={{
+                width: 300,
+                height: 300,
+                marginRight: 10,
+              }}
+            />
+                        <Text style={{ fontSize: 18, fontWeight: "600", marginTop: 10 }}>
+              Your cart is empty. Let's add some items!
+            </Text>
+          </Block>
+        ) : (
+          <>
+            <View style={styles.pointsContainer}>
+              <FontAwesome name="circle" size={20} color="gold" />
+              <Text style={styles.pointsText}>You’ll earn 70 Points from this scrap</Text>
+            </View>
 
-      <View style={styles.pointsContainer}>
-        <FontAwesome name="circle" size={20} color="gold" />
-        <Text style={styles.pointsText}>You’ll earn 70 Points from this scrap</Text>
-      </View>
+            <FlatList
+              data={cartData}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id}
+              style={styles.list}
+            />
 
-      <FlatList
-        data={cartData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        style={styles.list}
-      />
+            <TouchableOpacity style={styles.addCategoryButton}>
+              <FontAwesome name="plus-circle" size={22} color="#14B57C" />
+              <Text style={styles.addCategoryText}>Add more Categories</Text>
+            </TouchableOpacity>
 
-      <TouchableOpacity style={styles.addCategoryButton}>
-        <FontAwesome name="plus-circle" size={22} color="#14B57C" />
-        <Text style={styles.addCategoryText}>Add more Categories</Text>
-      </TouchableOpacity>
+            <View style={styles.summaryContainer}>
+              <View style={styles.summaryItem}>
+                <Text style={styles.summaryTitle}>Est. Weight</Text>
+                <Text style={styles.summaryValue}>{totalWeight} kg</Text>
+              </View>
+              <View style={styles.summaryItem}>
+                <Text style={styles.summaryTitle}>Est. Value</Text>
+                <Text style={styles.summaryValue}>₹ {totalValue}</Text>
+              </View>
+            </View>
 
-      <View style={styles.summaryContainer}>
-        <View style={styles.summaryItem}>
-          <Text style={styles.summaryTitle}>Est. Weight</Text>
-          <Text style={styles.summaryValue}>{totalWeight} kg</Text>
-        </View>
-        <View style={styles.summaryItem}>
-          <Text style={styles.summaryTitle}>Est. Value</Text>
-          <Text style={styles.summaryValue}>₹ {totalValue}</Text>
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.pickupButton} onPress={handlePickupAddress}>
-        <Text style={styles.pickupButtonText}>Select Pickup Address</Text>
-      </TouchableOpacity>
-    </ScrollView>
+            <TouchableOpacity style={styles.pickupButton} onPress={handlePickupAddress}>
+              <Text style={styles.pickupButtonText}>Select Pickup Address</Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </ScrollView>
     </View>
   );
 };
@@ -154,7 +160,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   icon: {
-    
     width: 65,
     height: 54,
   },
@@ -173,7 +178,6 @@ const styles = StyleSheet.create({
   editText: {
     fontSize: 14,
     color: '#14B57C',
-    
   },
   quantityButton: {
     backgroundColor: '#EBf9f4',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Block } from 'galio-framework'; 
@@ -7,6 +7,7 @@ import SelectWeightModal from '../../Components/Model/SelectWeightModal';
 import axios from 'axios';
 import { Base_url } from '../../Config/BaseUrl';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export const SellScrap = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -14,6 +15,8 @@ export const SellScrap = () => {
   const [subCategoryData, setSubCategoryData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(true); // Add loading state
+  const [error, setError] = useState(false); // Add error state
 
   const getSubCategoriesByCategoryName = async (categoryName) => {
     console.log('Getting SubCategories', categoryName);
@@ -24,11 +27,12 @@ export const SellScrap = () => {
 
       console.log("sub category data of selected category ==>", response.data);
       setSubCategoryData(response.data);
-
-      return response.data;
+      setLoading(false); // Set loading to false after data is fetched
     } catch (error) {
       console.log("Error getting subcategory ==>", error);
       setSubCategoryData([]);
+      setLoading(false); // Set loading to false if there is an error
+      setError(true); // Set error to true if there is an error
     }
   };
 
@@ -93,25 +97,44 @@ export const SellScrap = () => {
         <Text style={styles.category}>
           Category: <Text style={styles.categoryName}>{categoryName}</Text>
         </Text>
-        <FlatList
-          data={subCategoryData}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id}
-          style={styles.list}
-        />
-        <TouchableOpacity style={styles.addCategoryButton}>
-          <Ionicons name="add-circle" size={24} color="#14B57C" />
-          <Text style={styles.addCategoryText}>Add more Categories</Text>
-        </TouchableOpacity>
+        {loading ? (
+          <ActivityIndicator size="large" color="#14B57C" />
+        ) : error || subCategoryData.length === 0 ? (
+          <Block center style={{ marginTop: 40 }}>
+            <Image
+              source={require("../../assets/media/5-dark.png")}
+              style={{
+                width: 300,
+                height: 300,
+                marginRight: 10,
+              }}
+            />
+          </Block>
+        ) : (
+          <FlatList
+            data={subCategoryData}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+            style={styles.list}
+          />
+        )}
+           {!loading && !error && subCategoryData.length > 0 && (
+          <>
+            <TouchableOpacity style={styles.addCategoryButton}>
+              <Ionicons name="add-circle" size={24} color="#14B57C" />
+              <Text style={styles.addCategoryText}>Add more Categories</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity style={styles.pickupButton} onPress={handleCart}>
-          <Text style={styles.pickupButtonText}>Go to Cart</Text>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.pickupButton} onPress={handleCart}>
+              <Text style={styles.pickupButtonText}>Go to Cart</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity style={styles.deleteButton} onPress={clearCart}>
-          <Ionicons name="trash" size={24} color="#FF0000" />
-          <Text style={styles.deleteButtonText}>Clear Cart</Text>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.deleteButton} onPress={clearCart}>
+              <Ionicons name="trash" size={24} color="#FF0000" />
+              <Text style={styles.deleteButtonText}>Clear Cart</Text>
+            </TouchableOpacity>
+          </>
+        )}
 
         {selectedId && (
           <SelectWeightModal

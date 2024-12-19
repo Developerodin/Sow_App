@@ -37,7 +37,7 @@ export const Home = () => {
   } = useAppContext();
 
   const handelSellScrap = () => {
-    navigation.navigate("Schedule Pickup");
+    navigation.navigate("Sell");
   };
 
   const handelCloseCartInfo = () => {
@@ -196,6 +196,8 @@ export const Home = () => {
           <Block center style={{ marginTop: 30 }}>
             <TouchableOpacity
               style={{ padding: 10, borderWidth: 1, borderRadius: 20 }}
+              onPress={handelSellScrap}
+              activeOpacity={0.8}
             >
               <Text>View all categories > </Text>
             </TouchableOpacity>
