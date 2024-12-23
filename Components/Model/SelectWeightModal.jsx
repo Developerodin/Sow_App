@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -67,6 +67,11 @@ const SelectWeightModal = ({
       console.error('Error saving to cart:', error);
     }
   };
+
+  useEffect(() => {
+    setQuantity(1);
+    setSelectedWeight(null);
+  }, [isModalVisible]);
 
   return (
     <Modal
@@ -167,7 +172,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: width,
-    height: height * 0.7,
+    height: height * 0.8,
   },
   title: {
     fontSize: 18,

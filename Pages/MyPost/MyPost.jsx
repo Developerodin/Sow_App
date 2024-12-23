@@ -448,7 +448,7 @@ export const MyPost = () => {
             key={i}
             style={tabStyle}
             onPress={() => setIndex(i)}>
-            <Animated.Text style={[textStyles,{fontSize:20}]}>{route.title}</Animated.Text>
+            <Animated.Text style={[textStyles,{fontSize:16}]}>{route.title}</Animated.Text>
           </TouchableOpacity>
         );
       })}

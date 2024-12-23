@@ -69,8 +69,11 @@ export const Cart = () => {
   };
 
   const totalWeight = cartData.reduce((acc, item) => {
-    const weight = parseInt(item.weight.replace('kg', ''), 10); // Parse the weight as a number
-    return acc + item.unit * weight;
+    if (item.weight) {
+      const weight = parseInt(item.weight.replace('kg', ''), 10); // Parse the weight as a number
+      return acc + item.unit * weight;
+    }
+    return acc;
   }, 0);
 
   const totalValue = cartData.reduce((acc, item) => acc + item.value * item.unit, 0); // Multiply price by quantity
@@ -155,7 +158,7 @@ export const Cart = () => {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.pickupButton} onPress={createOrderFromCart}>
+            <TouchableOpacity style={styles.pickupButton} onPress={handlePickupAddress}>
               <Text style={styles.pickupButtonText}>Select Pickup Address</Text>
             </TouchableOpacity>
           </>

@@ -221,7 +221,7 @@ export const PersonalDetails = () => {
             const userId = data.id;
             console.log("Data after submit  ==>", data,userId);
             await AsyncStorage.setItem('userID', userId);
-            navigation.navigate('AddAddress');
+            navigation.navigate('AddAddress', { userId });
     
         if (response.status === 200) {
           if (response.data) {
