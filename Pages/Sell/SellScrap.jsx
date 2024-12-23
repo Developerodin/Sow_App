@@ -148,6 +148,7 @@ export const SellScrap = () => {
             selectedItem={selectedId} 
             isModalVisible={isModalVisible}
             setModalVisible={setModalVisible}
+            categoryName={categoryName}
           />
         )}
       </ScrollView>

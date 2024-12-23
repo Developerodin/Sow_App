@@ -10,6 +10,7 @@ import {
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAppContext } from "../../Context/AppContext";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -19,9 +20,11 @@ const SelectWeightModal = ({
   isModalVisible,
   setModalVisible,
   selectedItem,
+  categoryName,
 }) => {
   const [selectedWeight, setSelectedWeight] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const { cartUpdate,setCartUpdate } = useAppContext();
 
   const weightOptions = [
     { id: "1", label: "10kg" },
@@ -42,10 +45,10 @@ const SelectWeightModal = ({
   const saveToCart = async () => {
     try {
       const cartItem = {
-        
-        name: selectedItem.name,
-        price: selectedItem.price,
-        quantity: quantity,
+        category:categoryName,
+        subCategory: selectedItem.name,
+        value: selectedItem.price,
+        unit: quantity,
         weight: selectedWeight,
       };
 
@@ -57,6 +60,7 @@ const SelectWeightModal = ({
       await AsyncStorage.setItem('cartItems', JSON.stringify(cartItems));
 
       console.log('Cart Items:', cartItems);
+      setCartUpdate(prev => prev + 1);
       setModalVisible(false);
       setQuantity(1);
     } catch (error) {

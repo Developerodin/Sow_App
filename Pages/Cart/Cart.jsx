@@ -4,9 +4,13 @@ import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { Block } from 'galio-framework';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Base_url } from '../../Config/BaseUrl';
+import axios from 'axios';
+import { useAppContext } from "../../Context/AppContext";
 
 export const Cart = () => {
   const navigation = useNavigation();
+  const { userDetails,cartUpdate,setCartUpdate } = useAppContext();
   const [cartData, setCartData] = useState([]);
 
   const getCartData = async () => {
@@ -19,16 +23,57 @@ export const Cart = () => {
     }
   };
 
+  
+
   useEffect(() => {
     getCartData();
-  }, []);
+  }, [cartUpdate]);
+
+  const createOrderFromCart = async () => {
+    try {
+      const cartItems = await AsyncStorage.getItem('cartItems');
+      const items = cartItems ? JSON.parse(cartItems) : [];
+  
+      if (items.length === 0) {
+        throw new Error('Cart is empty');
+      }
+  
+      // Calculate total price for each item
+      const itemsWithTotalPrice = items.map(item => ({
+        ...item,
+        totalPrice: item.value * item.unit,
+      }));
+  
+      // Calculate total price for the entire order
+      const totalPrice = itemsWithTotalPrice.reduce((sum, item) => sum + item.totalPrice, 0);
+  
+      const orderData = {
+        items: itemsWithTotalPrice,
+        orderBy: userDetails.id,
+        orderTo: null, // Empty for now
+        location: '6746feda758e95007f4a3eb5', // Random ID for now
+        photos: '', // Empty for now
+        orderStatus: 'New', // Example status
+      };
+  
+      const response = await axios.post(`${Base_url}b2cOrder`, orderData);
+      console.log('Order created:', response.data);
+
+
+      await AsyncStorage.removeItem('cartItems');
+    console.log('Cart items cleared from AsyncStorage');
+    setCartUpdate(prev => prev + 1);
+    } catch (error) {
+      console.error('Error creating order:', error.message);
+    }
+  };
 
   const totalWeight = cartData.reduce((acc, item) => {
     const weight = parseInt(item.weight.replace('kg', ''), 10); // Parse the weight as a number
-    return acc + item.quantity * weight;
+    return acc + item.unit * weight;
   }, 0);
 
-  const totalValue = cartData.reduce((acc, item) => acc + item.price * item.quantity, 0); // Multiply price by quantity
+  const totalValue = cartData.reduce((acc, item) => acc + item.value * item.unit, 0); // Multiply price by quantity
 
   const handlePickupAddress = () => {
     navigation.navigate('Schedule Address');
@@ -45,12 +90,12 @@ export const Cart = () => {
         style={styles.icon}
       />
       <View style={styles.itemDetails}>
-        <Text style={styles.itemName}>{item.name}</Text>
+        <Text style={styles.itemName}>{item.subCategory}</Text>
         <Text style={styles.itemWeight}>{item.weight}</Text>
         <Text style={styles.editText}>Edit </Text>
       </View>
       <TouchableOpacity style={styles.quantityButton}>
-        <Text style={styles.quantityText}>-  {item.quantity}  +</Text>
+        <Text style={styles.quantityText}>-  {item.unit}  +</Text>
       </TouchableOpacity>
     </View>
   );
@@ -110,7 +155,7 @@ export const Cart = () => {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.pickupButton} onPress={handlePickupAddress}>
+            <TouchableOpacity style={styles.pickupButton} onPress={createOrderFromCart}>
               <Text style={styles.pickupButtonText}>Select Pickup Address</Text>
             </TouchableOpacity>
           </>
