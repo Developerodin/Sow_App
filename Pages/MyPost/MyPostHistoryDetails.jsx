@@ -1,12 +1,14 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState ,useEffect} from 'react'
 import { FlatList, SafeAreaView, StyleSheet,ScrollView,  View,Dimensions,TouchableOpacity, Image,Animated, TextInput } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import { Block, Text, Input, theme, Button } from "galio-framework";
 import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation ,useRoute } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
+import { Base_url } from '../../Config/BaseUrl';
+import axios from 'axios';
 
 
 import { AntDesign } from '@expo/vector-icons';
@@ -14,6 +16,27 @@ import { AntDesign } from '@expo/vector-icons';
 const {width, height} = Dimensions.get('window');
 
 export const MyPostHistoryDetails = () => {
+  const route = useRoute();
+      const { postId } = route.params;
+  const navigation = useNavigation();
+  const [postDetails , setPostDetails] = useState({});
+
+  const getPostDetails = async () => {
+    try {
+      const response = await axios.get(`${Base_url}posts/${postId}`);
+      const data = response.data;
+      console.log("postDetails",data);
+      setPostDetails(data);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getPostDetails();
+  }, []);
+  
   return (
     <View style={styles.container}>
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -32,34 +55,41 @@ export const MyPostHistoryDetails = () => {
              <Block style={{ marginTop: 0 }}>
            <Block style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ fontSize: 18, fontWeight: 700, color: '#000' }}>
-              Aluminium
+              {postDetails && postDetails.categoryName }
             </Text>
           </Block> 
+
+          <Block style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
+            <Ionicons name="document" size={20} color="#0EB77B" />
+            <Text style={{ fontSize: 18, marginLeft: 8 ,fontWeight : 700 }}>
+                {postDetails.otp}
+            </Text>
+          </Block>
 
           <Block style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
             <Image source={require('../../assets/Rupee.png')} style={{height:20,width:20}} />
             <Text style={{ fontSize: 18, marginLeft: 8 ,fontWeight : 700 }}>
 
-             ₹ 33/KG
+             ₹ {postDetails.price}/KG
             </Text>
           </Block>  
           
           <Block style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
             <Ionicons name="document" size={20} color="#0EB77B" />
             <Text style={{ fontSize: 18, marginLeft: 8 ,fontWeight : 700 }}>
-              1500 kg
+              {postDetails.quantity} kg
             </Text>
           </Block>
           <Block style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
             <Ionicons name="calendar" size={20} color="#0EB77B" />
             <Text style={{ fontSize: 16, marginLeft: 8 ,fontWeight : 500}}>
-              11 Nov 2024
+              {new Date(postDetails.createdAt).toLocaleDateString('en-GB')}
             </Text>
           </Block>
           <Block style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
             <Ionicons name="location" size={20} color="#0EB77B" />
             <Text style={{ fontSize: 16, marginLeft: 8 ,fontWeight : 500}}>
-              Pickup Location :   Near Dmart, Mahavir Nagar, 302033,Jaipur
+              Pickup Location :  {postDetails.address}, {postDetails.city}, {postDetails.state}
             </Text>
           </Block>
          

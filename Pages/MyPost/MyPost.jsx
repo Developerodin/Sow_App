@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useEffect,useState } from 'react'
 import { FlatList, SafeAreaView, StyleSheet,ScrollView,  View,Dimensions,TouchableOpacity, Image,Animated, TextInput } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import { Block, Text, Input, theme, Button } from "galio-framework";
@@ -122,6 +122,7 @@ const FirstRoute = () => {
 
       const postData = {
         postBy: userDetails.id,
+        postTo: null,
         categoryName: selectedCategorie,
         subCategoryName: selectedSubCategory,
         images,
@@ -135,6 +136,7 @@ const FirstRoute = () => {
         state,
         city,
         address,
+        postStatus: "New",
       };
 
       const response = await axios.post(`${Base_url}posts`, postData);
@@ -369,33 +371,112 @@ const FirstRoute = () => {
   );
 };
 
-const SecondRoute = () => (
-  <ScrollView style={{flex:1}}>
-   
-    <Block style={{padding:10,marginBottom:60}}>
-         
-    <QuatationCard  data={data}/>
-           
-           <QuatationCard data={data}/>
-           <QuatationCard data={data}/>
-        
-        </Block>
-        </ScrollView>
-);
+const SecondRoute = () => {
+  const { userDetails } = useAppContext();
+  const navigation = useNavigation();
+  const [quotations, setQuotations] = useState([]);
+  const [error, setError] = useState(false);
 
-const ThirdRoute = () => (
-    <ScrollView style={{flex:1}}>
-     
-      <Block style={{padding:10,marginBottom:60}}>
-           
-      <MyPostHistory  data={data}/>
-             
-             <MyPostHistory data={data}/>
-             <MyPostHistory data={data}/>
-          
+  useEffect(() => {
+    fetchQuotations();
+  }, []);
+
+  const fetchQuotations = async () => {
+    try {
+      const response = await axios.post(`${Base_url}quotations/user`, { b2cUserId: userDetails.id });
+      if (response.data.length === 0) {
+        setError(true);
+      } else {
+        setQuotations(response.data);
+        setError(false);
+      }
+      console.log('Quotations:>>', response.data);
+    } catch (error) {
+      console.error('Error fetching quotations:', error);
+      setError(true);
+    }
+  };
+
+  const handleQuotationClick = (quotation) => {
+    navigation.navigate('QuotationDetails', { quotation });
+  };
+
+  return (
+    <ScrollView style={{ flex: 1 }}>
+      <Block style={{ padding: 10, marginBottom: 60 }}>
+        {error || quotations.length === 0 ? (
+          <Block center style={{ marginTop: 40 }}>
+            <Image
+              source={require("../../assets/media/5-dark.png")}
+              style={{
+                width: 300,
+                height: 300,
+                marginRight: 10,
+              }}
+            />
           </Block>
-          </ScrollView>
+        ) : (
+          quotations.map((quotation) => (
+            <TouchableOpacity key={quotation._id} onPress={() => handleQuotationClick(quotation)}>
+              <QuatationCard data={quotation} />
+            </TouchableOpacity>
+          ))
+        )}
+      </Block>
+    </ScrollView>
   );
+};
+
+const ThirdRoute = () => {
+  const { userDetails } = useAppContext();
+  const navigation = useNavigation();
+  const [posts, setPosts] = useState([]);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.post(`${Base_url}posts/filterPostsByUserId`, { b2cUserId: userDetails.id });
+      console.log('Posts:', response.data);
+      if (response.data.length === 0) {
+        setError(true);
+      } else {
+        setPosts(response.data);
+        setError(false);
+      }
+      console.log('Posts:>>', response.data);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      setError(true);
+    }
+  };
+
+  return (
+    <ScrollView style={{ flex: 1 }}>
+      <Block style={{ padding: 10, marginBottom: 60 }}>
+        {error || posts.length === 0 ? (
+          <Block center style={{ marginTop: 40 }}>
+            <Image
+              source={require("../../assets/media/5-dark.png")}
+              style={{
+                width: 300,
+                height: 300,
+                marginRight: 10,
+              }}
+            />
+          </Block>
+        ) : (
+          posts.map((post) => (
+            <MyPostHistory key={post._id} data={post} />
+          ))
+        )}
+      </Block>
+    </ScrollView>
+  );
+};
 export const MyPost = () => {
   const navigation = useNavigation();
   const [index, setIndex] = useState(0);

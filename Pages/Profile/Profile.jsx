@@ -11,6 +11,7 @@ import {
   Animated,
   TextInput,
   Share,
+  Alert,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Block, Text, Input, theme, Button } from "galio-framework";
@@ -31,6 +32,9 @@ import * as ImagePicker from "expo-image-picker";
 import { useAppContext } from "../../Context/AppContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProfileLogo from "../../assets/profileMenu.png";
+import { Base_url } from "../../Config/BaseUrl";
+import axios from 'axios';
+
 export const Profile = () => {
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
@@ -72,7 +76,7 @@ export const Profile = () => {
     {
       icon: <FontAwesome name="building" size={24} color="#0EB77B" />,
       title: "About Comapny",
-      link: "",
+      link: "About Company",
     },
     {
       icon: <AntDesign name="infocirlce" size={24} color="#0EB77B" />,
@@ -82,7 +86,7 @@ export const Profile = () => {
     {
       icon: <MaterialIcons name="privacy-tip" size={24} color="#0EB77B" />,
       title: "Privacy Policy",
-      link: "",
+      link: "Privacy Policy",
     },
 
     // {icon:<Foundation name="torso-business" size={28} color="#4854e0" />,title:"Upgrade to business profile",link:"Upgrade Profile"},
@@ -94,6 +98,50 @@ export const Profile = () => {
     if (user) {
       setuserDetails(ParseUser);
     }
+  };
+
+  const deleteAccount = async () => {
+    try {
+      // Replace 'yourapiurl' with your actual API endpoint URL
+      const response = await axios.delete(`${Base_url}b2cUser/${userDetails.id}`);
+
+      // Assuming the response contains a success message
+      console.log('Account deleted successfully:', response.data);
+
+      // Clear AsyncStorage
+      await AsyncStorage.removeItem("userDetails");
+      await AsyncStorage.setItem("Auth", 'false');
+      console.log('AsyncStorage cleared successfully');
+
+      // Navigate to login screen
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    } catch (error) {
+      // Handle errors
+      console.error('Error deleting account:', error.response ? error.response.data : error.message);
+    }
+  };
+
+  const handelDeleteAccount = () => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete your account?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          onPress: () => deleteAccount(),
+          style: "destructive"
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
   const handelBack = () => {
@@ -177,9 +225,7 @@ export const Profile = () => {
     console.log("handel Rate Appliction");
   };
 
-  const handelDeleteAccount = () => {
-    console.log("Delete Account");
-  };
+ 
 
   const showImagePicker = async (sourceType) => {
     let permissionResult =

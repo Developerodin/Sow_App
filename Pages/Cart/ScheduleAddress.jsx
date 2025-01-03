@@ -8,10 +8,13 @@ import {
   StyleSheet,
   TouchableHighlight,
   Dimensions,
-  TextInput
+  TextInput,
+  ActivityIndicator,
+  TouchableOpacity,
+  Image,
 } from "react-native";
 import { useAppContext } from "../../Context/AppContext";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation ,useRoute} from "@react-navigation/native";
 import { MyMap } from "../../Components/Maps/MyMap";
 import { Ionicons } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons'; 
@@ -20,24 +23,36 @@ import LottieView from "lottie-react-native";
 import { Button } from "@react-native-material/core";
 import { Base_url } from "../../Config/BaseUrl";
 import axios from "axios";
+import Logo from "../../assets/addressIcon.png";
+import { use } from "react";
 
 const { width, height } = Dimensions.get("window");
 export const ScheduleAddress = () => {
   const navigation = useNavigation();
-  const { update, setUpdate,SelectedAddressFromMap,setSelectedAddressFromMap } = useAppContext();
+  // const route = useRoute();
+  // const { userId } = route.params;
+
+  const { update, setUpdate,SelectedAddressFromMap,setSelectedAddressFromMap,userDetails,setCartUpdate} = useAppContext();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isAddressModalVisible, setIsAddressModalVisible] = useState(false);
   const [addresses, setAddresses] = useState([]);
+  const [ userId, setUserId ] = useState(null);
+  
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [AllUserAddresses, setAllUsersAddresses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [activeAddress, setActiveAddress] = useState(null);
   const [newAddress, setNewAddress] = useState({
     house: "",
     area: "",
     directions: "",
   });
 
-  
- const handleSubmit = () => {
+  const handleBack = () => {
+    navigation.goBack();
+  };
+
+  const handleSubmit = () => {
     navigation.navigate("PickupConfirmation");
   };
 
@@ -45,6 +60,84 @@ export const ScheduleAddress = () => {
     setSelectedAddress(address);
     saveSelectedAddress(address);
   };
+
+  const handelAddressSetActive = async(id)=>{
+    console.log("Id  ==>", id )
+    try {
+     const response = await axios.put(`${Base_url}b2cUser/${userDetails.id}/${id}/active`);
+     setUpdate((prev)=>prev+1);
+     console.log("Active Address:=> ",response.data)
+     return response.data; 
+   } catch (error) {
+     console.error('Error setting active address:', error.response?.data || error.message);
+     throw error;
+   }
+ }
+
+ const getActiveAddress = async (id) => {
+  try {
+    console.log("Get active address', id: " + id);
+    const response = await axios.get(`${Base_url}b2cUser/${id}/active`);
+    // console.log("Active Address: " + response.data)
+    setActiveAddress(response.data)
+    return response.data; // Returns the active address data
+  } catch (error) {
+    console.error('Error fetching active address:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+useEffect(()=>{
+  if(userDetails){
+   getActiveAddress(userDetails.id)
+  }
+ },[update,userDetails])
+
+
+
+
+ const createOrderFromCart = async () => {
+  setLoading(true);
+  try {
+    const cartItems = await AsyncStorage.getItem('cartItems');
+    const items = cartItems ? JSON.parse(cartItems) : [];
+
+    if (items.length === 0) {
+      throw new Error('Cart is empty');
+    }
+
+    // Calculate total price for each item
+    const itemsWithTotalPrice = items.map(item => ({
+      ...item,
+      totalPrice: item.value * item.unit,
+    }));
+
+    // Calculate total price for the entire order
+    const totalPrice = itemsWithTotalPrice.reduce((sum, item) => sum + item.totalPrice, 0);
+
+    const orderData = {
+      items: itemsWithTotalPrice,
+      orderBy: userDetails.id,
+      orderTo: null, // Empty for now
+      location: activeAddress ? activeAddress._id : "None",
+      photos: '', // Empty for now
+      orderStatus: 'New', 
+    };
+
+    const response = await axios.post(`${Base_url}b2cOrder`, orderData);
+    console.log('Order created:', response.data);
+
+
+    await AsyncStorage.removeItem('cartItems');
+  console.log('Cart items cleared from AsyncStorage');
+  setCartUpdate(prev => prev + 1);
+  navigation.navigate("PickupConfirmation")
+  } catch (error) {
+    console.error('Error creating order:', error.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
@@ -76,7 +169,10 @@ export const ScheduleAddress = () => {
       name: SelectedAddressFromMap.name,
       house:newAddress.house,
       area:newAddress.area,
-      directions:newAddress.directions
+      directions:newAddress.directions,
+      latitude: SelectedAddressFromMap.latitude,
+    longitude: `${SelectedAddressFromMap.longitude}`,
+
     }
     // setAddresses([...addresses, newAddress1]);
     setnewAddressinStorage(newAddress1)
@@ -92,47 +188,53 @@ export const ScheduleAddress = () => {
     
   };
 
-  const SubmitSigupData= async()=>{
-    // setLoading(true)
-    console.log("need to do more")
-    const UserDetails = await AsyncStorage.getItem('UserDetails') || null;
-  const UserData = JSON.parse(UserDetails);
+  const SubmitAddressData = async()=>{
   
-    
-    console.log("Data of user ====>",UserDetails)
-      //  try {
-      //   const response = await axios.post(`${Base_url}api/b2b`, UserData);
-           
-      //   if(response.status === 200){
-      //        if(response.data){
-      //         const data = response.data
-      //           console.log("Data after vsubmit  ==>",data)
-                
-      //           return
-      //        }
-      //        return
-      //   }
-        
-      //   if (response.status === 201) {
-      //        if(response.data){
-     
-      //   navigation.navigate("VerifyProfileStatus")
+    console.log("save address to database")
+    const UserAddress ={
+      userId : userDetails.id,
+      latitude:  SelectedAddressFromMap.latitude || 1.3456 ,
+      longitude:  SelectedAddressFromMap.longitude || 1.3456,
+      googleAddress: `${SelectedAddressFromMap.district} ,  ${SelectedAddressFromMap.city}, ${SelectedAddressFromMap.region}, ${SelectedAddressFromMap.country}, ${SelectedAddressFromMap.postalCode}`,
+      buildingName: newAddress.house,
+      roadArea: newAddress.area,
+      note: newAddress.directions,
+      addressType: "Warehouse",
+      city: SelectedAddressFromMap.city,
+      state: SelectedAddressFromMap.region,
+    }
+    console.log("User Address",UserAddress)
   
-      //  }
-      //    else {
-      //     console.error("Error creating user:", response);
+    setLoading(true)
+    try {
+      const response = await axios.post(`${Base_url}b2cUser/address`, UserAddress); // Update the API endpoint accordingly
+      console.log("Res ==>",response.data);
+      if(response.data){
+        console.log("Address save to database")
+        setNewAddress({
+          house:"",
+          area:"",
+          directions:"",
+        });
+        setIsModalVisible(false)
+      setIsAddressModalVisible(false)
+      setUpdate((prev) => prev + 1);
         
-      //   }
-      // }
-      // } catch (error) {
-            
-      //   console.error("Error:", error);
-        
-      // }
-     navigation.navigate('KYC Verification')
- 
-  
-  }
+      }
+      
+    } catch (error) {
+      console.error('Error save address to database:', error);
+      
+        // ToastAndroid.show("Eroor : Try again", ToastAndroid.SHORT);
+      
+      // setShowPAN(true);
+      setLoading(false)
+    }
+   }
+
+   const handelNext = ()=>{
+    navigation.navigate("KYC Verification")
+    }
 const setnewAddressinStorage =async(address)=>{
   const Data = [...AllUserAddresses,address]
   // console.log("Data",Data)
@@ -163,37 +265,39 @@ const setnewAddressinStorage =async(address)=>{
     }
   };
 
-  const GettAllAddressFromStorage=async()=>{
-    AsyncStorage.getItem("UserAllAddress").then((storedData) => {
-      if (storedData !== null) {
-        const parsedData = JSON.parse(storedData);
-        setAllUsersAddresses(parsedData)
-        console.log("All Address",parsedData);
+  const GettAllAddressFromStorage= async () => {
+    try {
+      const response = await axios.get(`${Base_url}b2cUser/address/${userDetails.id}`); // Update the API endpoint accordingly
+      if (response.status === 200) {
+        const addresses = response.data.data;
+        setAllUsersAddresses(addresses);
+        console.log("All Address =>", addresses);
       } else {
-        setAllUsersAddresses([])
-        console.log("All Address Data not found in AsyncStorage");
+        setAllUsersAddresses([]);
+        console.log("All Address Data not found in API");
       }
-    }).catch((error) => {
-      setAllUsersAddresses([])
-      console.error("Error retrieving data from AsyncStorage: ", error);
-    });
-  }
+    } catch (error) {
+      setAllUsersAddresses([]);
+      console.error("Error retrieving data from API: ", error);
+    }
+  };
 
-  const getSelectedAddressFromStorage = async ()=>{
-    AsyncStorage.getItem("UserAddress").then((storedData) => {
-      if (storedData !== null) {
-        const parsedData = JSON.parse(storedData);
-        setSelectedAddress(parsedData)
-        console.log("All Address",parsedData);
+    const getSelectedAddressFromStorage = async () => {
+    try {
+      const response = await axios.get(`${Base_url}b2cUser/address/${userDetails.id}`); // Update the API endpoint accordingly
+      if (response.status === 200) {
+        const selectedAddress = response.data.data;
+        setSelectedAddress(selectedAddress);
+        console.log("Selected Address =>", selectedAddress);
       } else {
-        setSelectedAddress({})
-        console.log("All Address Data not found in AsyncStorage");
+        setSelectedAddress({});
+        console.log("Selected Address Data not found in API");
       }
-    }).catch((error) => {
-      setSelectedAddress({})
-      console.error("Error retrieving data from AsyncStorage: ", error);
-    });
-  }
+    } catch (error) {
+      setSelectedAddress({});
+      console.error("Error retrieving selected address from API: ", error);
+    }
+  };
 
   const DeleteAddress = async(name)=>{
     const Data = AllUserAddresses.filter ((el)=>el.name !== name)
@@ -229,10 +333,20 @@ const setnewAddressinStorage =async(address)=>{
    getSelectedAddressFromStorage()
   },[update])
 
-  const handelBack = ()=>{
-    navigation.goBack()
-  }
+
+  useEffect(()=>{
+    if(AllUserAddresses.length<1){
+      setIsModalVisible(true);
+    }
+  },[AllUserAddresses])
   
+  useEffect(async() => {
+    const userId = await AsyncStorage.getItem("userID");
+    console.log("User Id ==>", userId);
+    if (userId) {
+      setUserId(userId);
+    }
+  }, []);
 
   const animationRef = useRef(null);
   useEffect(() => {
@@ -241,88 +355,119 @@ const setnewAddressinStorage =async(address)=>{
     // Or set a specific startFrame and endFrame with:
     animationRef.current?.play(10, 80);
   }, []);
+
+  const renderAddress = ({ item }) => (
+    <TouchableOpacity onPress={()=>handelAddressSetActive(item._id)}>
+
+    
+    <View style={[styles.addressCard,{borderColor:`${item.activeAddress && item.activeAddress ? "green" : "#b3b3b3" }`}]}>
+      <View>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Image source={Logo} style={{ width: 15, height: 15 }} />
+          <Text style={styles.addressTitle}>{item.buildingName}</Text>
+        </View>
+        <Text style={styles.addressDetail}>{item.googleAddress}</Text>
+      </View>
+    </View>
+    </TouchableOpacity>
+  );
   return (
     <View style={styles.container}>
       {/* <Text style={styles.heading}>Your Addresses</Text> */}
-     <Block style={{marginTop:50,marginBottom:30}}>
-      
-     <Block style={{flexDirection:"row",justifyContent:"left",alignItems:"center"}}>
-              
-              <Block style={{flexDirection:"row",justifyContent:"center",alignItems:"center",borderRadius:150}}>
-             
-              <MaterialIcons onPress={handelBack} name="arrow-back-ios" size={24} style={{marginLeft:5}} color="black" />
-              </Block>
-              
-
-              <Text style={{marginLeft:15,fontSize:20,fontWeight:500}}>Select pickup Address</Text>
-            
-          </Block>
-
-     </Block>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingHorizontal: 0,
+          marginTop: 35,
+          height: 50,
+          marginBottom: 30,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+          onPress={() => {
+            console.log("Back pressed");
+          }}
+        >
+          <TouchableOpacity onPress={handleBack} activeOpacity={0.9}>
+            <View style={{  backgroundColor: '#000', borderRadius: 30, width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+              <MaterialIcons name="arrow-back-ios" size={22} color="#fff" style={{ marginLeft: 5 }} />
+            </View>
+          </TouchableOpacity>
+          <Text
+            style={{
+              color: "#000",
+              fontSize: 25,
+              marginLeft: 10,
+              fontWeight: 500,
+            }}
+          >
+            Select Location
+          </Text>
+        </View>
+      </View>
       {
-         AllUserAddresses.length > 0  ?
-         <FlatList
-         data={AllUserAddresses}
-         keyExtractor={(item, index) => index.toString()}
-         renderItem={({ item }) => (
-           <TouchableHighlight
-             onPress={() => selectAddress(item)}
-             underlayColor="#fff"
-             style={[
-               styles.addressContainer,
-               selectedAddress && selectedAddress.name === item.name && styles.selectedAddress,
-             ]}
-           >
-             <View style={{ backgroundColor: "#fff", padding: 15,borderRadius:25 }}>
-               <Block style={styles2.Space_Between}>
-               <Text style={{ fontSize: 16, fontWeight: 500 ,letterSpacing:1}}>{item.name}</Text> 
-               <Ionicons  onPress={()=>DeleteAddress(item.name)} name="close-circle" size={20} color="crimson" />
-               </Block>
-              
-               {
-                 item.house !== "null" && <Text style={{ fontSize: 12, fontWeight: 500,marginTop:5,letterSpacing:1 }}>
-                 {item.house},{item.area}
-                </Text>
-               }
-               {
-                 item.address !== "null" &&  <Text style={{ fontSize: 12, fontWeight: 500,marginTop:5,letterSpacing:1 }}>
-                 {item.address} 
-                 </Text>
-               }
- 
-               {
-                 item.city !== "null" && <Text style={{ fontSize: 12, fontWeight: 500,marginTop:5,letterSpacing:1 }}>{item.city},{item.postalCode},{item.state}</Text>
-               }
-              
-               {
-                 item.country !== "null" && <Text style={{ fontSize: 12, fontWeight: 500,marginTop:5,letterSpacing:1 }}>
-                 {item.country}
-               </Text>
-               }
-             
-             </View>
-           </TouchableHighlight>
-         )}
-       />
-       :
-       <Block style={{flex:0.9,justifyContent:"center",alignItems:"center"}}>
-             <Block center>
-             <LottieView
+        AllUserAddresses.length > 0 ? (
+          <FlatList
+            data={AllUserAddresses}
+            keyExtractor={(item) => item.id}
+            extraData={selectedAddress}
+            renderItem={renderAddress}
+          />
+        ) : (
+          <Block style={{ flex: 0.9, justifyContent: "center", alignItems: "center" }}>
+            <Block center>
+              <LottieView
                 style={styles.lottie}
                 source={require("../../assets/Animations/Animation - 1699520734986.json")}
                 autoPlay
                 loop
               />
-       </Block>
-       </Block>
-      
+            </Block>
+          </Block>
+        )
       }
      
 
       <Block style={styles2.Space_Around}>
-      <Button color="#14B57C" title="Add New Address" style={{width:width*0.5}} tintColor="#fff" onPress={toggleModal} />
-      <Button color="#14B57C" title="Submit" style={{width:width*0.3}} tintColor="#fff" onPress={handleSubmit} />
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#14B57C',
+          width: width * 0.5,
+          padding: 15,
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 30,
+        }}
+        onPress={toggleModal}
+        activeOpacity={0.8}
+      >
+        <Text style={{ color: '#fff', fontSize: 16 }}>Add New Address</Text>
+      </TouchableOpacity>
       
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#14B57C',
+          width: width * 0.3,
+          padding: 15,
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 30,
+        }}
+        onPress={createOrderFromCart}
+        activeOpacity={0.8}
+        disabled={loading}
+      >
+       
+        <Text style={{ color: '#fff', fontSize: 16 }}>Submit</Text>
+        
+
+      </TouchableOpacity>
       </Block>
 
       <Modal visible={isModalVisible} animationType="slide">
@@ -387,11 +532,14 @@ const setnewAddressinStorage =async(address)=>{
   }
   
   
-   <Block style={[styles2.AlignCenter,{marginTop:20}]}>
+  <Block style={[styles2.AlignCenter,{marginTop:20}]}>
   
-   <Button color="#14B57C" title="CONFIRM LOCATION" style={{width:width*0.9}} tintColor="#fff" onPress={ConfirmLoction} />
-        
-   </Block>
+  {/* <Button color="black" title="CONFIRM LOCATION" style={{width:width*0.9 ,borderRadius: 10,height: 40}} tintColor="#fff" onPress={ConfirmLoction} /> */}
+  <TouchableOpacity onPress={ConfirmLoction} style={{backgroundColor:"#14B57C",width:width*0.9 ,borderRadius: 35,height: 50,justifyContent:"center",alignItems:"center"}} activeOpacity={0.8}>
+     <Text style={{color:"#fff",fontSize:17,fontWeight:600}}>Confirm Location</Text>
+   </TouchableOpacity>
+       
+  </Block>
 </Block>
 }
           
@@ -589,8 +737,13 @@ const setnewAddressinStorage =async(address)=>{
           {/* Add similar TextInput fields for other address details */}
 
           <Block center style={[styles2.Space_Between, { width:width*0.9,marginTop:60 }]}>
-            <Button color="#14B57C" title="save" style={{width:width*0.9}} tintColor="#fff" onPress={saveAddress} />
-            {/* <Button color="black" title="close" style={{width:width*0.4}} tintColor="#fff" onPress={toggleModal2} /> */}
+          <TouchableOpacity style={[styles.btn,{backgroundColor:"#14B57C"}]}  onPress={SubmitAddressData} disabled={loading}>
+            {loading ? (
+          <ActivityIndicator size="small" color="#fff" />
+        ) : (
+            <Text style={{color:"#fff",fontSize:16,fontWeight:500}}>Save</Text>
+        )}
+            </TouchableOpacity>
           </Block>
         </View>
       </Modal>
@@ -621,7 +774,7 @@ const styles = StyleSheet.create({
     borderWidth:1,
     borderRadius:8,
     borderColor:"#A6A6A6",
-    width:width*0.9,
+    width:width*0.94,
     marginTop:4,
    
   },
@@ -633,7 +786,7 @@ const styles = StyleSheet.create({
     borderWidth:1,
     borderRadius:8,
     borderColor:"#A6A6A6",
-    width:width*0.9,
+    width:width*0.94,
     marginTop:4,
     height:200
    
@@ -647,7 +800,7 @@ const styles = StyleSheet.create({
   },
   selectedAddress: {
     borderWidth:2,
-    borderColor: "#14B57C",
+    borderColor: "black",
     borderRadius:20
   },
   modalContainer: {
@@ -687,6 +840,26 @@ const styles = StyleSheet.create({
     elevation: 5,
     width: width,
     height: height - 400,
+  },
+  addressCard: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+    padding: 13,
+    borderWidth: 1,
+    borderColor: "#b3b3b3",
+    borderRadius: 8,
+  },
+  addressTitle: { fontWeight: "600", fontSize: 18, color: "#000", marginBottom: 5, marginLeft: 10 },
+  addressDetail: { fontSize: 14, color: "#666" },
+  btn :{
+    width: '100%',
+    height: 55,
+    borderRadius: 35,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 

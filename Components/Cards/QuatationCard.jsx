@@ -1,95 +1,68 @@
-import React, { useRef, useState } from 'react'
-import { FlatList, SafeAreaView, StyleSheet,ScrollView,  View,Dimensions,TouchableOpacity, Image,Animated, TextInput } from 'react-native'
-import { StatusBar } from 'expo-status-bar';
-import { Block, Text, Input, theme, Button } from "galio-framework";
-const {width, height} = Dimensions.get('window');
-import { Feather } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons'; 
-import { AntDesign } from '@expo/vector-icons';
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity, Image ,Dimensions} from 'react-native';
+import { Block, Text } from "galio-framework";
+import { Feather, Ionicons, AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { FontAwesome } from '@expo/vector-icons';
 
-
-const data = {
-  status: '3 Quotation Received', // or 'canceled'
-  to: {
-    name: 'John Doe',
-  },
-  orderDate: '2023-10-01T00:00:00Z',
-  totalAmount: 1500,
-  details: {
-    category: 'Electronics',
-  },
-  from: {
-    Address: '123 Main St',
-    pincode: '123456',
-    city: 'New York',
-    country: 'USA',
-  },
-};
+const { width } = Dimensions.get('window');
 
 export const QuatationCard = ({ data }) => {
   const navigation = useNavigation();
 
-  const handeViewDetail=()=>{
-    navigation.navigate("QuotationsDetails")
-  }
-    // const {Img,Title,SubTitle} = props
+  const handleViewDetail = () => {
+    navigation.navigate("QuotationsDetails", { quotation: data });
+  };
+
+  const postId = data.postId || {}; // Handle null postId
+
   return (
     <View style={styles.cardContainer}>
-      <View style={[styles.header, {backgroundColor: data.status === 'canceled' ? '#FF2020' : (data.status === 'pending' ? '#FFD12C' : '#FFD12C'),}]}>
-               {data.status === 'pending' ? (
+      <View style={[styles.header, { backgroundColor: data.status === 'canceled' ? '#FF2020' : (data.status === 'pending' ? '#FFD12C' : '#FFD12C'), }]}>
+        {data.status === 'pending' ? (
           <Feather name="clock" size={18} color="#000" />
         ) : data.status === 'canceled' ? (
           <Feather name="x-circle" size={18} color="#fff" />
         ) : null}
-        <Text style={[styles.statusText,{color : data.status === 'canceled' ? '#fff' : (data.status === 'pending' ? '#000' : '#000'),}]}>{data.status}</Text>
-        
+        <Text style={[styles.statusText, { color: data.status === 'canceled' ? '#fff' : (data.status === 'pending' ? '#000' : '#000'), }]}>{data.status}</Text>
       </View>
-
-      
 
       <Block style={styles.row}>
         <View style={styles.column}>
-        <Text style={{fontSize: 16,fontWeight: 600}}>{data.to.name}</Text>
-                   <View style={{ flexDirection: 'row', alignItems: 'center',marginTop: 5 }}>
+          <Text style={{ fontSize: 16, fontWeight: 600 }}>{data.wholesalerId.name}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
             <AntDesign name="calendar" size={20} color="#0EB77B" />
             <Text style={[styles.text, { marginLeft: 8 }]}>
-              <Text style={styles.blueText}>{new Date(data.orderDate).toLocaleDateString('en-GB')}</Text>
+              <Text style={styles.blueText}>{new Date(data.createdAt).toLocaleDateString('en-GB')}</Text>
             </Text>
           </View>
         </View>
 
         <View style={[styles.column, styles.divider]}>
-        <Text style={{fontSize: 16,fontWeight: 600}}>Price</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center',marginTop: 5 }}>
-          <View >
+          <Text style={{ fontSize: 16, fontWeight: 600 }}>Price</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
             <Image source={require('../../assets/Rupee.png')} style={{ width: 20, height: 20 }} />
-          </View>
-          <Text style={styles.amountText}>₹{data.totalAmount}</Text>
+            <Text style={styles.amountText}>₹{data.postId.price}</Text>
           </View>
         </View>
 
         <View style={styles.column}>
-          <Text style={[styles.text,{fontSize: 16,fontWeight: 600}]}>Items</Text>
-          <Text style={[styles.text,{marginTop: 5}]}>{data.details.category}</Text>
-         
+          <Text style={[styles.text, { fontSize: 16, fontWeight: 600 }]}>Items</Text>
+          <Text style={[styles.text, { marginTop: 5 }]}>{postId.categoryName || 'N/A'}</Text>
         </View>
       </Block>
 
-
-            <View style={{ flexDirection: 'row', alignItems: 'center',paddingTop: 15 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 15 }}>
         <Ionicons name="location" size={26} color="#0EB77B" />
-        <Text style={[styles.text, { flex: 1,paddingRight: 24 }]}>
-          Pickup Location: {data.from.Address}, {data.from.pincode}, {data.from.city}, {data.from.country}
+        <Text style={[styles.text, { flex: 1, paddingRight: 24 }]}>
+          Pickup Location: {postId.address || 'N/A'}, {postId.city || 'N/A'}, {postId.state || 'N/A'}
         </Text>
-        <TouchableOpacity style={styles.viewDetailsButton} onPress={handeViewDetail}>
+        <TouchableOpacity style={styles.viewDetailsButton} onPress={handleViewDetail}>
           <Text style={styles.viewDetailsText}>View Details</Text>
         </TouchableOpacity>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -101,17 +74,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     marginTop: 20,
     marginBottom: 15,
-    
   },
-   header: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 5,
     paddingHorizontal: 8,
     borderRadius: 15,
-     // Default to #FFD12C if status is not 'canceled' or 'pending'
-    // width: 210,
     position: 'absolute',
     right: 10,
     top: -15,
@@ -138,33 +108,29 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     borderLeftColor: "#63b3b3",
     paddingHorizontal: 12,
-    
   },
   amountText: {
     fontSize: 18,
     fontWeight: '500',
     color: "#000",
-    
     marginLeft: 5,
   },
   text: {
     fontSize: 14,
     color: "#000",
     textAlign: 'center',
-    
   },
   blueText: {
     color: "#000",
     fontWeight: '500',
   },
-  viewDetailsButton: {
-    
-  },
+  viewDetailsButton: {},
   viewDetailsText: {
     fontSize: 16,
     color: "#0EB77B",
     fontWeight: '600',
     textDecorationLine: 'underline',
   },
-  
-    });
+});
+
+export default QuatationCard;

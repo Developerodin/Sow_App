@@ -3,18 +3,21 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView ,Image ,Dimensions
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Block } from "galio-framework";
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation , useRoute} from "@react-navigation/native";
 const {width, height} = Dimensions.get('screen');
 
 export const QuotationsDetails = () => {
     const navigation = useNavigation();
+    const route = useRoute();
+    const { quotation } = route.params;
     const handelBack = () => {
         navigation.goBack();
         };
 
 
     const quotationClick = () => {
-        navigation.navigate("Quotations");
+      console.log("Quotation Clicked",quotation._id);
+        navigation.navigate("Quotations",{quotationId: quotation._id});
     };    
   const quotations = [
     { id: 1, name: "Mr. XYZ", company: "XYZ Metals", rate: "₹30/KG" },
@@ -56,7 +59,7 @@ export const QuotationsDetails = () => {
                    <View style={{ flexDirection: 'row', alignItems: 'center',marginTop: 5 }}>
             <AntDesign name="calendar" size={20} color="#14B57C" />
             <Text style={[styles.text, { marginLeft: 8 }]}>
-              <Text style={styles.blueText}>21 Sept 2024</Text>
+              <Text style={styles.blueText}>{new Date(quotation.createdAt).toLocaleDateString('en-GB')}</Text>
             </Text>
           </View>
         </View>
@@ -67,13 +70,13 @@ export const QuotationsDetails = () => {
           <View >
             <Image source={require('../../assets/Rupee.png')} style={{ width: 20, height: 20 }} />
           </View>
-          <Text style={styles.amountText}>₹ 33/KG</Text>
+          <Text style={styles.amountText}>₹ {quotation.postId.price || 'N/A'}</Text>
           </View>
         </View>
 
         <View style={styles.column}>
           <Text style={[styles.text,{fontSize: 16,fontWeight: 600}]}>Items</Text>
-          <Text style={[styles.text,{marginTop: 5}]}> Aluminium</Text>
+          <Text style={[styles.text,{marginTop: 5}]}> {quotation.postId.categoryName || 'N/A'}</Text>
          
         </View>
       </Block>
@@ -83,17 +86,17 @@ export const QuotationsDetails = () => {
       {/* Quotations List */}
       <Text style={styles.sectionTitle}>Quotations Received -</Text>
       <ScrollView>
-        {quotations.map((quotation) => (
+        
             <TouchableOpacity onPress={quotationClick} activeOpacity={0.8}>
           <View key={quotation.id} style={styles.card}>
             <View style={styles.cardHeader} >
               <View>
-                <Text style={styles.cardName}>{quotation.name}</Text>
-                <Text style={styles.cardCompany}>{quotation.company}</Text>
+                <Text style={styles.cardName}>{quotation.wholesalerId.name}</Text>
+                <Text style={styles.cardCompany}>{quotation.wholesalerId.businessName}</Text>
               </View>
               <View style={styles.cardRate}>
                 <Text style={styles.rateText}>Rate</Text>
-                <Text style={styles.rateValue}>{quotation.rate}</Text>
+                <Text style={styles.rateValue}>₹ {quotation.price}</Text>
               </View>
             </View>
             {/* Buttons */}
@@ -111,7 +114,7 @@ export const QuotationsDetails = () => {
             </View>
           </View>
             </TouchableOpacity>
-        ))}
+        
       </ScrollView>
     </View>
   );
@@ -199,6 +202,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     marginTop: 4,
+    marginRight: 25,
   },
   cardActions: {
     flexDirection: "row",

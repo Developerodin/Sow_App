@@ -1,42 +1,73 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import { View, Text, StyleSheet, FlatList,Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Block } from 'galio-framework'; // Import Block from the appropriate library
 
-const notifications = [
-    { id: '1', time: '2:45 PM' },
-    { id: '2', time: '2:45 PM' },
-    { id: '3', time: '2:45 PM' },
-    { id: '4', time: '2:45 PM' },
-    { id: '5', time: '2:45 PM' },
-    { id: '6', time: '2:45 PM' },
-    { id: '7', time: '2:45 PM' },
-  // Add more notifications as needed
-];
+import { useAppContext } from "../../Context/AppContext";
+import { Base_url } from '../../Config/BaseUrl';
+import axios from 'axios';
+
 
 export const Notification = () => {
   const navigation = useNavigation();
+  const { userDetails, update,notificatoinUpdate,setNotificationsUpdate } = useAppContext();
+  const [notifications, setNotifications] = useState([]);
+  const [error, setError] = useState(false);
+  
   const handleBack = () => {
     navigation.goBack();
   };
 
-  const renderItem = ({ item }) => (
-    <View>
+  const getNotifications = async (id) => {
+    try {
+      const response = await axios.get(`${Base_url}b2c-notifications/${id}`);
+      console.log("notifications", response.data);
+      setNotifications(response.data);
+      markReadNotifications(id);
+      setError(false); // Reset error state on successful fetch
+    } catch (error) {
+      console.log(error);
+      setError(true); // Set error state if an error occurs
+    }
+  };
 
-    <View style={styles.notificationContainer}>
-    <View style={styles.iconContainer}>
-      <Image
-        source={require('./Bell.png')} // Replace with the actual path to your bell icon image
-        style={styles.icon}
-      />
-    </View>
-    <View>
-    <Text style={styles.notificationTitle}>Order Rejected</Text>
-    <Text style={styles.notificationDescription}>Your scrap was rejected.Click to see more</Text>
-    </View>
-    <Text style={styles.timeText}>{item.time}</Text>
-  </View>
+  const markReadNotifications = async (id) => {
+    try {
+      const response = await axios.get(`${Base_url}b2c-notifications/mark-read/${id}`);
+      console.log("notifications", response.data);
+      setNotificationsUpdate((prev)=>prev+1)
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if(userDetails.id){
+    getNotifications(userDetails.id);
+    }
+  }, [update,userDetails]);
+
+  const formatDate = (date) => {
+    const d = new Date(date);
+    return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+  };
+
+  const renderItem = ({ item }) => (
+    <View style={[styles.notificationContainer]}>
+      <View style={styles.iconContainer}>
+        <Image
+          source={require('./Bell.png')} // Replace with the actual path to your bell icon image
+          style={styles.icon}
+        />
+      </View>
+
+      <View style={{width:"65%",marginLeft:5}}>
+        <Text style={styles.notificationTitle}>{item.notification}</Text>
+        <Text style={styles.notificationDescription}>Status: {item.orderStatus}</Text>
+        <Text style={styles.notificationDescription}>Total Price: ₹{item.totalPrice}</Text>
+      </View>
+      <Text style={styles.timeText}>{formatDate(item.createdAt)}</Text>
     </View>
   );
 
@@ -51,12 +82,25 @@ export const Notification = () => {
           <Block style={{ backgroundColor: '#FAFAFA', padding: 5, borderRadius: 30,  width: 100, alignSelf: 'center',margin: 10 }}>
       <Text style={{ textAlign: 'center',color: '#000' }}>Today</Text>
     </Block>
-      <FlatList
-        data={notifications}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
-      />
+    {error || notifications.length === 0 ? (
+        <Block center style={{ marginTop: 40 }}>
+          <Image
+            source={require("../../assets/media/5-dark.png")}
+            style={{
+              width: 300,
+              height: 300,
+              marginRight: 10,
+            }}
+          />
+        </Block>
+      ) : (
+        <FlatList
+          data={notifications}
+          renderItem={renderItem}
+          keyExtractor={(item) => item._id}
+          contentContainerStyle={styles.listContainer}
+        />
+      )}
     </View>
   );
 };
@@ -65,7 +109,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    
   },
   header: {
     fontSize: 24,
@@ -82,12 +125,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   notificationTitle: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: 'bold',
   },
   notificationDescription: {
     fontSize: 14,
-    color: '#666',
+    color: '#000',
   },
   listContainer: {
     paddingHorizontal: 20,
@@ -96,7 +139,7 @@ const styles = StyleSheet.create({
   notificationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'left',
     paddingVertical: 10,
     borderColor: '#B3B3B3',
     borderWidth: 1,
@@ -107,10 +150,12 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 35,
     height: 35,
-    backgroundColor: '#F0FAFA', 
+    backgroundColor: '#F0FAFA',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 12,
+    
   },
   icon: {
     width: 24,
