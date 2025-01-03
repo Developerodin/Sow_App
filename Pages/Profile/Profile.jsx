@@ -81,7 +81,7 @@ export const Profile = () => {
     {
       icon: <AntDesign name="infocirlce" size={24} color="#0EB77B" />,
       title: "Terms & Conditions",
-      link: "",
+      link: "Terms and Condition",
     },
     {
       icon: <MaterialIcons name="privacy-tip" size={24} color="#0EB77B" />,

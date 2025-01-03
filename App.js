@@ -59,6 +59,7 @@ import { QuotationsDetails } from './Pages/MyPost/QuotationsDetails';
 import { Quotations } from './Pages/MyPost/Quotations';
 import { QuotationAccepted } from './Pages/MyPost/QuotationAccepted';
 import { VerifyProfileStatus } from './Pages/SignUp/Registration/VerifyProfileStatus';
+import { WebViewApp } from './Pages/WebViewPage/WebView';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -548,7 +549,13 @@ export default function App() {
             headerShown: false,
           }}/>
 
-
+<Stack.Screen
+            name="Scrap On Wheels"
+            component={WebViewApp}
+            options={{
+              headerShown: true,
+            }}
+          />
       
       </Stack.Navigator>
       {/* } */}
