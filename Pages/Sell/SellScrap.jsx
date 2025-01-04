@@ -78,7 +78,7 @@ export const SellScrap = () => {
         style={[styles.itemContainer, isSelected && styles.selectedItem]}
         onPress={() => openModal(item)}
       >
-        <Image source={require('../../assets/Box.png')} style={styles.itemImage} />
+        <Image source={item.image && { uri: item.image }} style={styles.itemImage} />
         <View style={styles.itemTextContainer}>
           <Text style={styles.itemName}>{item.name}</Text>
           <Text style={styles.itemPrice}>₹{item.price}/Kg</Text>
@@ -190,9 +190,9 @@ const styles = StyleSheet.create({
     borderColor: '#14B57C',
   },
   itemImage: {
-    width: 40,
-    height: 40,
-    resizeMode: 'contain',
+    width: 70,
+    height: 50,
+   
     marginRight: 16,
   },
   itemTextContainer: {

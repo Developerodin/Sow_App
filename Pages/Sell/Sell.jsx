@@ -43,7 +43,7 @@ export const Sell = () => {
       activeOpacity={0.8}
     >
       <Image
-        source={require('../../assets/scrap-img.jpeg')}
+        source={item.image && { uri: item.image }}
         style={styles.image}
       />
       <Text style={styles.categoryText}>{item.name}</Text>

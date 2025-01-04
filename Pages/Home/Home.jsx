@@ -120,7 +120,7 @@ export const Home = () => {
               key={category._id}
               style={styles.categoryBlock}
             >
-              <Image source={require("../../assets/Metal.png")} style={{height: 70,width: 70}} />
+              <Image source={category.image && { uri: category.image }} style={{height: 50,width: 50}} />
               <Text style={styles.categoryText}>
                 {category.name}
               </Text>

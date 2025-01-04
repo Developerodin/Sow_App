@@ -1,69 +1,47 @@
-import React, { useRef, useState } from "react";
-import {
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Dimensions,
-  TouchableOpacity,
-  Image,
-  Animated,
-  TextInput,
-} from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { Block, Text, Input, theme, Button } from "galio-framework";
-
-import { AntDesign } from "@expo/vector-icons";
-import { Header } from "../../Components/Header/Header";
-import { OrdersCard } from "../../Components/Cards/OrdersCard";
-const { width, height } = Dimensions.get("window");
-import { TabView, SceneMap } from "react-native-tab-view";
-import { useAppContext } from "../../Context/AppContext";
+import React, { useEffect, useState } from "react";
+import { ScrollView, View, StyleSheet, Image, Dimensions, TouchableOpacity, Animated } from "react-native";
+import { Block, Text, Button } from "galio-framework";
 import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
+import { useAppContext } from "../../Context/AppContext";
+import { Base_Url } from "../../Config/BaseUrl";
+import { OrdersCard } from "../../Components/Cards/OrdersCard";
+import { TabView, SceneMap } from 'react-native-tab-view';
+import { Ionicons } from '@expo/vector-icons';
 
-const data = {
-  status: "pending", // or 'canceled'
-  to: {
-    name: "Vishal Rao",
-  },
-  orderDate: "2024-11-11T00:00:00Z",
-  totalAmount: 1500,
-  details: {
-    category: "Electronics",
-  },
-  from: {
-    Address: "Near Dmart",
-    pincode: "302033",
-    city: "Jaipur",
-    country: "India",
-  },
-};
+const { width, height } = Dimensions.get("window");
 
-const FirstRoute = () => (
+const OrdersList = ({ orders, error }) => (
   <ScrollView style={{ flex: 1 }}>
     <Block style={{ padding: 10, marginBottom: 60 }}>
-      <OrdersCard data={data} />
-
-      <OrdersCard data={data} />
-      <OrdersCard data={data} />
+      {error || orders.length === 0 ? (
+        <Block center style={{ marginTop: 40 }}>
+          <Image
+            source={require("../../assets/media/5-dark.png")}
+            style={{
+              width: 300,
+              height: 300,
+              marginRight: 10,
+            }}
+          />
+        </Block>
+      ) : (
+        orders.map((order) => (
+          <OrdersCard key={order._id} data={order} />
+        ))
+      )}
     </Block>
   </ScrollView>
 );
-const SecondRoute = () => (
-  <ScrollView style={{ flex: 1 }}>
-    <Block style={{ padding: 10, marginBottom: 60 }}>
-      <OrdersCard data={data} />
 
-      <OrdersCard data={data} />
-      <OrdersCard data={data} />
-    </Block>
-  </ScrollView>
-);
 export const Orders = () => {
+  const { userDetails } = useAppContext();
   const navigation = useNavigation();
   const [index, setIndex] = useState(0);
+  const [pendingOrders, setPendingOrders] = useState([]);
+  const [completedOrders, setCompletedOrders] = useState([]);
+  const [pendingError, setPendingError] = useState(false);
+  const [completedError, setCompletedError] = useState(false);
   const {
     CartInStorage,
     CartTotalAmount,
@@ -71,6 +49,30 @@ export const Orders = () => {
     showCartSuggestion,
     setShowCartSuggestion,
   } = useAppContext();
+
+  const fetchOrders = async (type, setOrders, setError) => {
+    console.log('User Details:>>', type, userDetails.id);
+    try {
+      const response = await axios.post(`${Base_Url}b2cOrder/filterorders`, {
+        type: type,
+        userId: userDetails.id,
+        
+      });
+    
+      console.log('Orders:>>', response.data);
+    } catch (error) {
+      setError(true);
+      console.error('Error fetching orders:', error?.response?.data || error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (index === 0) {
+      fetchOrders("Pending", setPendingOrders, setPendingError);
+    } else if (index === 1) {
+      fetchOrders("Completed", setCompletedOrders, setCompletedError);
+    }
+  }, [index]);
 
   const handelSellScrap = () => {
     navigation.navigate("Schedule Pickup");
@@ -132,10 +134,17 @@ export const Orders = () => {
     );
   };
 
-  const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
-  });
+  const renderScene = ({ route }) => {
+    switch (route.key) {
+      case 'first':
+        return <OrdersList orders={pendingOrders} error={pendingError} />;
+      case 'second':
+        return <OrdersList orders={completedOrders} error={completedError} />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View
@@ -157,7 +166,6 @@ export const Orders = () => {
         renderTabBar={renderTabBar}
         onIndexChange={handleIndexChange}
       />
-      {/* <ScrollView style={{flex: 1}}> */}
       {showCartSuggestion && CartInStorage.length > 0 && (
         <Block
           center
@@ -247,7 +255,6 @@ export const Orders = () => {
           </Block>
         </Block>
       )}
-      
     </View>
   );
 };
@@ -259,7 +266,6 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: "row",
-    // paddingTop: StatusBar.currentHeight,
     padding: 10,
     backgroundColor: "#fff",
   },
@@ -272,21 +278,19 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: "100%",
     height: 66,
-    borderBottomWidth: 1, // Add a bottom border for the input
-    borderColor: "transparent", // Make the border color transparent
+    borderBottomWidth: 1,
+    borderColor: "transparent",
   },
   input: {
     flex: 1,
     textAlign: "center",
     padding: 0,
     fontSize: 22,
-    // Remove padding to make it look borderless
   },
   subtitle: {
     color: "black",
     fontSize: 20,
     marginTop: 10,
-
     textAlign: "left",
     lineHeight: 23,
     letterSpacing: 0.3,
@@ -348,3 +352,5 @@ const styles = StyleSheet.create({
     width: width,
   },
 });
+
+export default Orders;
