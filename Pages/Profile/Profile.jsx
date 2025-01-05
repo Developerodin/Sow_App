@@ -39,13 +39,18 @@ export const Profile = () => {
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
   const [visible, setVisible] = useState(false);
-  const [userDetails, setuserDetails] = useState({});
+  // const [userDetails, setuserDetails] = useState({});
+  const [salesSummary, setSalesSummary] = useState({
+    netKgSold: 0,
+    netAmountEarned: 0,
+  });
   const {
     CartInStorage,
     CartTotalAmount,
     CartTotalWeight,
     showCartSuggestion,
     setShowCartSuggestion,
+    userDetails
   } = useAppContext();
   const ProfileTabs = [
     {
@@ -68,11 +73,11 @@ export const Profile = () => {
       title: "Manage Address",
       link: "ManageAddress",
     },
-    {
-      icon: <Entypo name="language" size={24} color="#0EB77B" />,
-      title: "Change Language",
-      link: "",
-    },
+    // {
+    //   icon: <Entypo name="language" size={24} color="#0EB77B" />,
+    //   title: "Change Language",
+    //   link: "",
+    // },
     {
       icon: <FontAwesome name="building" size={24} color="#0EB77B" />,
       title: "About Comapny",
@@ -92,13 +97,13 @@ export const Profile = () => {
     // {icon:<Foundation name="torso-business" size={28} color="#4854e0" />,title:"Upgrade to business profile",link:"Upgrade Profile"},
   ];
 
-  const getCurrentUser = async () => {
-    const user = await AsyncStorage.getItem("userDetails");
-    const ParseUser = JSON.parse(user);
-    if (user) {
-      setuserDetails(ParseUser);
-    }
-  };
+  // const getCurrentUser = async () => {
+  //   const user = await AsyncStorage.getItem("userDetails");
+  //   const ParseUser = JSON.parse(user);
+  //   if (user) {
+  //     setuserDetails(ParseUser);
+  //   }
+  // };
 
   const deleteAccount = async () => {
     try {
@@ -225,6 +230,25 @@ export const Profile = () => {
     console.log("handel Rate Appliction");
   };
 
+  const fetchSalesSummary = async (userId) => {
+    try {
+    
+
+      // Make the API call
+      const response = await axios.get(`${Base_url}b2cUser/sales-summary/${userId}`);
+      
+      // Check if the response is successful
+      if (response.status === 200) {
+        console.log("Sales Summary",response.data);
+        setSalesSummary(response.data); // Update state with fetched data
+      } 
+    } catch (err) {
+      console.error("Error fetching sales summary:", err);
+     
+    } 
+  };
+
+
  
 
   const showImagePicker = async (sourceType) => {
@@ -254,7 +278,8 @@ export const Profile = () => {
   };
 
   useEffect(() => {
-    getCurrentUser();
+    // getCurrentUser();
+    fetchSalesSummary(userDetails.id)
   }, []);
 
   return (
@@ -340,7 +365,7 @@ export const Profile = () => {
                   marginTop: 10,
                 }}
               >
-                $ 20,000
+                Rs {salesSummary && salesSummary.netAmountEarned}
               </Text>
             </Block>
 
@@ -368,7 +393,7 @@ export const Profile = () => {
                   marginTop: 10,
                 }}
               >
-                50 Kgs
+                {salesSummary && salesSummary.netKgSold} Kgs
               </Text>
             </Block>
           </Block>
