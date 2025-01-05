@@ -20,6 +20,7 @@ export const AppProvider = ({ children }) => {
   const [notificatoinUpdate,setNotificationsUpdate] = useState(0);
     const [CartTotalWeight,setCartTotalWeight] = useState(0);
     const [SelectedAddressFromMap,setSelectedAddressFromMap] = useState(null);
+    const [updateProfiletype,setUpdateProfiletype] = useState(0);
   const toggleDrwerMenu = () => {
     setDrawerMenuVisible(!isDrwerMenuVisible);
   };
@@ -104,7 +105,7 @@ setShowCartSuggestion(true)
 //   },[selectedTabs])
 
   return (
-    <AppContext.Provider value={{SelectedAddressFromMap,setSelectedAddressFromMap,userDetails,setuserDetails,CartInStorage,CartTotalAmount,CartTotalWeight,showCartSuggestion,setShowCartSuggestion,Cart,setCart,update,setUpdate,toggleDrwerMenu,isDrwerMenuVisible, setDrawerMenuVisible ,selectedMarker, setSelectedMarker,isMarkerModalVisible, setMarkerModalVisible,selectedTabs,setSelectedTabs, isLoggedIn, toggleLogin,notificatoinUpdate,setNotificationsUpdate,modalVisible,setModalVisible,isLoggedIn,setIsLoggedIn,cartUpdate,setCartUpdate }}>
+    <AppContext.Provider value={{updateProfiletype,setUpdateProfiletype,SelectedAddressFromMap,setSelectedAddressFromMap,userDetails,setuserDetails,CartInStorage,CartTotalAmount,CartTotalWeight,showCartSuggestion,setShowCartSuggestion,Cart,setCart,update,setUpdate,toggleDrwerMenu,isDrwerMenuVisible, setDrawerMenuVisible ,selectedMarker, setSelectedMarker,isMarkerModalVisible, setMarkerModalVisible,selectedTabs,setSelectedTabs, isLoggedIn, toggleLogin,notificatoinUpdate,setNotificationsUpdate,modalVisible,setModalVisible,isLoggedIn,setIsLoggedIn,cartUpdate,setCartUpdate }}>
       {children}
     </AppContext.Provider>
   );

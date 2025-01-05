@@ -27,7 +27,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Inventory } from './Pages/Inventory/Inventory';
 import { Octicons } from '@expo/vector-icons'; 
 import { OrderDetail } from './Pages/Orders/OrderDetail';
-import { AppProvider } from './Context/AppContext';
+import { AppProvider, useAppContext } from './Context/AppContext';
 import * as SplashScreen from 'expo-splash-screen';
 import { WelcomeScreen } from './Pages/OnBoarding/SplashScreen/WelcomeScreen';
 import { Schedule } from './Pages/Schedule/Schedule';
@@ -60,25 +60,32 @@ import { Quotations } from './Pages/MyPost/Quotations';
 import { QuotationAccepted } from './Pages/MyPost/QuotationAccepted';
 import { VerifyProfileStatus } from './Pages/SignUp/Registration/VerifyProfileStatus';
 import { WebViewApp } from './Pages/WebViewPage/WebView';
+import { Base_url } from './Config/BaseUrl';
+import axios from 'axios';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const Tabs = ({navigation}) => {
-  
-
-  // const handleTabPress = async (e,tabName) => {
-  //   console.log("tab pressed: " + tabName)
-  //   if (tabName !== 'Home' && !isLoggedIn) {
-  //     e.preventDefault();
-  //     setSelectedTabs(tabName);
-  //     setModalVisible(true);
-  //   } else {
+  const [profileType,setProfileType] = useState(null);
+const { userDetails,updateProfiletype,setUpdateProfiletype } = useAppContext();
+  const getUserProfileType = async (userId) => {
+    try {
+      const response = await axios.get(`${Base_url}b2cUser/get-profile-type/${userId}`);
       
-  //     setModalVisible(false);
-  //     setSelectedTabs(tabName);
-  //   }
-  // }
+      console.log('Profile type retrieved successfully:', response.data.data);
+     const res = response.data.data;
+     setProfileType(res.profileType)
+      return response.data;
+    } catch (error) {
+      console.error('Error retrieving profile type:', error.response?.data || error.message);
+      throw error.response?.data || error.message;
+    }
+  };
+
+  useEffect(()=>{
+    getUserProfileType(userDetails.id)
+  },[updateProfiletype])
   return (
  
 <Tab.Navigator
@@ -121,22 +128,24 @@ const Tabs = ({navigation}) => {
       
        
       />
+{
+  profileType && (profileType=== "office" || profileType=== "shopkeeper") && <Tab.Screen
+  name="My Post"
+  component={MyPost}
+  options={{
+    tabBarIcon: ({ color, size }) => (
+      <Image
+      source={require('./assets/media/Plus.png')} 
+      style={{ width: 25, height: 25, tintColor: color }}
+    />
+    ),
+    headerShown: false,
+  }}
 
-<Tab.Screen
-        name="My Post"
-        component={MyPost}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Image
-            source={require('./assets/media/Plus.png')} 
-            style={{ width: 25, height: 25, tintColor: color }}
-          />
-          ),
-          headerShown: false,
-        }}
-      
-       
-      />
+ 
+/>
+}
+
 
 <Tab.Screen
         name="Cart"

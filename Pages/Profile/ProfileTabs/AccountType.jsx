@@ -10,20 +10,61 @@ import { useNavigation } from '@react-navigation/native';
 import house from "../../../assets/AtHousehold.png";
 import office from "../../../assets/AtOffice.png";
 import Shopkeeper from "../../../assets/ATShopKeeper.png";
+import { Base_url } from '../../../Config/BaseUrl';
+import axios from 'axios';
+import { useAppContext } from '../../../Context/AppContext';
 
 export const AccountType = () => {
   const navigation = useNavigation();
+  const { userDetails,updateProfiletype,setUpdateProfiletype } = useAppContext();
   const [selectedCard, setSelectedCard] = useState(null);
-
+  const [profileType,setProfileType] = useState(null);
+  
   // Function to handle card selection
   const handleCardSelect = (card) => {
     setSelectedCard(card);
+    console.log("Card selected",card)
+    updateUserProfileType(userDetails.id,card)
   };
   
  
 const handelBack = ()=>{
   navigation.goBack()
 }
+
+const getUserProfileType = async (userId) => {
+  try {
+    const response = await axios.get(`${Base_url}b2cUser/get-profile-type/${userId}`);
+    
+    console.log('Profile type retrieved successfully:', response.data.data);
+   const res = response.data.data;
+   setSelectedCard(res.profileType)
+    return response.data;
+  } catch (error) {
+    console.error('Error retrieving profile type:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+const updateUserProfileType = async (userId, profileType) => {
+  try {
+    const response = await axios.post(`${Base_url}b2cUser/update-profile-type`, {
+      userId,
+      profileType,
+    });
+
+    console.log('Profile type updated successfully:', response.data);
+    setUpdateProfiletype((prev)=>prev+1)
+    return response.data;
+  } catch (error) {
+    console.error('Error updating profile type:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+useEffect(()=>{
+  getUserProfileType(userDetails.id)
+},[updateProfiletype])
 
 
   return (
@@ -56,9 +97,9 @@ const handelBack = ()=>{
      activeOpacity={0.8}
         style={[
           styles.card,
-          selectedCard === 'Household' && styles.selectedCard,
+          selectedCard === 'household' && styles.selectedCard,
         ]}
-        onPress={() => handleCardSelect('Household')}
+        onPress={() => handleCardSelect('household')}
       >
         <Block style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
         <Image source={house}  />
@@ -67,7 +108,7 @@ const handelBack = ()=>{
 
         <Block>
             {
-                selectedCard === 'Household' ? <AntDesign name="checkcircle" size={28} color="#14B57C" />
+                selectedCard === 'household' ? <AntDesign name="checkcircle" size={28} color="#14B57C" />
             :
             <AntDesign name="checkcircleo" size={28} color="#CDCDCD" />
             }
@@ -81,9 +122,9 @@ const handelBack = ()=>{
       activeOpacity={0.8}
         style={[
           styles.card,
-          selectedCard === 'Office' && styles.selectedCard,
+          selectedCard === 'office' && styles.selectedCard,
         ]}
-        onPress={() => handleCardSelect('Office')}
+        onPress={() => handleCardSelect('office')}
       >
         <Block style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
             <Image source={office}  />
@@ -92,7 +133,7 @@ const handelBack = ()=>{
 
         <Block>
             {
-                selectedCard === 'Office' ? <AntDesign name="checkcircle" size={28} color="#14B57C" />
+                selectedCard === 'office' ? <AntDesign name="checkcircle" size={28} color="#14B57C" />
             :
             <AntDesign name="checkcircleo" size={28} color="#CDCDCD" />
             }
@@ -105,9 +146,9 @@ const handelBack = ()=>{
       activeOpacity={0.8}
         style={[
           styles.card,
-          selectedCard === 'Shopkeeper' && styles.selectedCard,
+          selectedCard === 'shopkeeper' && styles.selectedCard,
         ]}
-        onPress={() => handleCardSelect('Shopkeeper')}
+        onPress={() => handleCardSelect('shopkeeper')}
       >
         <Block style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
         <Image source={Shopkeeper}  />
@@ -116,7 +157,7 @@ const handelBack = ()=>{
 
         <Block>
             {
-                selectedCard === 'Shopkeeper' ? <AntDesign name="checkcircle" size={28} color="#14B57C" />
+                selectedCard === 'shopkeeper' ? <AntDesign name="checkcircle" size={28} color="#14B57C" />
             :
             <AntDesign name="checkcircleo" size={28} color="#CDCDCD" />
             }
