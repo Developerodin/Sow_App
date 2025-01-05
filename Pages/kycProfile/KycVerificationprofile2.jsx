@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
@@ -10,6 +10,7 @@ import {
   Image,
   Animated,
   TextInput,
+  Alert
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Block, Text, Input, theme, Button } from "galio-framework";
@@ -21,21 +22,52 @@ import kycImage2 from "../../assets/kycimage2.png";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import axios from "axios";
+import { Base_url } from "../../Config/BaseUrl";
+import { useAppContext } from "../../Context/AppContext";
 
-export const KycVerification = () => {
+export const KycVerificationprofile2 = () => {
   const navigation = useNavigation();
-
+const { userDetails,updateProfiletype,setUpdateProfiletype } = useAppContext();
   const handelContinue = () => {
-    navigation.navigate("KYC Verification2");
+    navigation.navigate("KYC Verification3");
   };
 
   const handelBack = () => {
-    navigation.navigate("Login");
+    navigation.navigate("Profile");
   };
 
   const handelSkip = () => {
-    navigation.navigate("Login");
+    navigation.navigate("Profile");
   };
+
+  const getKycDetails = async (userId) => {
+   console.log("Getting kyc data...",userId);
+    try {
+      const response = await axios.get(`${Base_url}b2cUser/kyc/${userId}`);
+const data = response.data.data;
+console.log("Kyc data==>",data.status);
+Alert.alert(
+  'KYC Status Update', 
+  `Your KYC status is now: ${data.status.charAt(0).toUpperCase() + data.status.slice(1)}.`, 
+  [
+    { text: 'OK', onPress: () =>  handelBack() }
+  ]
+);
+     
+      return response.data; // Return the response data for further usage
+    } catch (error) {
+       console.log("Error ==>",error)
+       
+  
+      
+    }
+  };
+
+
+  useEffect(()=>{
+    getKycDetails(userDetails.id);
+  },[])
 
   return (
     <View style={styles.container}>
@@ -46,14 +78,14 @@ export const KycVerification = () => {
           <MaterialIcons onPress={handelBack} name="arrow-back-ios" size={24} style={{ marginLeft: 5 }} color="black" />
         </Block>
         <Text style={{ marginLeft: 15, fontSize: 25, fontWeight: '500', flex: 1 }}>KYC Verification</Text>
-        <Block style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', backgroundColor: '#14B57C', borderRadius: 35, paddingHorizontal: 10, paddingVertical: 5, alignSelf: 'flex-end' }}>
+        {/* <Block style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', backgroundColor: '#14B57C', borderRadius: 35, paddingHorizontal: 10, paddingVertical: 5, alignSelf: 'flex-end' }}>
           <TouchableOpacity onPress={handelSkip} activeOpacity={0.8}>
             <View style={{ flexDirection: 'row' }}>
               <Text style={{ marginRight: 2, color: '#fff' }}>Skip</Text>
               <Ionicons name="arrow-forward" size={18} color="#fff" />
             </View>
           </TouchableOpacity>
-        </Block>
+        </Block> */}
       </Block>
     </Block>
       <View>

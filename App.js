@@ -62,6 +62,11 @@ import { VerifyProfileStatus } from './Pages/SignUp/Registration/VerifyProfileSt
 import { WebViewApp } from './Pages/WebViewPage/WebView';
 import { Base_url } from './Config/BaseUrl';
 import axios from 'axios';
+import { KYCPending2 } from './Pages/kycProfile/KYCPending2';
+import { KycEnterGstDeatils2 } from './Pages/kycProfile/KycEnterGstDeatils2';
+import { KycPanUplode2 } from './Pages/kycProfile/KycPanUplode2';
+import { KycVerification3 } from './Pages/kycProfile/KycVerification3';
+import { KycVerificationprofile2 } from './Pages/kycProfile/KycVerificationprofile2';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -466,6 +471,38 @@ export default function App() {
           }}
         />
 <Stack.Screen name="KYCPending" component={KYCPending}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+
+
+
+
+<Stack.Screen name="KYC Verificationprfile2" component={KycVerificationprofile2}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+<Stack.Screen name="KYC Verification3" component={KycVerification3}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+<Stack.Screen name="KycPanUplode2" component={KycPanUplode2}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen name="KycEnterGstDeatils2" component={KycEnterGstDeatils2}
+          options={{
+            headerShown: false,
+          }}
+        />
+<Stack.Screen name="KYCPending2" component={KYCPending2}
           options={{
             headerShown: false,
           }}

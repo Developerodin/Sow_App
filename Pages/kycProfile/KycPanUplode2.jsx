@@ -15,9 +15,8 @@ import {AntDesign} from '@expo/vector-icons';
 import axios from 'axios';
 import { Base_url } from '../../Config/BaseUrl';
 import { useAppContext } from '../../Context/AppContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const KycPanUplode = () => {
+export const KycPanUplode2 = () => {
     const navigation = useNavigation();
 const { userDetails,updateProfiletype,setUpdateProfiletype } = useAppContext();
 const [panNumber, setPanNumber] = useState('');
@@ -27,16 +26,15 @@ const [loading,setLoading]= useState(false);
     }
 
     const handelBack = () => {
-        navigation.navigate("KYC Verification2")
+        navigation.navigate("KYC Verification3")
       };
 
-      const handleSubmit = async() => {
+      const handleSubmit = () => {
         if (!panNumber.trim()) {
           Alert.alert('Error', 'Please enter your PAN number');
           return;
         }
-        const userID = await AsyncStorage.getItem('userID');
-        updateField(userID,'panNumber',panNumber)
+        updateField(userDetails.id,'panNumber',panNumber)
       }
       const updateField = async (id, field, panNo) => {
         console.log('updateField',id,field,panNo)

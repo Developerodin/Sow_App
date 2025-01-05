@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import {AntDesign} from '@expo/vector-icons';
 
-export const KycVerification2 = () => {
+export const KycVerification3 = () => {
     const navigation = useNavigation();
 
     const handelContinue=()=>{
@@ -21,7 +21,7 @@ export const KycVerification2 = () => {
     }
 
     const handelBack = () => {
-        navigation.navigate("KYC Verification")
+        navigation.navigate("KYC Verificationprfile2")
       };
 
       const handelPanUplode = () => {

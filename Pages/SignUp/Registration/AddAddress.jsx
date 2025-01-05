@@ -119,9 +119,9 @@ export const AddAddress = () => {
 
   const SubmitAddressData = async()=>{
   
-    console.log("save address to database")
+    console.log("save address to database",userId)
     const UserAddress ={
-      userId : userId,
+      userId :userId,
       latitude:  SelectedAddressFromMap.latitude || 1.3456 ,
       longitude:  SelectedAddressFromMap.longitude || 1.3456,
       googleAddress: `${SelectedAddressFromMap.district} ,  ${SelectedAddressFromMap.city}, ${SelectedAddressFromMap.region}, ${SelectedAddressFromMap.country}, ${SelectedAddressFromMap.postalCode}`,

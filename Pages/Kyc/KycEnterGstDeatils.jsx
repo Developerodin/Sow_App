@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { FlatList, SafeAreaView, StyleSheet,ScrollView,  View,Dimensions,TouchableOpacity, Image,Animated, TextInput } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet,ScrollView,ActivityIndicator,  View,Dimensions,TouchableOpacity, Image,Animated, TextInput,Alert } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import { Block, Text, Input, theme, Button } from "galio-framework";
 const {width, height} = Dimensions.get('window');
@@ -12,16 +12,54 @@ import file from "../../assets/fileVector.png"
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import {AntDesign} from '@expo/vector-icons';
+import { useAppContext } from '../../Context/AppContext';
+import axios from 'axios';
+import { Base_url } from '../../Config/BaseUrl';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const KycEnterGstDeatils = () => {
     const navigation = useNavigation();
-
+const { userDetails,updateProfiletype,setUpdateProfiletype } = useAppContext();
+const [GstNumber, setGstNumber] = useState('');
+const [loading,setLoading]= useState(false);
     const handelContinue=()=>{
         navigation.navigate("KYCPending")
     }
 
     const handelBack = () => {
         navigation.navigate("KYC Verification2")
+      };
+
+      const handleSubmit = async() => {
+        if (!GstNumber.trim()) {
+          Alert.alert('Error', 'Please enter your PAN number');
+          return;
+        }
+        console.log("userDEtails",userDetails)
+        const userID = await AsyncStorage.getItem('userID');
+        updateField(userID,'gstinNumber',GstNumber)
+      }
+      const updateField = async (id, field, panNo) => {
+        console.log('updateField',id,field,panNo)
+        setLoading(true)
+        try {
+          const response = await axios.post(`${Base_url}b2cUser/update-field`, {
+            userId: id,
+            fieldName: field,
+            fieldValue: panNo,
+          });
+           
+          console.log('Response update kyc details:', response.data);
+          setLoading(false)
+          handelContinue();
+          Alert.alert('Success', 'Gst number updated successfully!');
+          return response.data; // Return the response data for further usage
+        } catch (error) {
+           console.log("Error ==>",error)
+           setLoading(false)
+      
+          
+        }
       };
 
       const customStyle ={
@@ -87,21 +125,19 @@ export const KycEnterGstDeatils = () => {
           <Block style={{marginTop:10}}>
         <Block >
         <Text style={{fontSize:16,marginBottom:20}}>Company info will auto filled using your GST No.</Text>
-      <TextInput
-          style={styles.input}
-          placeholder="Enter your GST No."
-        //   value={formData.email}
-        // onChangeText={(text) => handleInputChange("email", text)}
-          placeholderTextColor="#B7B7B7"
-        //   value={formData.phoneNumber}
-        // onChangeText={(text) => handleInputChange("phoneNumber", text)}
-        />
+         <TextInput
+              style={[styles.input, { marginTop: 50 }]}
+              placeholder="Enter your GST No."
+              value={GstNumber}
+              onChangeText={(text) => setGstNumber(text)}
+              placeholderTextColor="#B7B7B7"
+            />
                 </Block>
         </Block>
 
            <Block style={{marginTop:30}}>
            <TouchableOpacity
-           onPress={handelContinue}
+           onPress={handleSubmit}
     activeOpacity={0.8}
     style={[
       styles.btn,
@@ -114,21 +150,26 @@ export const KycEnterGstDeatils = () => {
     ]}
   
     >
-    <Text
-      style={{
-        fontWeight:500,
-        fontSize: 20,
-        color:"#fff",
-      }}>
-      Verify
-    </Text>
+       {loading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text
+                style={{
+                  fontWeight:500,
+                  fontSize: 20,
+                  color:"#fff",
+                }}>
+                Verify
+              </Text>
+          )}
+  
     
   </TouchableOpacity>
            </Block>
 
-           <Block center style={{marginTop:40}}>
+           {/* <Block center style={{marginTop:40}}>
         <Text style={{fontSize:16,fontWeight:500,marginLeft:30}}>Need help ?</Text>
-       </Block>
+       </Block> */}
        </Block>
        
 

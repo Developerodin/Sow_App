@@ -66,7 +66,7 @@ export const Profile = () => {
     {
       icon: <AntDesign name="idcard" size={24} color="#0EB77B" />,
       title: "Kyc",
-      link: "",
+      link: "KYC Verificationprfile2",
     },
     {
       icon: <FontAwesome name="address-book" size={24} color="#0EB77B" />,

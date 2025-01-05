@@ -40,25 +40,17 @@ export const PersonalDetails = () => {
       ForCity:false
     });
     const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-    const [ modalVisible,setModalVisible] = useState(false);
-    const [selectedCategories, setSelectedCategories] = useState([]);
+  
     const [termandCondition,setTermandCondition] = useState(false);
-    const [selectedState, setSelectedState] = useState("Delhi");
-    const [selectedCity, setSelectedCity] = useState("");
+  
  
-    const [pincode,setPincode] = useState("")
-    const [isStateModelOpen,setIsStateModelOpen] = useState(false);
-    const [isCityModelOpen,setIsCityModelOpen] = useState(false);
-    const [AddressData,setAddressData] = useState([]);
+  
     const [loading,setLoading] = useState(false)
     
      const handleAddress = () => {
       navigation.navigate('AddAddress');
     };
-     
-    const handleStateChange = (state) => {
-      setSelectedState(state);
-    };
+
     const customStyle ={
       Card1: {
       
@@ -83,72 +75,7 @@ export const PersonalDetails = () => {
       },
     }
 
-    const AddAddressData = async () => {
-      try {
-        const url = `${Base_url}api/unifiedPinCode`;
-        // const formData1 = new FormData();
-        // formData1.append('user_id', userDetails.user_id);
-        // formData1.append('degree', formData.degree);
-        // formData1.append('university', formData.university);
-        // formData1.append('year', formData.yearGraduated);
-  
-      
-  
-        const response = await axios.get(url,{
-          headers: {
-            "Content-Type": "multipart/form-data",
-            // "Authorization" :`Berear ${token}`,
-       
-          }
-        });
-        const data = response.data
-            // console.log("Response check work experience",data.data)
-            
-              // if(data === "otp in valid"){
-              //   showToast("error", "wrong otp", "");
-              //   return;
-              // }
-  
-            if(data.status === "success"){
-                //  localStorage.setItem("userRegisterDetails", JSON.stringify(data.user));
-            
-              //  console.log("Data main ==>",data.data)
-               const Data = data.data
-              //  console.log("Address Data =====>",Data)
-               // Set the unique states in the state variable
-               setAddressData(Data);
-             
-             
-                return
-              
-            }
-            // showToast("error", "Try After Some Time", "");
-  
-              
-           
-            
-      } catch (error) {
-        console.error('Error:', error);
-        // showToast("error", "Try After Some Time", "");
-      }
-    };
 
-    const handlePincodeChange = (newPincode) => {
-   
-      setPincode(newPincode);
-      // console.log("Enter Pin code ==>",AddressData)
-      // Search for the pincode in the data array
-      const pinData =  AddressData.find(item => item.pincode === parseInt(newPincode));
-    
-      // console.log("Pincode Data",pinData);
-      if (pinData) {
-        setSelectedCity(pinData.city_name);
-        setSelectedState(pinData.state_name);
-      } else {
-        setSelectedCity('');
-        setSelectedState('');
-      }
-    };
 
     const savePersonalDetails = async () => {
       try {
@@ -179,7 +106,7 @@ export const PersonalDetails = () => {
         const UserDetails = JSON.stringify(UserData);
         await AsyncStorage.setItem("UserDetails", UserDetails);
         console.log('Details saved successfully.',UserDetails);
-        await SubmitSigupData();
+        
       } catch (error) {
         console.error('Error saving Details :', error);
       }
@@ -197,22 +124,21 @@ export const PersonalDetails = () => {
         ToastAndroid.show(`Please provide ${emptyField}`, ToastAndroid.SHORT);
         return ;
       }
-        // setShowShopDetails(true);
-        console.log("Details",formData);
-        // savePersonalDetails()
-         
-
-        savePersonalDetails()
-        handleAddress();
-        // navigation.navigate("VerificationDetails")
+      SubmitSigupData()
     }
 
     const SubmitSigupData = async () => {
       console.log("need to do more");
-      const UserDetails = await AsyncStorage.getItem('UserDetails') || null;
-      const UserData = JSON.parse(UserDetails);
-    
-      console.log("Data of user ====>", UserDetails);
+      const PhoneNumber = await AsyncStorage.getItem('Mobile') || null;
+      const UserData = {
+        firstName: formData.firstname,
+        lastName:formData.lastname,
+        email: formData.email ,
+        phoneNumber: PhoneNumber,
+        referralCode:formData.referralCode,
+        
+      };
+
       setLoading(true);
       try {
         const response = await axios.post(`${Base_url}b2cUser`, UserData);
@@ -221,15 +147,12 @@ export const PersonalDetails = () => {
             const userId = data.id;
             console.log("Data after submit  ==>", data,userId);
             await AsyncStorage.setItem('userID', userId);
-            navigation.navigate('AddAddress', { userId });
-    
-        if (response.status === 200) {
-          if (response.data) {
-            
-            return;
-          }
-          return;
-        }
+            const UserDetails = JSON.stringify(data);
+        await AsyncStorage.setItem("UserDetails", UserDetails);
+        
+        setLoading(false);
+        navigation.navigate('AddAddress', { userId });
+        
       } catch (error) {
         console.error('Error submitting data:', error);
         setLoading(false);
@@ -243,53 +166,12 @@ export const PersonalDetails = () => {
       }));
     };
 
-    const handleCategoryChange = (itemValue, index) => {
-      const updatedCategories = [...formData.categories];
-      updatedCategories[index] = itemValue;
-  
-      setFormData((prevData) => ({
-        ...prevData,
-        categories: updatedCategories,
-      }));
-    };
-  
-    const renderCategoriesPickerItems = () => {
-      return CategoriesData.map((el, index) => {
-        return (
-          <Picker.Item key={index} label={el.name} value={el.name} />
-        );
-      });
-    };
+
+
     const handelBack = () => {
-      navigation.navigate("Register As")
+      navigation.navigate("Login")
     };
-    const getCategories = async () => {
-      
-      try {
-        const response = await axios.get(`${Base_url}api/category`);
-        setCategoriesData(response.data);
-        console.log("Categories all", response.data)
-        return response.data;
-      } catch (error) {
-        throw error.response.data;
-      }
-    };
-    
-    
-    const handelCategoryModelOpen=()=>{
-      setModalVisible(true)
-    }
-    const handelCategoryModelClose = ()=>{
-      setModalVisible(false)
-    }
 
-    const handelStateSelectComplete = ()=>{
-
-    }
-
-    const handleCityChange = (city) => {
-      setSelectedCity(city);
-    };
 
     useEffect(() => {
       const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -307,23 +189,10 @@ export const PersonalDetails = () => {
       };
     }, []);
 
-    useEffect(()=>{
-      getCategories();
-      AddAddressData()
-    },[])
 
-    const uniqueStates = [...new Set(AddressData.map(address => address.state_name))];
-    const getUniqueCitiesByName = (addresses) => {
-      const uniqueCities = {};
-      addresses.forEach(address => {
-        if (!uniqueCities[address.city_name]) {
-          uniqueCities[address.city_name] = address.city_name;
-        }
-      });
-      return Object.values(uniqueCities);
-    };
+
     
-    const filteredCities = getUniqueCitiesByName(AddressData.filter(address => address.state_name === selectedState));
+    
   return (
     <View style={styles.container}>
     <StatusBar style="dark" />
@@ -497,19 +366,7 @@ export const PersonalDetails = () => {
               
             </Block>
       
-            <CategoryAddModel 
-            modalVisible={modalVisible} 
-            setModalVisible={setModalVisible} 
-            categoriesData={CategoriesData}
-            setSelectedCategories={setSelectedCategories}
-            selectedCategories={selectedCategories}
-            />
-
-            <StateSelectModel
-              modalVisible={isStateModelOpen}
-              setModalVisible={setIsStateModelOpen}
-              handelComplete={handelStateSelectComplete}
-            />
+           
       
        </ScrollView>
        </View>

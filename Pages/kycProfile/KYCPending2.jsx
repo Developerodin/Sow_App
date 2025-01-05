@@ -13,15 +13,15 @@ import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import {AntDesign} from '@expo/vector-icons';
 
-export const KYCPending = () => {
+export const KYCPending2 = () => {
     const navigation = useNavigation();
 
     const handelContinue=()=>{
-        navigation.navigate("Login");
+        navigation.navigate("Profile");
     }
 
     const handelBack = () => {
-        navigation.navigate("KYC Verification2")
+        navigation.navigate("KYC Verificationprfile2")
       };
 
     
