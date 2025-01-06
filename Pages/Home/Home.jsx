@@ -28,7 +28,7 @@ import metal from "../../assets/Metal.png";
 import HomeImg from "../../assets/HomeImg.png";
 import { Base_url } from "../../Config/BaseUrl";
 import axios from "axios";
-
+import { Linking } from 'react-native';
 export const Home = () => {
   const navigation = useNavigation();
   const animationRef = useRef(null);
@@ -83,6 +83,19 @@ export const Home = () => {
     // Or set a specific startFrame and endFrame with:
     animationRef.current?.play(10, 80);
   }, []);
+
+  const openDialPad = () => {
+    const url = `tel:8696527396`;
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (!supported) {
+          console.log("Error", "Your device does not support this feature.");
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+      .catch((err) => console.error("An error occurred", err));
+  };
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
@@ -141,7 +154,7 @@ export const Home = () => {
               onPress={handelSellScrap}
               activeOpacity={0.8}
             >
-              <Text>View all categories > </Text>
+              <Text>View all categories {">"} </Text>
             </TouchableOpacity>
           </Block>
 
@@ -159,7 +172,7 @@ export const Home = () => {
         <Block style={[styles.bottomContainer]}>
           <Text style={styles.headerText}>Talk to us for free</Text>
           <Text style={styles.consultationText}>Consultation.</Text>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity activeOpacity={0.8} onPress={openDialPad} style={styles.button}>
             <Text style={styles.buttonText}>Connect</Text>
           </TouchableOpacity>
         </Block>
