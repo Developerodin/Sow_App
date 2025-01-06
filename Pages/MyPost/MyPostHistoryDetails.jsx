@@ -60,9 +60,9 @@ export const MyPostHistoryDetails = () => {
           </Block> 
 
           <Block style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name="document" size={20} color="#0EB77B" />
+            <Ionicons name="key" size={20} color="#0EB77B" />
             <Text style={{ fontSize: 18, marginLeft: 8 ,fontWeight : 700 }}>
-                {postDetails.otp}
+             OTP :  {postDetails.otp}
             </Text>
           </Block>
 

@@ -29,7 +29,7 @@ export const Quotations = () => {
         postTo: quotationDetails.wholesalerId.id,
       });
       console.log('Post status updated:', response.data);
-      navigation.navigate("QuotationAccepted");
+      // navigation.navigate("QuotationAccepted");
     } catch (error) {
       console.error('Error updating post status:', error);
     }
@@ -114,16 +114,24 @@ export const Quotations = () => {
 
             <View style={{ marginTop: 20, paddingHorizontal: 15 }}>
               <View style={styles.cardActions}>
-                <TouchableOpacity onPress={handelAccept}>
-                  <View style={styles.acceptButton}>
-                    <Text style={styles.acceptText}>Accept Offer</Text>
+                {quotationDetails?.postId?.postStatus === 'Completed' ? (
+                  <View style={styles.completedButton}>
+                    <Text style={styles.completedText}>Completed</Text>
                   </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handelDecline}>
-                  <View style={styles.declineButton}>
-                    <Text style={styles.declineText}>Decline</Text>
-                  </View>
-                </TouchableOpacity>
+                ) : (
+                  <>
+                    <TouchableOpacity onPress={handelAccept}>
+                      <View style={styles.acceptButton}>
+                        <Text style={styles.acceptText}>Accept Offer</Text>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handelDecline}>
+                      <View style={styles.declineButton}>
+                        <Text style={styles.declineText}>Decline</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </>
+                )}
               </View>
             </View>
           </Block>
@@ -166,6 +174,19 @@ const styles = StyleSheet.create({
     width: width * 0.3,
   },
   declineText: {
+    fontSize: 14,
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  completedButton: {
+    flex: 1,
+    backgroundColor: "#14B57C",
+    paddingVertical: 12,
+    borderRadius: 7,
+    alignItems: "center",
+    width: width * 0.8,
+  },
+  completedText: {
     fontSize: 14,
     color: "#fff",
     fontWeight: "bold",

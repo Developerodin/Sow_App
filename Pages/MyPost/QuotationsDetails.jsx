@@ -1,95 +1,81 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView ,Image ,Dimensions } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Dimensions } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Block } from "galio-framework";
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation , useRoute} from "@react-navigation/native";
-const {width, height} = Dimensions.get('screen');
+import { useNavigation, useRoute } from "@react-navigation/native";
+
+const { width, height } = Dimensions.get('screen');
 
 export const QuotationsDetails = () => {
-    const navigation = useNavigation();
-    const route = useRoute();
-    const { quotation } = route.params;
-    const handelBack = () => {
-        navigation.goBack();
-        };
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { quotation } = route.params;
 
+  const handelBack = () => {
+    navigation.goBack();
+  };
 
-    const quotationClick = () => {
-      console.log("Quotation Clicked",quotation._id);
-        navigation.navigate("Quotations",{quotationId: quotation._id});
-    };    
-  const quotations = [
-    { id: 1, name: "Mr. XYZ", company: "XYZ Metals", rate: "₹30/KG" },
-    { id: 2, name: "Mr. XYZ", company: "XYZ Metals", rate: "₹30/KG" },
-    { id: 3, name: "Mr. XYZ", company: "XYZ Metals", rate: "₹30/KG" },
-  ];
+  const quotationClick = () => {
+    console.log("Quotation Clicked", quotation._id);
+    navigation.navigate("Quotations", { quotationId: quotation._id });
+  };
 
   return (
     <View style={styles.container}>
       {/* Header */}
-      <Block >
-      <Block style={{ flexDirection: 'row', alignItems: 'center', marginTop: 55 }}>
-        <Block style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderRadius: 150, marginLeft: 5 }}>
-          <MaterialIcons onPress={handelBack} name="arrow-back-ios" size={24} style={{ marginLeft: 5 }} color="black" />
-        </Block>
-        <Text style={{ marginLeft: 15, fontSize: 25, fontWeight: '500', flex: 1 }}>Quotations</Text>
-        <Block style={{ flexDirection: 'row', justifyContent: 'flex-end', alignSelf: 'flex-end' }}>
-          <TouchableOpacity activeOpacity={0.8}>
-            <View >
-              
-              <Ionicons name="filter" size={28} color="#000" />
-            </View>
-          </TouchableOpacity>
+      <Block>
+        <Block style={{ flexDirection: 'row', alignItems: 'center', marginTop: 55 }}>
+          <Block style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderRadius: 150, marginLeft: 5 }}>
+            <MaterialIcons onPress={handelBack} name="arrow-back-ios" size={24} style={{ marginLeft: 5 }} color="black" />
+          </Block>
+          <Text style={{ marginLeft: 15, fontSize: 25, fontWeight: '500', flex: 1 }}>Quotations</Text>
+          <Block style={{ flexDirection: 'row', justifyContent: 'flex-end', alignSelf: 'flex-end' }}>
+            <TouchableOpacity activeOpacity={0.8}>
+              <View>
+                <Ionicons name="filter" size={28} color="#000" />
+              </View>
+            </TouchableOpacity>
+          </Block>
         </Block>
       </Block>
-    </Block>
 
       {/* Info Box */}
-      
-
       <View style={styles.cardContainer}>
-      
-
-      
-
-      <Block style={styles.row}>
-        <View style={styles.column}>
-        <Text style={{fontSize: 16,fontWeight: 600}}> Date</Text>
-                   <View style={{ flexDirection: 'row', alignItems: 'center',marginTop: 5 }}>
-            <AntDesign name="calendar" size={20} color="#14B57C" />
-            <Text style={[styles.text, { marginLeft: 8 }]}>
-              <Text style={styles.blueText}>{new Date(quotation.createdAt).toLocaleDateString('en-GB')}</Text>
-            </Text>
+        <Block style={styles.row}>
+          <View style={styles.column}>
+            <Text style={{ fontSize: 16, fontWeight: 600 }}>Date</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
+              <AntDesign name="calendar" size={20} color="#14B57C" />
+              <Text style={[styles.text, { marginLeft: 8 }]}>
+                <Text style={styles.blueText}>{new Date(quotation.createdAt).toLocaleDateString('en-GB')}</Text>
+              </Text>
+            </View>
           </View>
-        </View>
 
-        <View style={[styles.column, styles.divider]}>
-        <Text style={{fontSize: 16,fontWeight: 600}}>Price</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center',marginTop: 5 }}>
-          <View >
-            <Image source={require('../../assets/Rupee.png')} style={{ width: 20, height: 20 }} />
+          <View style={[styles.column, styles.divider]}>
+            <Text style={{ fontSize: 16, fontWeight: 600 }}>Price</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
+              <View>
+                <Image source={require('../../assets/Rupee.png')} style={{ width: 20, height: 20 }} />
+              </View>
+              <Text style={styles.amountText}>₹ {quotation.postId.price || 'N/A'}</Text>
+            </View>
           </View>
-          <Text style={styles.amountText}>₹ {quotation.postId.price || 'N/A'}</Text>
+
+          <View style={styles.column}>
+            <Text style={[styles.text, { fontSize: 16, fontWeight: 600 }]}>Items</Text>
+            <Text style={[styles.text, { marginTop: 5 }]}>{quotation.postId.categoryName || 'N/A'}</Text>
           </View>
-        </View>
-
-        <View style={styles.column}>
-          <Text style={[styles.text,{fontSize: 16,fontWeight: 600}]}>Items</Text>
-          <Text style={[styles.text,{marginTop: 5}]}> {quotation.postId.categoryName || 'N/A'}</Text>
-         
-        </View>
-      </Block>
-
+        </Block>
       </View>
 
       {/* Quotations List */}
       <Text style={styles.sectionTitle}>Quotations Received -</Text>
       <ScrollView>
-        
-            <TouchableOpacity onPress={quotationClick} activeOpacity={0.8}>
+        <TouchableOpacity onPress={quotationClick} activeOpacity={0.8}>
           <View key={quotation.id} style={styles.card}>
-            <View style={styles.cardHeader} >
+            <View style={styles.cardHeader}>
               <View>
                 <Text style={styles.cardName}>{quotation.wholesalerId.name}</Text>
                 <Text style={styles.cardCompany}>{quotation.wholesalerId.businessName}</Text>
@@ -101,20 +87,27 @@ export const QuotationsDetails = () => {
             </View>
             {/* Buttons */}
             <View style={styles.cardActions}>
-              <TouchableOpacity >
-                <View style={styles.acceptButton}>
-                <Text style={styles.acceptText}>Accept Offer</Text>
+              {quotation.postId.postStatus === 'Completed' ? (
+                <View style={styles.completedButton}>
+                  <Text style={styles.completedText}>Completed</Text>
                 </View>
-              </TouchableOpacity>
-              <TouchableOpacity >
-                <View style={styles.declineButton}>
-                <Text style={styles.declineText}>Decline</Text>
-                </View>
-              </TouchableOpacity>
+              ) : (
+                <>
+                  <TouchableOpacity>
+                    <View style={styles.acceptButton}>
+                      <Text style={styles.acceptText}>Accept Offer</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <View style={styles.declineButton}>
+                      <Text style={styles.declineText}>Decline</Text>
+                    </View>
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
           </View>
-            </TouchableOpacity>
-        
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -235,7 +228,19 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
   },
-
+  completedButton: {
+    flex: 1,
+    backgroundColor: "#14B57C",
+    paddingVertical: 12,
+    borderRadius: 7,
+    alignItems: "center",
+    width: width * 0.8,
+  },
+  completedText: {
+    fontSize: 14,
+    color: "#fff",
+    fontWeight: "bold",
+  },
   cardContainer: {
     borderWidth: 1,
     borderColor: "#b3b3b3",
@@ -245,9 +250,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     marginTop: 20,
     marginBottom: 15,
-    
   },
-   
   statusText: {
     color: "#000",
     fontSize: 16,
@@ -270,13 +273,11 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     borderLeftColor: "#14B57C",
     paddingHorizontal: 12,
-    
   },
   amountText: {
     fontSize: 16,
     fontWeight: '500',
     color: "#000",
-    
     marginLeft: 5,
   },
   text: {
@@ -284,7 +285,6 @@ const styles = StyleSheet.create({
     color: "#000",
     textAlign: 'center',
     fontWeight: '600',
-    
   },
   blueText: {
     color: "#000",

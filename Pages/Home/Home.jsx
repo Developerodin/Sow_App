@@ -166,7 +166,70 @@ export const Home = () => {
               alignItems: "center",
             }}
           >
-            <Image source={HomeImg} style={{ width: 387, height: 167 }} />
+            {/* <Image source={HomeImg} style={{ width: 387, height: 167 }} /> */}
+            <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "center",
+        backgroundColor: "#14B57C",
+        borderRadius: 15,
+        padding: 24,
+        width: "95%",
+        alignSelf: "center",
+      }}
+    >
+      {/* Points */}
+      <View style={{ alignItems: "center" }}>
+        <Image
+          source={require("../../assets/PTS.png")}
+          style={{ width: 40, height: 40 }}
+        />
+         <View style={{ marginTop: 8 ,alignItems: "center"}}>
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
+          176
+        </Text>
+        <Text style={{ fontSize: 18,fontWeight: 500, color: "#fff" }}>Points</Text>
+        </View>
+      </View>
+   
+      {/* CO2 Saved */}
+      <View style={{ 
+    borderRightWidth: 1,
+    borderRightColor: "#fff",
+    borderLeftWidth: 1,
+    borderLeftColor: "#fff",
+    paddingHorizontal: 12,
+   }}>
+      <View style={{ alignItems: "center" }}>
+        <Image
+          source={require("../../assets/CO2.png")}
+          style={{ width: 40, height: 40 }}
+        />
+         <View style={{ marginTop: 8 ,alignItems: "center"}}>
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
+          500g
+        </Text>
+        <Text style={{ fontSize: 18,fontWeight: 500 ,color: "#fff" }}>CO₂ Saved</Text>
+        </View>
+      </View>
+      </View>
+      
+
+      {/* Recycled */}
+      <View style={{ alignItems: "center" }}>
+        <Image
+          source={require("../../assets/recycling.png")}
+          style={{ width: 40, height: 40 }}
+        />
+        <View style={{ marginTop: 8 ,alignItems: "center"}}>
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
+          24
+        </Text>
+        <Text style={{ fontSize: 18, fontWeight: 500,color: "#fff" }}>Recycled</Text>
+        </View>
+      </View>
+    </View>
           </Block>
         </Block>
         <Block style={[styles.bottomContainer]}>

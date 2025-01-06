@@ -23,7 +23,11 @@ export const PickupConfirmation = () => {
       <Text style={styles.subtitle2}>
         has been placed.
       </Text>
-
+     <TouchableOpacity onPress={handleicon} style={{backgroundColor: '#14B57C', paddingHorizontal: 15,paddingVertical: 10, borderRadius: 8, marginTop: 20}}>
+      <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>
+        Home
+      </Text>
+      </TouchableOpacity>
     </View>
   );
 };

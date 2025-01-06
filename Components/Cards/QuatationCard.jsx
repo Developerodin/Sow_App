@@ -14,16 +14,31 @@ export const QuatationCard = ({ data }) => {
   };
 
   const postId = data.postId || {}; // Handle null postId
-
+  const postStatus = data.postId.postStatus || 'Pending'; // Handle null status
   return (
     <View style={styles.cardContainer}>
-      <View style={[styles.header, { backgroundColor: data.status === 'canceled' ? '#FF2020' : (data.status === 'pending' ? '#FFD12C' : '#FFD12C'), }]}>
-        {data.status === 'pending' ? (
+       <View style={[styles.header, { 
+        backgroundColor: 
+          postStatus === 'Rejected' ? '#FF2020' : 
+          postStatus === 'Pending' ? '#FFD12C' : 
+          postStatus === 'Cancelled' ? '#FF2020' : 
+          postStatus === 'Completed' ? '#96DE20' : 
+          '#FFD12C', 
+      }]}>
+        {postStatus === 'Pending' ? (
           <Feather name="clock" size={18} color="#000" />
-        ) : data.status === 'canceled' ? (
+        ) : postStatus === 'Rejected' || postStatus === 'Cancelled' ? (
           <Feather name="x-circle" size={18} color="#fff" />
+        ) : postStatus === 'Completed' ? (
+          <Feather name="check-circle" size={18} color="#000" />
         ) : null}
-        <Text style={[styles.statusText, { color: data.status === 'canceled' ? '#fff' : (data.status === 'pending' ? '#000' : '#000'), }]}>{data.status}</Text>
+        <Text style={[styles.statusText, { 
+          color: 
+            postStatus === 'Rejected' || postStatus === 'Cancelled' ? '#fff' : 
+            postStatus === 'Pending' ? '#000' : 
+            postStatus === 'Completed' ? '#000' : 
+            '#000', 
+        }]}>{postStatus}</Text>
       </View>
 
       <Block style={styles.row}>

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect,useState } from 'react'
-import { FlatList, SafeAreaView, StyleSheet,ScrollView,  View,Dimensions,TouchableOpacity, Image,Animated, TextInput } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet,ScrollView,  View,Dimensions,TouchableOpacity, Image,Animated, TextInput,ActivityIndicator } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import { Block, Text, Input, theme, Button } from "galio-framework";
 
@@ -47,6 +47,7 @@ const FirstRoute = () => {
   const [selectedCategorie, setSelectedCategorie] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [loading, setLoading] = useState(false);
+  const [postLoading, setPostLoading] = useState(false);
   const [formData, setFormData] = useState({
     images: '',
     title: '',
@@ -119,7 +120,7 @@ const FirstRoute = () => {
         city,
         address,
       } = formData;
-
+      setPostLoading(true);
       const postData = {
         postBy: userDetails.id,
         postTo: null,
@@ -141,10 +142,28 @@ const FirstRoute = () => {
 
       const response = await axios.post(`${Base_url}posts`, postData);
       console.log('Post created:', response.data);
+      setFormData({
+        images: '',
+        title: '',
+        description: '',
+        price: '',
+        quantity: '',
+        companyName: '',
+        emailAddress: '',
+        phoneNumber: '',
+        state: '',
+        city: '',
+        address: '',
+      });
+      setSelectedCategorie("");
+      setSelectedSubCategory("");
+      
       Alert.alert('Success', 'Post created successfully');
     } catch (error) {
       console.error('Error creating post:', error);
       Alert.alert('Error', 'An error occurred while creating the post.');
+    } finally {
+      setPostLoading(false);
     }
   };
 
@@ -158,6 +177,7 @@ const FirstRoute = () => {
               getCategories();
               setIsCategoryModalVisible(true);
             }}
+            disabled={postLoading}
           >
             <TextInput
               style={styles.input}
@@ -180,6 +200,7 @@ const FirstRoute = () => {
               }
               setIsSubCategoryModalVisible(true);
             }}
+            disabled={postLoading}
           >
             <TextInput
               style={styles.input}
@@ -200,6 +221,7 @@ const FirstRoute = () => {
               placeholderTextColor="#B7B7B7"
               value={formData.images}
               onChangeText={(value) => handleInputChange('images', value)}
+              editable={!postLoading}
             />
           </Block>
         </Block>
@@ -217,6 +239,7 @@ const FirstRoute = () => {
               placeholderTextColor="#B7B7B7"
               value={formData.title}
               onChangeText={(value) => handleInputChange('title', value)}
+              editable={!postLoading}
             />
           </Block>
         </Block>
@@ -230,6 +253,7 @@ const FirstRoute = () => {
               placeholderTextColor="#B7B7B7"
               value={formData.description}
               onChangeText={(value) => handleInputChange('description', value)}
+              editable={!postLoading}
             />
           </Block>
         </Block>
@@ -244,6 +268,7 @@ const FirstRoute = () => {
               value={formData.price}
               onChangeText={(value) => handleInputChange('price', value)}
               keyboardType="numeric"
+              editable={!postLoading}
             />
           </Block>
         </Block>
@@ -258,6 +283,7 @@ const FirstRoute = () => {
               value={formData.quantity}
               onChangeText={(value) => handleInputChange('quantity', value)}
               keyboardType="numeric"
+              editable={!postLoading}
             />
           </Block>
         </Block>
@@ -275,6 +301,7 @@ const FirstRoute = () => {
               placeholderTextColor="#B7B7B7"
               value={formData.companyName}
               onChangeText={(value) => handleInputChange('companyName', value)}
+              editable={!postLoading}
             />
           </Block>
         </Block>
@@ -289,6 +316,7 @@ const FirstRoute = () => {
               value={formData.emailAddress}
               onChangeText={(value) => handleInputChange('emailAddress', value)}
               keyboardType="email-address"
+              editable={!postLoading}
             />
           </Block>
         </Block>
@@ -303,6 +331,7 @@ const FirstRoute = () => {
               value={formData.phoneNumber}
               onChangeText={(value) => handleInputChange('phoneNumber', value)}
               keyboardType="phone-pad"
+              editable={!postLoading}
             />
           </Block>
         </Block>
@@ -316,6 +345,7 @@ const FirstRoute = () => {
               placeholderTextColor="#B7B7B7"
               value={formData.state}
               onChangeText={(value) => handleInputChange('state', value)}
+              editable={!postLoading}
             />
           </Block>
         </Block>
@@ -329,6 +359,7 @@ const FirstRoute = () => {
               placeholderTextColor="#B7B7B7"
               value={formData.city}
               onChangeText={(value) => handleInputChange('city', value)}
+              editable={!postLoading}
             />
           </Block>
         </Block>
@@ -342,13 +373,14 @@ const FirstRoute = () => {
               placeholderTextColor="#B7B7B7"
               value={formData.address}
               onChangeText={(value) => handleInputChange('address', value)}
+              editable={!postLoading}
             />
           </Block>
         </Block>
 
         <Block style={{ marginTop: 50, marginBottom: 30 }}>
-          <TouchableOpacity style={styles.pickupButton} onPress={createPost}>
-            <Text style={styles.pickupButtonText}>Submit</Text>
+          <TouchableOpacity style={styles.pickupButton} onPress={createPost} disabled={postLoading}>
+            {postLoading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.pickupButtonText}>Submit</Text>}
           </TouchableOpacity>
         </Block>
         <CategoryAddModel
@@ -376,12 +408,14 @@ const SecondRoute = () => {
   const navigation = useNavigation();
   const [quotations, setQuotations] = useState([]);
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchQuotations();
   }, []);
 
   const fetchQuotations = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(`${Base_url}quotations/user`, { b2cUserId: userDetails.id });
       if (response.data.length === 0) {
@@ -390,10 +424,12 @@ const SecondRoute = () => {
         setQuotations(response.data);
         setError(false);
       }
-      console.log('Quotations:>>', response.data);
+      console.log('Quotations: =>>', response.data);
     } catch (error) {
       console.error('Error fetching quotations:', error);
       setError(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -404,7 +440,9 @@ const SecondRoute = () => {
   return (
     <ScrollView style={{ flex: 1 }}>
       <Block style={{ padding: 10, marginBottom: 60 }}>
-        {error || quotations.length === 0 ? (
+        {loading ? (
+          <ActivityIndicator size="large" color="#0EB77B" />
+        ) : error || quotations.length === 0 ? (
           <Block center style={{ marginTop: 40 }}>
             <Image
               source={require("../../assets/media/5-dark.png")}
@@ -432,12 +470,14 @@ const ThirdRoute = () => {
   const navigation = useNavigation();
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchPosts();
   }, []);
 
   const fetchPosts = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(`${Base_url}posts/filterPostsByUserId`, { b2cUserId: userDetails.id });
       console.log('Posts:', response.data);
@@ -451,13 +491,17 @@ const ThirdRoute = () => {
     } catch (error) {
       console.error('Error fetching posts:', error);
       setError(true);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <ScrollView style={{ flex: 1 }}>
       <Block style={{ padding: 10, marginBottom: 60 }}>
-        {error || posts.length === 0 ? (
+        {loading ? (
+          <ActivityIndicator size="large" color="#0EB77B" />
+        ) : error || posts.length === 0 ? (
           <Block center style={{ marginTop: 40 }}>
             <Image
               source={require("../../assets/media/5-dark.png")}
@@ -477,6 +521,7 @@ const ThirdRoute = () => {
     </ScrollView>
   );
 };
+
 export const MyPost = () => {
   const navigation = useNavigation();
   const [index, setIndex] = useState(0);
@@ -557,7 +602,7 @@ export const MyPost = () => {
           }}
         >
           <Text style={{ fontSize: 22, fontWeight: 500 }}>My Post</Text>
-          <Ionicons name="filter" size={26} color="#000" />
+          {/* <Ionicons name="filter" size={26} color="#000" /> */}
         </View>
    
     <TabView

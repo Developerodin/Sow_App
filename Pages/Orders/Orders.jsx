@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, View, StyleSheet, Image, Dimensions, TouchableOpacity, Animated,RefreshControl } from "react-native";
+import { ScrollView, View, StyleSheet, Image, Dimensions, TouchableOpacity, Animated, RefreshControl, ActivityIndicator } from "react-native";
 import { Block, Text, Button } from "galio-framework";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -12,12 +12,11 @@ import { Base_url } from "../../Config/BaseUrl";
 
 const { width, height } = Dimensions.get("window");
 
-
-
 export const Orders = () => {
   const { userDetails } = useAppContext();
   const navigation = useNavigation();
   const [index, setIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [pendingOrders, setPendingOrders] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
   const [pendingError, setPendingError] = useState(false);
@@ -33,29 +32,29 @@ export const Orders = () => {
 
   const fetchOrders = async (type, setOrders, setError) => {
     console.log('User Details:>>', type, userDetails.id);
+    setLoading(true);
     try {
       const response = await axios.post(`${Base_url}b2cOrder/filterorders`, {
         type: type,
         userId: userDetails.id,
-        
       });
-    
+      setOrders(response.data);
       console.log('Orders:>>', response.data);
     } catch (error) {
-      // setError(true);
+      setError(true);
       console.log('Error fetching orders:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const onRefresh = () => {
     setRefreshing(true);
-    // Call your functions here
     if (index === 0) {
       fetchOrders("Pending", setPendingOrders, setPendingError);
     } else if (index === 1) {
       fetchOrders("Completed", setCompletedOrders, setCompletedError);
     }
-    // After fetching data, set refreshing to false
     setRefreshing(false);
   };
 
@@ -64,7 +63,9 @@ export const Orders = () => {
       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
     }>
       <Block style={{ padding: 10, marginBottom: 60 }}>
-        {error || orders.length === 0 ? (
+        {loading ? (
+          <ActivityIndicator size="large" color="#0EB77B" />
+        ) : error || orders.length === 0 ? (
           <Block center style={{ marginTop: 40 }}>
             <Image
               source={require("../../assets/media/5-dark.png")}

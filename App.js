@@ -393,7 +393,7 @@ export default function App() {
         />
 <Stack.Screen name="Order Details" component={OrderDetail}
           options={{
-            headerShown: true,
+            headerShown: false,
           }}
         />
 
