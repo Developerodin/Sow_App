@@ -4,10 +4,11 @@ import { Block, Text, Button } from "galio-framework";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { useAppContext } from "../../Context/AppContext";
-import { Base_Url } from "../../Config/BaseUrl";
+
 import { OrdersCard } from "../../Components/Cards/OrdersCard";
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { Ionicons } from '@expo/vector-icons';
+import { Base_url } from "../../Config/BaseUrl";
 
 const { width, height } = Dimensions.get("window");
 
@@ -33,7 +34,7 @@ export const Orders = () => {
   const fetchOrders = async (type, setOrders, setError) => {
     console.log('User Details:>>', type, userDetails.id);
     try {
-      const response = await axios.post(`${Base_Url}b2cOrder/filterorders`, {
+      const response = await axios.post(`${Base_url}b2cOrder/filterorders`, {
         type: type,
         userId: userDetails.id,
         
@@ -41,8 +42,8 @@ export const Orders = () => {
     
       console.log('Orders:>>', response.data);
     } catch (error) {
-      setError(true);
-      console.error('Error fetching orders:', error?.response?.data || error.message);
+      // setError(true);
+      console.log('Error fetching orders:', error);
     }
   };
 
