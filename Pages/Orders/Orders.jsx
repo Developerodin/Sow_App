@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, View, StyleSheet, Image, Dimensions, TouchableOpacity, Animated } from "react-native";
+import { ScrollView, View, StyleSheet, Image, Dimensions, TouchableOpacity, Animated,RefreshControl } from "react-native";
 import { Block, Text, Button } from "galio-framework";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -11,28 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get("window");
 
-const OrdersList = ({ orders, error }) => (
-  <ScrollView style={{ flex: 1 }}>
-    <Block style={{ padding: 10, marginBottom: 60 }}>
-      {error || orders.length === 0 ? (
-        <Block center style={{ marginTop: 40 }}>
-          <Image
-            source={require("../../assets/media/5-dark.png")}
-            style={{
-              width: 300,
-              height: 300,
-              marginRight: 10,
-            }}
-          />
-        </Block>
-      ) : (
-        orders.map((order) => (
-          <OrdersCard key={order._id} data={order} />
-        ))
-      )}
-    </Block>
-  </ScrollView>
-);
+
 
 export const Orders = () => {
   const { userDetails } = useAppContext();
@@ -42,6 +21,7 @@ export const Orders = () => {
   const [completedOrders, setCompletedOrders] = useState([]);
   const [pendingError, setPendingError] = useState(false);
   const [completedError, setCompletedError] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const {
     CartInStorage,
     CartTotalAmount,
@@ -65,6 +45,43 @@ export const Orders = () => {
       console.error('Error fetching orders:', error?.response?.data || error.message);
     }
   };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    // Call your functions here
+    if (index === 0) {
+      fetchOrders("Pending", setPendingOrders, setPendingError);
+    } else if (index === 1) {
+      fetchOrders("Completed", setCompletedOrders, setCompletedError);
+    }
+    // After fetching data, set refreshing to false
+    setRefreshing(false);
+  };
+
+  const OrdersList = ({ orders, error }) => (
+    <ScrollView style={{ flex: 1 }} refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }>
+      <Block style={{ padding: 10, marginBottom: 60 }}>
+        {error || orders.length === 0 ? (
+          <Block center style={{ marginTop: 40 }}>
+            <Image
+              source={require("../../assets/media/5-dark.png")}
+              style={{
+                width: 300,
+                height: 300,
+                marginRight: 10,
+              }}
+            />
+          </Block>
+        ) : (
+          orders.map((order) => (
+            <OrdersCard key={order._id} data={order} />
+          ))
+        )}
+      </Block>
+    </ScrollView>
+  );
 
   useEffect(() => {
     if (index === 0) {
@@ -158,7 +175,7 @@ export const Orders = () => {
         }}
       >
         <Text style={{ fontSize: 22, fontWeight: 500 }}>Your Orders</Text>
-        <Ionicons name="filter" size={26} color="#000" />
+        {/* <Ionicons name="filter" size={26} color="#000" /> */}
       </View>
       <TabView
         navigationState={{ index, routes }}
