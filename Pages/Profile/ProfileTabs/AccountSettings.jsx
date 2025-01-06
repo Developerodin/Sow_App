@@ -84,7 +84,7 @@ export const AccountSettings = () => {
    const getUserData = async () => {
     try {
       const response = await axios.get(`${Base_url}b2cUser/${userDetails.id}`);
-      console.log(response.data);
+      console.log("get user details",response.data );
       
         setFormData({
           email: response.data.email,
@@ -98,15 +98,17 @@ export const AccountSettings = () => {
     }
   };
 
-  const updateUserData = async () => {
+    const updateUserData = async () => {
     setLoading(true);
     try {
-      const response = await axios.patch(`${Base_url}b2cUser/${userDetails.id}`, formData);
+      console.log('Form Data being sent:', formData); // Log the formData
+      const response = await axios.post(`${Base_url}b2cUser/${userDetails.id}`, formData);
       setLoading(false);
       
-        console.log('User data updated successfully');
-        getUserData(); // Refresh the data after update
-        ToastAndroid.show("User data updated successfully", ToastAndroid.SHORT);
+      console.log('User data updated successfully =>>>', response.data);
+  
+      getUserData(); // Refresh the data after update
+      ToastAndroid.show("User data updated successfully", ToastAndroid.SHORT);
     } catch (error) {
       setLoading(false);
       console.log(error);

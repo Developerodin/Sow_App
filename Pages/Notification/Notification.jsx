@@ -1,5 +1,5 @@
-import React,{useState,useEffect} from 'react';
-import { View, Text, StyleSheet, FlatList,Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Block } from 'galio-framework'; // Import Block from the appropriate library
@@ -8,27 +8,30 @@ import { useAppContext } from "../../Context/AppContext";
 import { Base_url } from '../../Config/BaseUrl';
 import axios from 'axios';
 
-
 export const Notification = () => {
   const navigation = useNavigation();
-  const { userDetails, update,notificatoinUpdate,setNotificationsUpdate } = useAppContext();
+  const { userDetails, update, notificatoinUpdate, setNotificationsUpdate } = useAppContext();
   const [notifications, setNotifications] = useState([]);
   const [error, setError] = useState(false);
-  
+  const [loading, setLoading] = useState(false);
+
   const handleBack = () => {
     navigation.goBack();
   };
 
   const getNotifications = async (id) => {
+    setLoading(true);
     try {
       const response = await axios.get(`${Base_url}b2c-notifications/${id}`);
-      console.log("notifications", response.data);
+      console.log("notifications =>", response.data);
       setNotifications(response.data);
       markReadNotifications(id);
       setError(false); // Reset error state on successful fetch
     } catch (error) {
       console.log(error);
       setError(true); // Set error state if an error occurs
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -36,17 +39,17 @@ export const Notification = () => {
     try {
       const response = await axios.get(`${Base_url}b2c-notifications/mark-read/${id}`);
       console.log("notifications", response.data);
-      setNotificationsUpdate((prev)=>prev+1)
+      setNotificationsUpdate((prev) => prev + 1);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    if(userDetails.id){
-    getNotifications(userDetails.id);
+    if (userDetails.id) {
+      getNotifications(userDetails.id);
     }
-  }, [update,userDetails]);
+  }, [update, userDetails]);
 
   const formatDate = (date) => {
     const d = new Date(date);
@@ -62,10 +65,10 @@ export const Notification = () => {
         />
       </View>
 
-      <View style={{width:"65%",marginLeft:5}}>
+      <View style={{ width: "65%", marginLeft: 5 }}>
         <Text style={styles.notificationTitle}>{item.notification}</Text>
         <Text style={styles.notificationDescription}>Status: {item.orderStatus}</Text>
-        <Text style={styles.notificationDescription}>Total Price: ₹{item.totalPrice}</Text>
+       
       </View>
       <Text style={styles.timeText}>{formatDate(item.createdAt)}</Text>
     </View>
@@ -73,16 +76,20 @@ export const Notification = () => {
 
   return (
     <View style={styles.container}>
-      <Block style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center" ,marginTop : 80 ,marginBottom: 20}}>
+      <Block style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center", marginTop: 60, marginBottom: 20 }}>
         <Block style={{ backgroundColor: "#fff", width: 50, height: 50, flexDirection: "row", justifyContent: "center", alignItems: "center", borderRadius: 150, marginLeft: 20 }}>
           <MaterialIcons onPress={handleBack} name="arrow-back-ios" size={22} style={{ marginLeft: 5 }} color="#000" />
         </Block>
         <Text style={{ marginLeft: 15, fontSize: 25, fontWeight: '500' }}>Notifications</Text>
       </Block>
-          <Block style={{ backgroundColor: '#FAFAFA', padding: 5, borderRadius: 30,  width: 100, alignSelf: 'center',margin: 10 }}>
-      <Text style={{ textAlign: 'center',color: '#000' }}>Today</Text>
-    </Block>
-    {error || notifications.length === 0 ? (
+      <Block style={{ backgroundColor: '#FAFAFA', padding: 5, borderRadius: 30, width: 100, alignSelf: 'center', margin: 10 }}>
+        <Text style={{ textAlign: 'center', color: '#000' }}>Today</Text>
+      </Block>
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0EB77B" />
+        </View>
+      ) : error || notifications.length === 0 ? (
         <Block center style={{ marginTop: 40 }}>
           <Image
             source={require("../../assets/media/5-dark.png")}
@@ -155,7 +162,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
-    
   },
   icon: {
     width: 24,
@@ -169,6 +175,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     top: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -116,6 +116,7 @@ export const Profile = () => {
       // Clear AsyncStorage
       await AsyncStorage.removeItem("userDetails");
       await AsyncStorage.setItem("Auth", 'false');
+      await AsyncStorage.removeItem('cartItems');
       console.log('AsyncStorage cleared successfully');
 
       // Navigate to login screen
@@ -215,6 +216,7 @@ export const Profile = () => {
     try {
       await AsyncStorage.removeItem("userDetails");
       await AsyncStorage.setItem("Auth", "false");
+      await AsyncStorage.removeItem('cartItems');
       console.log("AsyncStorage cleared successfully");
     } catch (error) {
       console.error("Error clearing AsyncStorage:", error);

@@ -12,6 +12,7 @@ import Modal from "react-native-modal";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppContext } from "../../Context/AppContext";
 
+
 const { width, height } = Dimensions.get("screen");
 
 const SelectWeightModal = ({
@@ -108,13 +109,13 @@ const SelectWeightModal = ({
             </TouchableOpacity>
           ))}
 
-<Text style={styles.uploadLabel}>Upload images*</Text>
+{/* <Text style={styles.uploadLabel}>Upload images*</Text>
           <View style={styles.uploadContainer}>
             <TextInput placeholder="Choose files" style={styles.uploadInput} />
             <TouchableOpacity style={styles.uploadButton}>
               <Text style={styles.uploadButtonText}>Upload</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
 
 
